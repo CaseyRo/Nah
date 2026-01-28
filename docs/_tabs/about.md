@@ -4,7 +4,7 @@ icon: fas fa-info-circle
 order: 1
 ---
 
-# Nah
+## Nah
 
 **A private home for your closest people.**
 
@@ -22,11 +22,11 @@ Nah ("Not Alone Here") is a private social network limited to **150 friends** â€
 
 ## The Manifesto
 
-* Small by design.
-* Private by default.
-* Real friends, real moments.
-* No algorithmic theater.
-* **Viral? Nah. Vital.**
+- Small by design.
+- Private by default.
+- Real friends, real moments.
+- No algorithmic theater.
+- **Viral? Nah. Vital.**
 
 ## Tech Stack
 

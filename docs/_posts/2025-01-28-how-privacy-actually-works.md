@@ -10,6 +10,7 @@ One of the first questions we had to answer was deceptively simple: if everyone'
 ## The Scenario
 
 Let's say:
+
 - **X** joins Nah (first user)
 - **Y** joins Nah and adds X as a friend
 - **Y** invites **Z**, and they become friends
@@ -17,7 +18,7 @@ Let's say:
 
 What should happen?
 
-```
+```text
 X ←——friends——→ Y ←——friends——→ Z
 
 X sees: Y's posts
@@ -39,6 +40,7 @@ It's a reasonable concern. But it misunderstands how social network privacy work
 Here's the key insight: **the database stores everything, but the API only returns what you're authorized to see.**
 
 Mastodon posts have visibility levels:
+
 - **Public**: Anyone can see
 - **Unlisted**: Anyone with a link can see
 - **Followers-only**: Only your followers can see ← **this is what we use**
@@ -72,6 +74,7 @@ The API enforces it. The UI enforces it. Even if someone tried to hack around it
 One honest caveat: server admins can technically see the database. This is true of literally every hosted service — Instagram, Gmail, Slack, all of them. The people running the servers can access the data.
 
 For Nah, we handle this with transparency:
+
 - **Simple privacy policy** (human-readable, not legal jargon)
 - **Clear statement**: admins can technically access data, standard for any hosted service
 - **Commitment**: no data sales, no ads, no third-party sharing
@@ -82,6 +85,7 @@ If end-to-end encryption for posts becomes important (so even admins can't read 
 ## The Mental Model
 
 Think of Nah like an apartment building:
+
 - Everyone lives in the same building (same server)
 - Each apartment has a lock (followers-only visibility)
 - You can only enter apartments where you have a key (mutual friendship)

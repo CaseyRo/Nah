@@ -41,24 +41,28 @@ This is a greenfield project. We're creating a new social network from scratch w
 ## Impact
 
 ### Technical Foundation
+
 - Backend: Mastodon instance (Ruby on Rails, PostgreSQL, Redis) configured for closed/private operation
 - Frontend: Modern web app (React/Vue/Svelte) as PWA, mobile-first design
 - Storage: S3-compatible media storage with CDN
 - Protocol: ActivityPub foundation (federation disabled initially, but architecture supports future expansion)
 
 ### Design Direction
+
 - Path's signature radial "+" menu for posting
 - Warm color palette, smooth animations, "homey" feel
 - Clock-style timeline, cover photos, profile fade effects
 - Playful reaction stickers with friend avatars
 
 ### Business Model
+
 - No ads, no data sales
 - Community donations (Patreon, Open Collective, in-app)
 - Optional digital goods (sticker packs, themes) with proceeds to project
 - Transparent financial reporting
 
 ### Philosophical Commitments
+
 - Never raise the friend limit above 150
 - Never add public/viral features
 - Never optimize for "engagement" over connection

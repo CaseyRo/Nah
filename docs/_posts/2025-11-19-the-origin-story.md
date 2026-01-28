@@ -20,4 +20,4 @@ This is for now the place this project flourishes, or perhaps dies as just anoth
 
 ---
 
-*What started as a simple prompt became Nah — "Not Alone Here." Follow along as we build.*
+_What started as a simple prompt became Nah — "Not Alone Here." Follow along as we build._

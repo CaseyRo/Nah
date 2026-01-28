@@ -20,6 +20,29 @@ Nah ("Not Alone Here") is a private social network limited to 150 friends — in
 
 ---
 
+## Built With
+
+Nah stands on the shoulders of giants. We're grateful to these open source projects:
+
+| Project | What we use it for |
+|---------|-------------------|
+| [@mastodon/mastodon](https://github.com/mastodon/mastodon) | Backend social networking engine (forked) |
+| [@sveltejs/svelte](https://github.com/sveltejs/svelte) | Frontend framework (Svelte 5) |
+| [@sveltejs/kit](https://github.com/sveltejs/kit) | App framework, routing, SSR |
+| [@huntabyte/shadcn-svelte](https://github.com/huntabyte/shadcn-svelte) | UI component primitives |
+| [@tailwindlabs/tailwindcss](https://github.com/tailwindlabs/tailwindcss) | Utility-first CSS |
+| [@TanStack/query](https://github.com/TanStack/query) | Data fetching & caching |
+
+### Tooling
+
+| Project | What we use it for |
+|---------|-------------------|
+| [OpenSpec](https://openspec.dev) · [@openspec](https://github.com/openspec) | Specification-driven development workflow |
+| [@caddyserver/caddy](https://github.com/caddyserver/caddy) | Web server (planned) |
+| [@getsentry/sentry](https://github.com/getsentry/sentry) | Error tracking |
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -36,14 +59,14 @@ See [design.md](openspec/changes/nah-vision/design.md) for full architecture det
 
 ## Project Structure
 
-```
+```text
 /apps
   /web              # SvelteKit PWA (coming soon)
   /server           # Mastodon fork (coming soon)
 /packages
   /ui               # Nah design system (coming soon)
 /docs
-  /_reflections     # Build-in-public blog posts
+  /_posts           # Build-in-public blog posts
 /openspec
   /changes          # Feature specifications
     /nah-vision     # Core vision (complete)
@@ -71,6 +94,32 @@ See [design.md](openspec/changes/nah-vision/design.md) for full architecture det
 - [ ] Project scaffolding
 - [ ] Core implementation
 - [ ] Alpha release
+
+---
+
+## Development
+
+### Prerequisites
+
+- Node.js 20+
+- pnpm
+- Docker (for Mastodon backend)
+- Ruby 3.3+ (for local docs preview)
+
+### Pre-commit Hooks
+
+We use [pre-commit](https://pre-commit.com/) for code quality:
+
+```bash
+# Install pre-commit
+brew install pre-commit  # or pip install pre-commit
+
+# Install hooks
+pre-commit install
+
+# Run manually
+pre-commit run --all-files
+```
 
 ---
 

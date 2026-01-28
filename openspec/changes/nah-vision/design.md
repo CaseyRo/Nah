@@ -12,6 +12,7 @@ Nah is a greenfield private social network inspired by Path. We're starting from
 **Current state:** No existing codebase. We're defining the foundational architecture.
 
 **Key constraints:**
+
 - Must be open-source (transparency, trust, community contribution)
 - Must support 150-friend limit as a first-class concept
 - Must work well on mobile (PWA minimum, native apps later)
@@ -20,6 +21,7 @@ Nah is a greenfield private social network inspired by Path. We're starting from
 ## Goals / Non-Goals
 
 **Goals:**
+
 - Establish a clear, layered architecture (backend / API / frontend)
 - Choose proven, maintainable technologies over bleeding-edge
 - Design for privacy-by-default at every layer
@@ -27,6 +29,7 @@ Nah is a greenfield private social network inspired by Path. We're starting from
 - Support future extensibility (federation, native apps) without requiring it now
 
 **Non-Goals:**
+
 - Full technical specifications for each feature (that's what specs are for)
 - UI/UX design details (separate design system work)
 - Deployment/DevOps specifics (infrastructure planning comes later)
@@ -40,6 +43,7 @@ Nah is a greenfield private social network inspired by Path. We're starting from
 **Decision:** Fork vanilla Mastodon directly as the backend foundation
 
 **Rationale:**
+
 - Mastodon provides battle-tested social networking primitives: accounts, posts, timelines, notifications, media handling, OAuth2
 - Ruby on Rails + PostgreSQL + Redis is a mature, well-understood stack
 - **Best maintenance path** — security patches flow from the largest community
@@ -47,12 +51,14 @@ Nah is a greenfield private social network inspired by Path. We're starting from
 - ActivityPub protocol gives us federation capabilities if ever needed later
 
 **Why not Hometown or Glitch?**
+
 - Hometown's "local-only posting" is redundant when federation is disabled — all posts are already local
 - Hometown has maintenance concerns (sole maintainer seeking to hand off, 9+ months behind upstream)
 - Glitch adds complexity we don't need ("kitchen sink" of features)
 - Mastodon upstream is philosophically opposed to private features, but we don't need their buy-in — we're forking
 
 **Modifications to Mastodon:**
+
 - Disable federation completely (closed instance mode)
 - Disable/hide local timeline and public timeline (privacy enforcement)
 - Default all posts to "followers-only" visibility
@@ -66,6 +72,7 @@ Nah is a greenfield private social network inspired by Path. We're starting from
 **Decision:** Svelte 5 + SvelteKit as the frontend framework
 
 **Rationale:**
+
 - **Mobile-first PWA** that feels like a native app without app store gatekeeping
 - SvelteKit provides app router, SSR for fast first paint, and excellent PWA support
 - Svelte's reactivity model is simpler and more performant than React's virtual DOM
@@ -73,6 +80,7 @@ Nah is a greenfield private social network inspired by Path. We're starting from
 - Service workers via SvelteKit adapter for offline read, fast re-open, background sync
 
 **Alternatives considered:**
+
 - *React*: Larger ecosystem, but heavier bundles, more boilerplate, virtual DOM overhead
 - *Vue.js*: Good option, but Svelte's compiler approach is more aligned with performance goals
 - *React Native / Flutter*: True native, but doubles development effort and delays launch
@@ -82,6 +90,7 @@ Nah is a greenfield private social network inspired by Path. We're starting from
 **Decision:** Tailwind CSS v4 for styling, shadcn-svelte for component primitives
 
 **Rationale:**
+
 - **Tailwind CSS v4** provides utility classes + design tokens for consistent styling
 - **shadcn-svelte** is a code-ownership component generator, not a locked dependency
 - Components are copied into your repo — you own and modify them freely
@@ -90,6 +99,7 @@ Nah is a greenfield private social network inspired by Path. We're starting from
 - Enables Path-style playful UI without fighting a rigid component library
 
 **Component ownership model:**
+
 - Generate base components from shadcn-svelte
 - Customize heavily for Nah's warm, Path-inspired aesthetic
 - Store in `/packages/ui` as Nah's design system
@@ -99,12 +109,14 @@ Nah is a greenfield private social network inspired by Path. We're starting from
 **Decision:** TanStack Query (Svelte adapter) + SvelteKit's built-in load functions
 
 **Rationale:**
+
 - TanStack Query handles caching, background refetching, and optimistic updates
 - SvelteKit's `load` functions provide server-side data fetching with streaming
 - Svelte stores for local UI state
 - IndexedDB (via `idb-keyval`) for offline timeline caching
 
 **Data flow:**
+
 - Mastodon REST API for CRUD operations
 - Mastodon Streaming API (WebSocket) for real-time timeline updates
 - Local IndexedDB cache for offline viewing and fast re-open
@@ -114,7 +126,8 @@ Nah is a greenfield private social network inspired by Path. We're starting from
 **Decision:** Privacy-first by architecture, not policy
 
 **How privacy works (the X/Y/Z model):**
-```
+
+```text
 X (user) ←—friends—→ Y (user) ←—friends—→ Z (user)
 
 X sees: Y's posts only
@@ -126,6 +139,7 @@ X cannot see Z (they're not friends)
 All posts default to **followers-only** visibility. The API layer enforces access control — users only receive posts from people they follow. The database stores everything, but unauthorized content is never returned.
 
 **Implementation:**
+
 - Federation completely disabled (single closed instance)
 - Local timeline and public timeline hidden/disabled in UI
 - All posts default to "followers-only" visibility (server-side default)
@@ -136,6 +150,7 @@ All posts default to **followers-only** visibility. The API layer enforces acces
 - User data export always available (GDPR-style)
 
 **Transparent privacy policy:**
+
 - Simple, human-readable privacy policy (not legal jargon)
 - Clearly state: admins can technically access database (standard for any hosted service)
 - No data sales, no ads, no third-party sharing
@@ -146,12 +161,14 @@ All posts default to **followers-only** visibility. The API layer enforces acces
 **Decision:** Hard limit of 150, enforced at API level
 
 **Rationale:**
+
 - Path's mistake was raising limits under growth pressure
 - Making it a database constraint, not a UI suggestion, ensures it can't be "accidentally" changed
 - 150 aligns with Dunbar's number — the cognitive limit for meaningful relationships
 - Smaller networks mean less moderation burden, more trust
 
 **Implementation:**
+
 - PostgreSQL constraint on follow count
 - API returns error if user attempts to add 151st friend
 - UI shows "X/150 friends" counter as positive framing, not limitation
@@ -162,11 +179,13 @@ All posts default to **followers-only** visibility. The API layer enforces acces
 **Decision:** Extend Hometown posts with structured metadata
 
 **Rationale:**
+
 - Path's magic was in rich moment types: music, location, sleep/wake, "with" tagging
 - Mastodon posts already support attachments and custom fields
 - We can store moment metadata in post JSON and render it specially in our frontend
 
 **Moment types (v1):**
+
 - **Photo/Video**: Standard media attachments (client-side resize/compression before upload)
 - **Text**: Simple status updates
 - **Music**: Song/album info (Spotify/Apple Music integration or manual entry)
@@ -175,6 +194,7 @@ All posts default to **followers-only** visibility. The API layer enforces acces
 - **With**: Tag friends who are present
 
 **Technical approach:**
+
 - Store moment type and metadata in structured text patterns or ActivityPub extensions
 - Frontend parses and renders specialized UI per type
 - Backend validates structure but doesn't need special handling
@@ -184,10 +204,12 @@ All posts default to **followers-only** visibility. The API layer enforces acces
 **Decision:** Custom reaction types stored as specialized favorites
 
 **Rationale:**
+
 - Path's emoji reactions (smile, frown, gasp, laugh) were warmer than "likes"
 - Mastodon only has "favorite" — we need to extend this
 
 **Implementation:**
+
 - Custom emoji reactions stored in a separate table linked to post
 - Cleanest separation, doesn't pollute reply threads
 - Frontend aggregates and displays reactions with friend avatars
@@ -197,11 +219,13 @@ All posts default to **followers-only** visibility. The API layer enforces acces
 **Decision:** Defer to v1.5, use Mastodon DMs initially
 
 **Rationale:**
+
 - Mastodon has basic DM support (direct visibility posts)
 - Path Talk's ephemeral messaging and ambient status are valuable but complex
 - Better to ship core experience first, then enhance messaging
 
 **Future direction:**
+
 - Matrix protocol integration for E2EE messaging
 - Ephemeral (24-hour) message option
 - Ambient status sharing (listening to, in transit, etc.)
@@ -211,13 +235,15 @@ All posts default to **followers-only** visibility. The API layer enforces acces
 **Decision:** Monorepo with pnpm workspaces
 
 **Structure:**
-```
+
+```text
 /apps/web          # SvelteKit PWA (main client)
-/apps/server       # Hometown fork + Nah-specific config
+/apps/server       # Mastodon fork + Nah-specific config
 /packages/ui       # Nah design system (shadcn-svelte generated + customized)
 ```
 
 **Rationale:**
+
 - Single repo simplifies development and deployment
 - Shared UI package enables consistency
 - pnpm workspaces provide efficient dependency management
@@ -228,11 +254,13 @@ All posts default to **followers-only** visibility. The API layer enforces acces
 **Decision:** Standard open-source observability stack
 
 **Components:**
+
 - **Sentry**: Error tracking for frontend + backend
 - **Prometheus + Grafana**: Metrics and dashboards for Hometown
 - **Structured logging**: JSON logs, PII excluded
 
 **Infrastructure (v0 → v1):**
+
 - Docker Compose for local dev and initial deployment
 - Single VM + managed Postgres to start
 - Nightly Postgres dumps + media bucket versioning for backups
@@ -264,7 +292,7 @@ All posts default to **followers-only** visibility. The API layer enforces acces
 
 ## Architecture Summary
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                        FRONTEND                              │
 │  Svelte 5 + SvelteKit (PWA)                                 │
