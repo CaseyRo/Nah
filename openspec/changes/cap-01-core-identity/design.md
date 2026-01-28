@@ -234,15 +234,25 @@ The detailed Path analysis (Brian Lovin's dissection, techwalls reviews) gives u
 
 ### 8. Reactions System
 
-**Decision:** Emoticon sticker bubbles, not generic likes
+**Decision:** Custom illustrated sticker icons, not system emoji
 
-**Reaction set:**
+Path used custom emoticon artwork — small illustrated faces with personality. System emoji feel generic and vary across platforms. We'll create custom reaction icons that match Nah's visual language.
 
-- 😊 Smile (default positive)
-- 😉 Wink (strong like / inside joke)
-- 😢 Sad (sympathy)
-- 😲 Wow (surprised)
-- ❤️ Love (deep appreciation)
+**Reaction set (custom SVG icons):**
+
+- **Smile** — default positive reaction
+- **Wink** — strong like, inside joke energy
+- **Sad** — sympathy, support
+- **Wow** — surprise, amazement
+- **Love** — deep appreciation, heart-eyes style
+
+**Icon style:**
+
+- Simple, rounded, friendly illustration style
+- Consistent stroke weight with app's icon language
+- Pomegranate red as accent color where appropriate
+- Work at small sizes (24px) without losing clarity
+- Part of brand-assets deliverable
 
 **Interaction:**
 

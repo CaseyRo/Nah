@@ -107,3 +107,29 @@ Logo and icons SHALL maintain sufficient contrast for visibility against common 
 
 - **WHEN** icon is shown on light OS theme
 - **THEN** it remains visible and recognizable
+
+### Requirement: Custom reaction icons
+
+The brand SHALL provide custom illustrated reaction icons (not system emoji) that match the app's visual language.
+
+#### Scenario: Reaction icon set
+
+- **WHEN** user views or selects reactions
+- **THEN** custom SVG icons are displayed for: Smile, Wink, Sad, Wow, Love
+
+#### Scenario: Icon style consistency
+
+- **WHEN** reaction icons are designed
+- **THEN** they use simple, rounded, friendly illustration style
+- **AND** consistent stroke weight with app's icon language
+- **AND** pomegranate red (#EE3423) as accent color where appropriate
+
+#### Scenario: Icon size requirements
+
+- **WHEN** reaction icons are displayed at small sizes (24px)
+- **THEN** they remain clear and recognizable without losing detail
+
+#### Scenario: Cross-platform consistency
+
+- **WHEN** reactions are shown on different devices/browsers
+- **THEN** they appear identical (unlike system emoji which vary by platform)
