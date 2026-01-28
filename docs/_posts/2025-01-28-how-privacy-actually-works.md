@@ -1,10 +1,9 @@
 ---
 title: "How Privacy Actually Works in Nah"
-date: 2025-01-28
-tags: [privacy, architecture, mastodon]
+date: 2025-01-28 11:00:00 +0100
+categories: [Architecture, Privacy]
+tags: [privacy, mastodon, security]
 ---
-
-# How Privacy Actually Works in Nah
 
 One of the first questions we had to answer was deceptively simple: if everyone's data is on the same server, how do we keep it private between friends?
 

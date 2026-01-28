@@ -1,40 +1,80 @@
-# GitHub Pages / Jekyll configuration for Nah docs
+# Chirpy theme configuration for Nah docs
 
-title: Nah
-description: "Building a private social network for your closest 150 people"
-tagline: "Viral? Nah. Vital."
-
-# Theme - using a minimal theme that works well with markdown
-remote_theme: pages-themes/minimal@v0.2.0
-plugins:
-  - jekyll-remote-theme
+theme: jekyll-theme-chirpy
 
 # Site settings
-baseurl: "/nah"
-url: "https://your-org.github.io"
+title: Nah
+tagline: "Viral? Nah. Vital."
+description: "Building a private social network for your closest 150 people. Open source, community-funded, privacy-first."
+url: "https://caseyro.github.io"
+baseurl: "/Nah"
+
+# GitHub
+github:
+  username: CaseyRo
+
+# Social
+social:
+  name: Nah
+  links:
+    - https://github.com/CaseyRo/Nah
+
+# Theme mode - light/dark/auto
+theme_mode: auto
+
+# Avatar (optional - can add later)
+# avatar: /assets/img/avatar.png
+
+# Timezone
+timezone: Europe/Amsterdam
+
+# Pagination
+paginate: 10
 
 # Build settings
 markdown: kramdown
 highlighter: rouge
 
-# Collections for blog-style posts
-collections:
-  reflections:
-    output: true
-    permalink: /reflections/:name/
+# Chirpy specific
+toc: true
+comments: false
+mermaid: true
 
-# Defaults
-defaults:
-  - scope:
-      path: "reflections"
-      type: "reflections"
-    values:
-      layout: "default"
+plugins:
+  - jekyll-paginate
+  - jekyll-redirect-from
+  - jekyll-seo-tag
+  - jekyll-sitemap
 
-# Exclude from build
+# Exclude from processing
 exclude:
+  - "*.gem"
+  - "*.gemspec"
+  - docs
+  - CHANGELOG.md
   - README.md
-  - Gemfile
-  - Gemfile.lock
+  - LICENSE
   - node_modules
   - vendor
+
+# Collections
+collections:
+  tabs:
+    output: true
+    sort_by: order
+
+defaults:
+  - scope:
+      path: ""
+      type: posts
+    values:
+      layout: post
+      comments: false
+      toc: true
+      permalink: /posts/:title/
+  - scope:
+      path: _tabs
+      type: tabs
+    values:
+      layout: page
+      permalink: /:title/

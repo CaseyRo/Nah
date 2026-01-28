@@ -1,10 +1,9 @@
 ---
 title: "Why We're Forking Vanilla Mastodon (Not Hometown)"
-date: 2025-01-28
-tags: [architecture, mastodon, decisions]
+date: 2025-01-28 10:00:00 +0100
+categories: [Architecture, Decisions]
+tags: [mastodon, backend, open-source]
 ---
-
-# Why We're Forking Vanilla Mastodon (Not Hometown)
 
 When we started designing Nah, the obvious choice seemed to be [Hometown](https://github.com/hometown-fork/hometown) — a Mastodon fork specifically built for private, local-only communities. But after thinking it through, we decided to fork vanilla Mastodon instead. Here's why.
 
