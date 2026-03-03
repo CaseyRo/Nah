@@ -176,7 +176,7 @@ All posts default to **followers-only** visibility. The API layer enforces acces
 
 ### 7. Moment Types & Rich Content
 
-**Decision:** Extend Hometown posts with structured metadata
+**Decision:** Extend Mastodon posts with structured metadata
 
 **Rationale:**
 
@@ -256,7 +256,7 @@ All posts default to **followers-only** visibility. The API layer enforces acces
 **Components:**
 
 - **Sentry**: Error tracking for frontend + backend
-- **Prometheus + Grafana**: Metrics and dashboards for Hometown
+- **Prometheus + Grafana**: Metrics and dashboards for Mastodon
 - **Structured logging**: JSON logs, PII excluded
 
 **Infrastructure (v0 → v1):**
@@ -265,6 +265,70 @@ All posts default to **followers-only** visibility. The API layer enforces acces
 - Single VM + managed Postgres to start
 - Nightly Postgres dumps + media bucket versioning for backups
 - One-click user data export (trust feature)
+
+### 12. Visual Identity: Light-Primary
+
+**Decision:** Warm light surfaces as primary identity; dark mode is secondary
+
+**Rationale:**
+
+- Path's identity was warm, light, and inviting — dark mode didn't define the brand
+- Light surfaces let photos and content pop; pomegranate red accents read best on white
+- Dark mode respects system preference but is not the primary design target
+- Glassmorphism is scoped to exactly 2 contexts: profile header compression overlay and radial menu backdrop — nowhere else
+
+**Implementation:**
+
+- Default: light theme (`--color-surface: #FFFFFF`, warm neutrals)
+- Dark mode: follows `prefers-color-scheme: dark` system setting
+- All design work and mockups start with light theme
+- Dark mode token architecture defined in design-system spec
+
+### 13. Notification Architecture
+
+**Decision:** Layered notification system — push, in-app badge, and silent
+
+**Push notifications (device-level):**
+
+| Event | Push | Badge | Silent |
+|-------|------|-------|--------|
+| Friend request received | Yes | Yes | — |
+| Friend request accepted | Yes | Yes | — |
+| Reaction on your moment | — | Yes | Yes |
+| Comment on your moment | Yes | Yes | — |
+| Reply to your comment | Yes | Yes | — |
+| First moment from new friend | Yes | — | — |
+| Message received (v1.5) | Yes | Yes | — |
+
+**In-app badge:**
+
+- Red dot on Friends tab for pending requests
+- Count badge on notification bell (if present) or tab
+- Cleared when user views the relevant screen
+
+**Notification preferences screen:**
+
+- Master toggle: all push notifications on/off
+- Per-category toggles: reactions, comments, friend requests
+- Quiet hours: schedule no-push window (e.g., 10pm–8am)
+
+**Deep-link destinations:**
+
+| Notification type | Opens |
+|-------------------|-------|
+| Friend request | Friends tab → pending requests |
+| Reaction | The specific moment in timeline |
+| Comment | The specific moment, scrolled to comments |
+| Friend accepted | New friend's profile |
+
+### 14. Messaging Scope
+
+**Decision:** Messaging is explicitly deferred to v1.5
+
+Mastodon's basic DM support (direct visibility posts) is available at the infrastructure level but the full Path Talk experience (ephemeral messages, typing indicators, ambient status) is v1.5 scope. The v1 navigation model does not include a Messages tab.
+
+**v1 navigation:** Feed, Friends, Profile (3 tabs)
+**v1.5 addition:** Messages tab added as 4th tab
 
 ## Risks / Trade-offs
 

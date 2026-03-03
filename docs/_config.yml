@@ -41,6 +41,7 @@ comments: false
 mermaid: true
 
 plugins:
+  - jekyll-feed
   - jekyll-paginate
   - jekyll-redirect-from
   - jekyll-seo-tag

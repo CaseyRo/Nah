@@ -28,8 +28,9 @@ This is a greenfield project. We're creating a new social network from scratch w
 - `core-identity`: App identity, branding, and design language — the "coming home" aesthetic inspired by Path's warm, polished UI
 - `friend-circles`: Dunbar-limited connections (150 max), mutual friendship model, inner circle support for selective sharing
 - `moments`: Timeline of life moments — photos, text, music, location, sleep/wake status, auto-location check-ins
-- `reactions`: Expressive emoji reactions (not just "like"), read receipts, "who viewed" transparency
-- `messaging`: Private 1:1 and small group chat with optional ephemeral messages (Path Talk inspired)
+- `reactions`: Custom illustrated reaction icons (not system emoji or "like"), configurable view receipts, "who viewed" transparency
+- `comments`: Threaded replies on moments from friends (single-level threading, friends-only visibility)
+- `messaging`: Private 1:1 and small group chat with optional ephemeral messages (Path Talk inspired) — **deferred to v1.5**
 - `ambient-presence`: Opt-in status sharing — what you're listening to, battery level, transit status — subtle cues that deepen presence
 - `user-ownership`: Data export, account portability, transparent privacy controls
 - `community-funding`: Donation model, optional supporter perks (badges, themes), crowdfunded feature roadmap
@@ -49,10 +50,13 @@ This is a greenfield project. We're creating a new social network from scratch w
 
 ### Design Direction
 
+- **Light-primary identity**: Warm white surfaces, pomegranate red (#EE3423) accents — the default visual experience
+- Dark mode as secondary theme, respecting system preference (not the primary identity)
 - Path's signature radial "+" menu for posting
-- Warm color palette, smooth animations, "homey" feel
-- Clock-style timeline, cover photos, profile fade effects
-- Playful reaction stickers with friend avatars
+- Warm color palette, smooth spring animations, "coming home" feel
+- Clock-style timeline, cover photos, profile header compression with frosted glass
+- Custom illustrated reaction icons (not system emoji) with friend avatars
+- Glassmorphism scoped to exactly 2 contexts: profile header compression overlay + radial menu backdrop
 
 ### Business Model
 

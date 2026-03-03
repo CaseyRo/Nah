@@ -55,14 +55,21 @@ The detailed Path analysis (Brian Lovin's dissection, techwalls reviews) gives u
 
 ### 2. Typography
 
-**Decision:** System fonts with humanist feel, no custom web fonts
+**Decision:** Display font for brand identity + system fonts for body/UI
+
+**Font families:**
+
+```css
+/* Display font — logo, headings, onboarding titles */
+--font-display: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+
+/* Body/UI font — system stack, native feel, zero load time */
+--font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+```
 
 **Scale:**
 
 ```css
-/* Font family - native feel, fast load */
---font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-
 /* Scale (mobile-first) */
 --text-xs: 0.75rem;    /* 12px - timestamps */
 --text-sm: 0.875rem;   /* 14px - secondary text */
@@ -70,14 +77,25 @@ The detailed Path analysis (Brian Lovin's dissection, techwalls reviews) gives u
 --text-lg: 1.125rem;   /* 18px - card titles */
 --text-xl: 1.25rem;    /* 20px - section headers */
 --text-2xl: 1.5rem;    /* 24px - profile names */
+--text-3xl: 1.875rem;  /* 30px - onboarding headings */
 
 /* Weights */
 --font-normal: 400;
 --font-medium: 500;    /* Titles, emphasis */
 --font-semibold: 600;  /* Buttons, key UI */
+--font-bold: 700;      /* Display font headings only */
+
+/* Spacing */
+--letter-spacing-tight: -0.01em;   /* Display headings */
+--letter-spacing-normal: 0;        /* Body text */
+--letter-spacing-wide: 0.02em;     /* Uppercase labels */
+
+--line-height-tight: 1.2;    /* Headings */
+--line-height-normal: 1.5;   /* Body text */
+--line-height-relaxed: 1.75; /* Long-form content */
 ```
 
-**Rationale:** System fonts feel native and load instantly. San Francisco (iOS) and Roboto (Android) are humanist sans-serifs — friendly, readable, not cold. Custom fonts add load time and rarely justify the tradeoff for a PWA.
+**Rationale:** Nunito (rounded, friendly, warm) gives Nah brand distinction in headings and the logo without slowing down body text rendering. System fonts for body/UI text feel native and load instantly. The display font loads with `font-display: swap` — system font shows until it's ready. Alternatives considered: Outfit (geometric, modern), Poppins (geometric, popular). Nunito's rounded terminals best match the warm, "coming home" aesthetic.
 
 ### 3. Spacing & Layout
 
@@ -145,24 +163,29 @@ The detailed Path analysis (Brian Lovin's dissection, techwalls reviews) gives u
 
 ### 5. Radial Menu Design
 
-**Decision:** Bottom-left FAB with 7-item radial fan
+**Decision:** Bottom-right FAB with 5-item radial fan, left-hand setting available
 
 **Specifications:**
 
-- Position: Fixed, bottom-left corner (24px inset)
+- Position: Fixed, bottom-right corner (24px inset), above bottom tab bar
+- Left-hand setting: user preference moves FAB to bottom-left
 - Size: 56px diameter (touch-friendly)
 - Color: Primary red with white "+" icon
 - Shadow: Subtle elevation (0 4px 12px rgba(0,0,0,0.15))
 
-**Menu items (clockwise from top):**
+**Menu items (5 items, counter-clockwise from top):**
 
-1. 📷 Photo
-2. 🎬 Video
-3. 📍 Location
-4. 🎵 Music
-5. 💬 Text
-6. 👥 With (tag friends)
-7. 🌙 Sleep/Wake
+1. Photo (camera icon)
+2. Text (quote/note icon)
+3. Music (music note icon)
+4. Location (pin icon)
+5. Status (moon/sun icon — covers sleep/wake)
+
+**Removed from radial menu:**
+
+- "With" (friend tagging) → moved to composer toolbar option on any moment type
+- "Video" → combined with Photo (camera icon opens media picker for both)
+- Sleep/Wake → combined into "Status" (single entry, picker inside composer)
 
 **Animation sequence:**
 
@@ -193,17 +216,41 @@ The detailed Path analysis (Brian Lovin's dissection, techwalls reviews) gives u
 │    (photo/text/music/location)     │
 │                                    │
 ├────────────────────────────────────┤
-│ 😊 😢 😲  •  12 comments           │
+│ [heart] [reactions]  •  12 comments│
 └────────────────────────────────────┘
 ```
 
-**Floating time indicator:**
+- `[heart]` = dedicated reaction button (tap to open picker)
+- `[reactions]` = row of custom reaction icons with friend avatars
+- `12 comments` = threaded comment count (tappable, opens comment sheet)
 
-- Appears on left edge during scroll
-- Shows clock face with animated hands
-- Date text below clock
-- Fades in/out based on scroll velocity
-- Smoothly interpolates between post timestamps
+**Moment type card variants:**
+
+Each moment type has a distinct card layout within the shared card shell (header + footer stay consistent):
+
+| Moment Type | Content Area Treatment |
+|-------------|----------------------|
+| **Photo/Video** | Edge-to-edge media, no padding. Minimal chrome — let the image breathe. Video shows play button overlay. |
+| **Text** | Padded content area (space-6). Typographic treatment: larger text size (--text-lg), medium weight. Background can be a subtle warm tint or user-selected color. |
+| **Music** | Album art thumbnail (left) + song title, artist, album (right). Waveform or audio visualizer accent below. Optional: tappable to open in music service. |
+| **Location** | Map thumbnail (static, from map tiles API) spanning full width. Venue/city name overlaid at bottom with semi-transparent backdrop. |
+| **Status (sleep/wake)** | Minimal single-line with icon. Moon icon for sleep, sun icon for wake. Timestamp prominent. No content area padding — compact card. |
+
+**Floating timeline clock:**
+
+The timeline clock is a **prominent** design element, not a subtle indicator. It's one of Nah's signature differentiators from other social apps.
+
+- **Position:** Fixed on left edge of viewport during scroll
+- **Size:** 48px diameter clock face — large enough to read at a glance
+- **Appearance:** Analog clock face with hour and minute hands, pomegranate red second hand
+- **Date text:** Below clock, showing "Mon, Mar 3" format
+- **Behavior:**
+  - Appears when user begins scrolling
+  - Clock hands smoothly animate to match the timestamp of the nearest visible moment
+  - Date text updates as user scrolls through days
+  - Fades out after 2 seconds of scroll inactivity
+  - Smoothly interpolates between post timestamps (not jumpy)
+- **Reduced-motion fallback:** Static digital time display (e.g., "2:30 PM") instead of animated clock hands. Still shows on left edge during scroll.
 
 **End of feed:**
 
@@ -234,11 +281,11 @@ The detailed Path analysis (Brian Lovin's dissection, techwalls reviews) gives u
 
 ### 8. Reactions System
 
-**Decision:** Custom illustrated sticker icons, not system emoji
+**Decision:** Dedicated heart/reaction icon button on every card, custom illustrated icons
 
-Path used custom emoticon artwork — small illustrated faces with personality. System emoji feel generic and vary across platforms. We'll create custom reaction icons that match Nah's visual language.
+Each moment card has a dedicated heart icon button in the card footer — this is the primary reaction entry point. More discoverable and accessible than long-press alone.
 
-**Reaction set (custom SVG icons):**
+**Reaction set (custom SVG icons, part of brand-assets deliverable):**
 
 - **Smile** — default positive reaction
 - **Wink** — strong like, inside joke energy
@@ -252,20 +299,20 @@ Path used custom emoticon artwork — small illustrated faces with personality. 
 - Consistent stroke weight with app's icon language
 - Pomegranate red as accent color where appropriate
 - Work at small sizes (24px) without losing clarity
-- Part of brand-assets deliverable
 
 **Interaction:**
 
-- Tap heart icon → reaction picker appears
-- Tap reaction → bubble animates to post
-- Animation: Scale from 0 with spring, slight wobble
-- Reactions show as row of small circles with friend avatars
+- Tap heart icon on card footer → reaction picker appears above the button
+- Double-tap card → quick "Love" reaction (shortcut, skips picker)
+- Long-press card → reaction picker appears (alternative path)
+- Tap reaction → bubble animates to post with spring + slight wobble
+- Reactions show as row of small custom icons with friend avatars
 
 **Display:**
 
-- Show up to 3 unique reaction types as icons
+- Show up to 3 unique reaction types as custom icons
 - "+N more" for additional
-- Tap to see full list with names
+- Tap to see full list with names and avatars
 
 ### 9. Composer Flow
 
@@ -297,17 +344,56 @@ Path used custom emoticon artwork — small illustrated faces with personality. 
 - Content area fades in after sheet settles
 - Privacy toggles animate as chips
 
-### 10. Onboarding & Modals
+### 10. Onboarding Flow
 
-**Decision:** Stacked modal cards with consistent animation
+**Decision:** Email + password authentication, 4-step onboarding, warm empty state
 
-**Welcome screen:**
+**Authentication model:** Email + password. Simple, self-hosted. No OAuth/social login for v1.
+
+**Step 1: Welcome screen**
 
 - Full-screen primary red background
-- Logo centered
-- "Sign In" / "Sign Up" buttons (white, rounded)
+- Nah logo centered (display font)
+- Tagline: "Not Alone Here"
+- "Sign In" / "Create Account" buttons (white, rounded)
 
-**Onboarding cards:**
+**Step 2: Account creation**
+
+- Email address input
+- Password input (with strength indicator)
+- Display name input
+- Submit → email verification sent
+
+**Step 3: Profile setup (post-verification)**
+
+- Upload profile photo (camera/gallery picker, with crop)
+- Optional: add a short bio
+- Skip option available (can complete later)
+
+**Step 4: "How Nah Works" explainer**
+
+- 3 swipeable cards (stacked modal style):
+  1. "Share real moments with your closest people" — illustration of moment types
+  2. "150 friends max — quality over quantity" — illustration of friend circle
+  3. "No algorithms, no ads, just your friends" — illustration of chronological feed
+- "Get Started" button on final card
+
+**Zero-friends empty state:**
+
+- Warm illustration (not a blank screen)
+- Heading: "Welcome home"
+- Body: "Nah is better with friends. Invite someone you care about."
+- Primary CTA: "Invite a Friend" button
+- Secondary: "Explore your profile" link
+- The radial FAB is visible but has a pulsing tooltip: "Share your first moment"
+
+**Returning user (sign in):**
+
+- Email + password fields
+- "Forgot password" link
+- Error state: "Email or password incorrect" (never reveal which)
+
+**Modal animation (reused throughout):**
 
 - Centered modal (max 85% width)
 - Rounded corners (radius-lg)
@@ -315,28 +401,120 @@ Path used custom emoticon artwork — small illustrated faces with personality. 
 - Exit: scale to 0.9 + fade, ease-out
 - Stack effect: Previous card visible behind (smaller, dimmed)
 
-**First-time hints:**
+### 11. Primary Navigation Model
 
-- Tooltip anchored to radial menu
-- "Create a moment" with arrow
-- Dismisses after first use or tap
+**Decision:** Bottom tab bar with 3 tabs (v1), FAB above tabs
+
+**Layout:**
+
+```text
+┌─────────────────────────────────────┐
+│                                     │
+│          [Screen Content]           │
+│                                     │
+│                              [FAB]  │
+├─────────────────────────────────────┤
+│   Feed     Friends     Profile      │
+└─────────────────────────────────────┘
+```
+
+**Tabs (v1):**
+
+1. **Feed** — home timeline (chronological moments from friends)
+2. **Friends** — friend list, pending requests, invite flow
+3. **Profile** — own profile/journal, settings access
+
+**v1.5 addition:** Messages tab inserted between Friends and Profile.
+
+**Tab bar behavior:**
+
+- Fixed at bottom of viewport
+- Active tab: pomegranate red icon + label
+- Inactive tabs: secondary text color icon + label
+- Badge indicators: red dot for pending friend requests, count badge for unread notifications
+- Tab bar hides on scroll down, shows on scroll up (reclaim screen space)
+
+**FAB position relative to tabs:**
+
+- FAB sits 16px above the tab bar, bottom-right (or bottom-left in left-hand mode)
+- FAB (closed) z-index is above tab bar but below modals/sheets; radial menu (open) renders above modals but below toasts
+- No hamburger menu — everything is accessible via tabs + profile settings
+
+### 12. Error Handling Patterns
+
+**Decision:** Consistent error patterns across all user-facing flows
+
+**Composer errors:**
+
+- **Discard confirmation:** If user has entered content and taps Cancel/back, show confirmation dialog: "Discard this moment?" with "Keep Editing" (primary) and "Discard" (destructive)
+- **Loading state:** Post button shows spinner, input is disabled during submission
+- **Submission failure:** Toast notification: "Couldn't post your moment. Tap to retry." Moment stays in composer (not lost)
+- **Media upload failure:** Inline error on the media thumbnail: "Upload failed" with retry icon
+
+**Network errors:**
+
+- **Toast pattern:** Bottom-of-screen toast, above tab bar, auto-dismiss after 5s
+- **Retry:** Toast includes "Retry" action button for failed operations
+- **Persistent offline:** Banner at top of screen: "You're offline. Viewing cached content." Banner dismisses automatically when connection restores.
+
+**Friend limit error:**
+
+- **WHEN** user attempts to add 151st friend
+- **THEN** show friendly dialog: "You've reached 150 friends — Nah's limit for meaningful connections. To add someone new, you might consider reviewing your friend list."
+- Link to friend curation tools (inactive friend suggestions)
+
+**Offline queue:**
+
+- **WHEN** user creates a moment while offline
+- **THEN** moment is queued locally with a pending indicator (clock icon overlay)
+- **AND** user can cancel queued moments before they sync
+- **WHEN** connection restores
+- **THEN** queued moments auto-submit with subtle success toast
+
+### 13. Accessibility & Reduced Motion
+
+**Decision:** Full `prefers-reduced-motion` support, WCAG 2.1 AA target
+
+**Reduced motion strategy:**
+
+- **WHEN** `prefers-reduced-motion: reduce` is set
+- **THEN** all spring animations are replaced with instant transitions or simple opacity fades
+- **AND** radial menu items appear simultaneously (no stagger)
+- **AND** timeline clock shows static time display instead of animated hands
+- **AND** pull-to-refresh uses simple spinner instead of fluid animation
+- **AND** reaction bubbles appear without bounce/wobble
+
+**Keyboard & screen reader:**
+
+- All interactive elements are focusable and operable via keyboard
+- Radial menu: ARIA roles defined in radial-menu spec
+- Tab bar: `role="tablist"` with `role="tab"` children
+- Moment cards: `role="article"` with semantic heading structure
+- Reaction picker: `role="listbox"` with `role="option"` children
+
+**View threshold definition:**
+
+- A "view" is registered when 50% of the moment card is visible in the viewport for 2+ continuous seconds
+- Scrolling past quickly does not trigger a view
+- This threshold applies to view receipt generation (for users who have receipts enabled)
 
 ## Risks / Trade-offs
 
 | Decision | Trade-off |
 |----------|-----------|
-| System fonts | Less brand distinction, but faster load and native feel |
-| Spring animations | More complex to implement, requires animation library |
-| Floating time indicator | Scroll performance must be optimized (60fps) |
-| Frosted glass | Not supported in all browsers, needs fallback |
-| Custom reactions | More UI complexity than simple likes |
+| System fonts (body) + display font (headings) | Adds one font load, but gives brand distinction where it matters |
+| Spring animations | More complex to implement, requires animation library; reduced-motion fallback required |
+| Floating time indicator | Scroll performance must be optimized (60fps); static fallback for reduced-motion |
+| Frosted glass (2 contexts only) | Not supported in all browsers, needs fallback; scoped to minimize performance impact |
+| Custom reaction icons | More design work than system emoji, but cross-platform consistency |
+| Email + password auth | Simple but no social login convenience; good enough for v1 |
 
-## Open Questions
+## Resolved Questions
 
-1. **Dark mode:** Full dark theme or just respect system preference for now?
-2. **Haptics:** Add subtle vibration feedback on mobile for key actions?
-3. **Sound:** Any UI sounds (message sent, reaction added)?
-4. **Accessibility:** How to handle motion-reduced preferences while keeping personality?
+1. **Dark mode:** Respects system preference. Light is primary identity. Full dark token architecture in design-system spec.
+2. **Haptics:** Deferred to post-v1. Focus on visual/motion design first.
+3. **Sound:** Deferred to post-v1. No UI sounds in v1.
+4. **Accessibility:** `prefers-reduced-motion` strategy defined above. WCAG 2.1 AA target.
 
 ---
 

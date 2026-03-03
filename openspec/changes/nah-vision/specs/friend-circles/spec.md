@@ -11,12 +11,27 @@ The system SHALL enforce a maximum of 150 friends per user. This limit SHALL be 
 #### Scenario: User at friend limit
 
 - **WHEN** a user with 150 friends attempts to add a 151st friend
-- **THEN** the system rejects the request with a clear explanation of the limit
+- **THEN** the system rejects the request with a friendly dialog: "You've reached 150 friends — Nah's limit for meaningful connections. To add someone new, you might consider reviewing your friend list."
 
 #### Scenario: Friend count display
 
 - **WHEN** a user views their profile or friends list
 - **THEN** the system displays "X/150 friends" as positive framing
+
+### Requirement: Visual friend cap indicator on profile
+
+The 150-friend limit SHALL be visible on the user's profile as an intentional, beautiful design element — not just a number.
+
+#### Scenario: Profile friend indicator
+
+- **WHEN** user views their own or a friend's profile
+- **THEN** a visual element (constellation ring, progress arc, or radial indicator) shows how many of the 150 slots are filled
+- **AND** the element feels intentional and designed, not like a progress bar or limitation warning
+
+#### Scenario: Near-capacity indicator
+
+- **WHEN** user has 140+ friends
+- **THEN** the visual indicator subtly communicates nearness to the cap (e.g., ring nearly complete, constellation nearly full)
 
 ### Requirement: Mutual friendship model
 
@@ -50,6 +65,44 @@ Users SHALL be able to designate a subset of friends as their "inner circle" for
 
 - **WHEN** user creates a moment and selects "inner circle only"
 - **THEN** only inner circle friends can see that moment
+
+### Requirement: Invite flow
+
+Users SHALL be able to invite new people to Nah via shareable invite links.
+
+#### Scenario: Invite location in UI
+
+- **WHEN** user navigates to the Friends tab
+- **THEN** an "Invite a Friend" button is prominently displayed at the top of the friend list
+- **AND** an "Invite" option is available on the empty state screen for new users
+
+#### Scenario: Generating an invite link
+
+- **WHEN** user taps "Invite a Friend"
+- **THEN** a shareable link is generated that can be sent via text, email, or any external channel
+- **AND** the system share sheet opens for easy distribution
+
+#### Scenario: Invite link landing — new user
+
+- **WHEN** a non-user opens an invite link
+- **THEN** they see a branded landing page with: inviter's name/avatar, Nah tagline, "Join Nah" CTA
+- **AND** after account creation, the friend request from the inviter is auto-sent
+
+#### Scenario: Invite link landing — existing user
+
+- **WHEN** an existing Nah user opens an invite link
+- **THEN** they are deep-linked to the inviter's profile with an "Accept Friend Request" prompt
+
+#### Scenario: Pending request inbox
+
+- **WHEN** user has pending friend requests
+- **THEN** the Friends tab shows a "Pending Requests" section at the top with count badge
+- **AND** each request shows the requester's avatar, name, and accept/decline buttons
+
+#### Scenario: Invite accepted notification
+
+- **WHEN** an invited person accepts the friend request
+- **THEN** the inviter receives a push notification: "[Name] joined Nah!" (for new users) or "[Name] accepted your friend request" (for existing users)
 
 ### Requirement: Friend curation tools
 

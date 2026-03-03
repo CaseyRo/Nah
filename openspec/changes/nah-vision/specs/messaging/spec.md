@@ -2,7 +2,11 @@
 
 Private 1:1 and small group chat with optional ephemeral messages.
 
-## ADDED Requirements
+**Scope: v1.5 — explicitly deferred from v1.**
+
+Mastodon's basic DM infrastructure (direct visibility posts) exists at the backend level, but the full Path Talk experience described below is not part of the v1 launch. The v1 navigation model has 3 tabs (Feed, Friends, Profile) with no Messages tab.
+
+## ADDED Requirements (v1.5)
 
 ### Requirement: Private direct messaging
 
@@ -25,7 +29,7 @@ Users SHALL be able to create small group conversations with multiple friends.
 #### Scenario: Creating a group chat
 
 - **WHEN** user creates a new group message
-- **THEN** they can add multiple friends (up to reasonable limit, e.g., 20)
+- **THEN** they can add multiple friends (up to 20 members)
 
 #### Scenario: Group conversation
 
