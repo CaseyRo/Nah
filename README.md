@@ -53,6 +53,15 @@ Nah stands on the shoulders of giants. We're grateful to these open source proje
 | **Database** | PostgreSQL + Redis |
 | **Storage** | S3-compatible + CDN |
 
+### Stack evolution
+
+| Date | Decision | Why |
+|---|---|---|
+| 2026-01 | ~~Svelte 5 + SvelteKit (PWA), Tailwind v4, shadcn-svelte, TanStack Query~~ | Act small, ship a PWA MVP. Mobile-first web. |
+| 2026-05-19 | Flutter 3.41+ / Dart, Bloc, Dio, Hive/Drift, Mastodon backend unchanged | Pivot to native via Flutter. See [ADR-0001 — Flutter over PWA](docs/decisions/0001-flutter-over-pwa.md) and the [Flutter decision blog post](https://caseyro.github.io/Nah/2026/05/19/the-flutter-decision/). |
+
+The PWA framing is preserved struck-through in the OpenSpec history (`openspec/changes/cap-01-core-identity/specs/pwa-shell/spec.md`) so the evolution is visible, not erased.
+
 See [design.md](openspec/changes/nah-vision/design.md) for full architecture details.
 
 ---

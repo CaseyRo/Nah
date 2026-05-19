@@ -69,6 +69,8 @@ Nah is a greenfield private social network inspired by Path. We're starting from
 
 ### 2. Client: Flutter (iOS + Android)
 
+> **Decision changed 2026-05-19** (was: SvelteKit PWA, decided 2026-01). See [ADR-0001 — Flutter over PWA](../../../docs/decisions/0001-flutter-over-pwa.md). The original PWA rationale is preserved at the end of this section so the evolution is visible.
+
 **Decision:** Flutter 3.41+ / Dart 3.11+ as the mobile client framework
 
 **Rationale:**
@@ -90,6 +92,14 @@ Nah is a greenfield private social network inspired by Path. We're starting from
 - Bundle size: ~30-50MB iOS IPA vs ~5-15MB native Swift, ~1-2MB PWA. Tolerable for a 150-person private network.
 - Hiring is harder than RN/Web (6-8 week fill vs 3-4 week). Doesn't bite at solo scale; revisit if the project grows a team.
 - Flutter apps can be visually identifiable as Flutter. Mitigated by Nah's bespoke design language — when every animation is custom, "Flutter-feel" disappears.
+
+**~~Prior decision (2026-01-28), kept for evolution context:~~**
+
+> ~~**Decision:** Svelte 5 + SvelteKit as the frontend framework. Mobile-first PWA that feels like a native app without app store gatekeeping. SvelteKit provides app router, SSR for fast first paint, and excellent PWA support. Svelte's reactivity model is simpler than React's virtual DOM. Smaller bundle sizes. Service workers for offline read.~~
+>
+> ~~**Alternatives considered (and rejected):** React (heavier bundles, more boilerplate); Vue.js (Svelte's compiler approach more aligned with performance goals); React Native / Flutter (doubles development effort and delays launch).~~
+>
+> Superseded once we confirmed Flutter 3.41 reaches further back than feature-complete PWA on iOS (iOS 13+ vs iOS 16.4+ for push), and once BLE proximity moved from defer-forever to a real Phase 2 product feature.
 
 ### 3. UI System: Flutter Material 3 + Cupertino + custom Nah widgets
 

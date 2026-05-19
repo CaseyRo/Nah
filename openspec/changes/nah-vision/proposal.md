@@ -45,6 +45,7 @@ This is a greenfield project. We're creating a new social network from scratch w
 
 - Backend: Mastodon instance (Ruby on Rails, PostgreSQL, Redis) configured for closed/private operation
 - Client: Flutter mobile app (iOS + Android), one codebase, native feel; web/desktop deferred
+  - ~~Originally (2026-01): Modern web app (React/Vue/Svelte) as PWA, mobile-first design.~~ Revised 2026-05-19 per [ADR-0001](../../../docs/decisions/0001-flutter-over-pwa.md).
 - Storage: S3-compatible media storage with CDN
 - Protocol: ActivityPub foundation (federation disabled initially, but architecture supports future expansion)
 
