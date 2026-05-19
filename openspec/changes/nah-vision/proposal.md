@@ -44,7 +44,7 @@ This is a greenfield project. We're creating a new social network from scratch w
 ### Technical Foundation
 
 - Backend: Mastodon instance (Ruby on Rails, PostgreSQL, Redis) configured for closed/private operation
-- Frontend: Modern web app (React/Vue/Svelte) as PWA, mobile-first design
+- Client: Flutter mobile app (iOS + Android), one codebase, native feel; web/desktop deferred
 - Storage: S3-compatible media storage with CDN
 - Protocol: ActivityPub foundation (federation disabled initially, but architecture supports future expansion)
 

@@ -68,8 +68,8 @@ When the radial menu is open, a frosted glass backdrop overlay SHALL dim the con
 
 - **WHEN** radial menu opens
 - **THEN** a semi-transparent backdrop with blur appears behind the menu items
-- **AND** CSS: `backdrop-filter: blur(12px) saturate(150%)`
-- **AND** Fallback: semi-transparent dark overlay for unsupported browsers
+- **AND** Flutter `BackdropFilter` with `ImageFilter.blur(sigmaX: 12, sigmaY: 12)` and a saturated tint overlay
+- **AND** Fallback: semi-transparent dark overlay when `BackdropFilter` cannot render at 60fps (older Android devices)
 
 ### Requirement: Dismissal on close
 

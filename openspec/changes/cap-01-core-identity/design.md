@@ -520,39 +520,41 @@ Each moment card has a dedicated heart icon button in the card footer — this i
 
 ## Implementation Notes
 
-### Tailwind Config
+### Flutter ThemeData
 
-```javascript
-// tailwind.config.js (excerpt)
-export default {
-  theme: {
-    extend: {
-      colors: {
-        primary: {
-          DEFAULT: '#EE3423',
-          hover: '#D42D1E',
-          light: '#FF6B5B',
-        },
-      },
-      animation: {
-        'spring-in': 'springIn 400ms var(--ease-spring)',
-        'spring-out': 'springOut 250ms var(--ease-out)',
-        'bounce-in': 'bounceIn 300ms var(--ease-spring)',
-      },
-    },
-  },
-}
+```dart
+// nah_ui/lib/theme.dart (excerpt)
+final nahLightTheme = ThemeData(
+  brightness: Brightness.light,
+  colorScheme: ColorScheme.light(
+    primary: const Color(0xFFEE3423),       // pomegranate red
+    onPrimary: Colors.white,
+    surface: const Color(0xFFFFFFFF),
+    onSurface: const Color(0xFF1A1A1A),
+  ),
+  textTheme: _nahTextTheme,
+  extensions: [
+    NahMotionTokens(
+      springDuration: const Duration(milliseconds: 400),
+      springCurve: const Cubic(0.34, 1.56, 0.64, 1),
+    ),
+    NahSpacingTokens.standard(),
+    NahRadiusTokens.standard(),
+  ],
+);
 ```
 
-### Animation Library
+Custom `ThemeExtension`s carry Nah-specific tokens (motion curves, spacing, radii, status colors) without bloating the core `ColorScheme`. Widgets pull them via `Theme.of(context).extension<NahMotionTokens>()`.
 
-Recommend **Motion One** or **Svelte Motion** for:
+### Animation Approach
 
-- Spring physics
-- Gesture handling (radial menu, pull-to-refresh)
-- Scroll-linked animations (timeline clock)
+Recommend **`flutter_animate`** package for declarative spring chains, with hand-rolled `AnimationController` + `CurvedAnimation` for the radial menu bloom (which needs precise staggered timing).
 
-CSS-only won't achieve the spring physics we need.
+- Spring physics: `Curves.elasticOut` or custom `SpringSimulation`
+- Gesture handling: `GestureDetector` + `Dismissible` for pull-to-refresh and drag dismissals
+- Scroll-linked animations (timeline clock): `ScrollController` listener feeding an `AnimationController`
+
+Flutter's animation system covers everything we need natively — no third-party heavyweight dependency required.
 
 ---
 

@@ -15,7 +15,7 @@ Nah is a greenfield private social network inspired by Path. We're starting from
 
 - Must be open-source (transparency, trust, community contribution)
 - Must support 150-friend limit as a first-class concept
-- Must work well on mobile (PWA minimum, native apps later)
+- Must feel native on mobile (Flutter cross-platform, single codebase for iOS + Android)
 - Must be deployable on modest infrastructure (community-funded)
 
 ## Goals / Non-Goals
@@ -34,7 +34,7 @@ Nah is a greenfield private social network inspired by Path. We're starting from
 - UI/UX design details (separate design system work)
 - Deployment/DevOps specifics (infrastructure planning comes later)
 - Token economics or crypto integration (out of scope for v1)
-- Native mobile apps (PWA first, native considered for v2+)
+- Web/desktop clients (Flutter mobile app first, web/desktop reconsidered for v2+)
 
 ## Decisions
 
@@ -67,59 +67,64 @@ Nah is a greenfield private social network inspired by Path. We're starting from
 - Add custom fields for moment types (music, location, sleep/wake)
 - Extend reaction system beyond simple favorites
 
-### 2. Frontend: Svelte 5 + SvelteKit PWA
+### 2. Client: Flutter (iOS + Android)
 
-**Decision:** Svelte 5 + SvelteKit as the frontend framework
-
-**Rationale:**
-
-- **Mobile-first PWA** that feels like a native app without app store gatekeeping
-- SvelteKit provides app router, SSR for fast first paint, and excellent PWA support
-- Svelte's reactivity model is simpler and more performant than React's virtual DOM
-- Smaller bundle sizes = faster load times on mobile
-- Service workers via SvelteKit adapter for offline read, fast re-open, background sync
-
-**Alternatives considered:**
-
-- *React*: Larger ecosystem, but heavier bundles, more boilerplate, virtual DOM overhead
-- *Vue.js*: Good option, but Svelte's compiler approach is more aligned with performance goals
-- *React Native / Flutter*: True native, but doubles development effort and delays launch
-
-### 3. UI System: Tailwind CSS v4 + shadcn-svelte
-
-**Decision:** Tailwind CSS v4 for styling, shadcn-svelte for component primitives
+**Decision:** Flutter 3.41+ / Dart 3.11+ as the mobile client framework
 
 **Rationale:**
 
-- **Tailwind CSS v4** provides utility classes + design tokens for consistent styling
-- **shadcn-svelte** is a code-ownership component generator, not a locked dependency
-- Components are copied into your repo — you own and modify them freely
-- Perfect for Nah's "not too abstract, keep it fun" goal
-- Built on Bits UI + Tailwind, providing accessible primitives we can customize
-- Enables Path-style playful UI without fighting a rigid component library
+- **One codebase, two platforms** — single Dart codebase ships to both iOS and Android, the only way a solo project realistically reaches both stores
+- **Native-feeling UX** — Flutter's Impeller engine renders Path-style spring physics, the radial menu bloom, and the floating analog timeline clock at 60-120fps
+- **Plugin coverage for Nah's signature features** — `flutter_blue_plus` / `universal_ble` for BLE proximity, geolocator for location tags, audio_session/MediaSession for music share-out, biometric/haptic feedback plugins; iOS-specific gaps (iBeacon proximity via CoreLocation, iOS Share Extension) fill with thin Swift platform channels
+- **Mature in 2026** — Flutter 3.41 / Dart 3.11 shipped as a stability-focused release; Google committed to four stable releases/year, 18-month LTS, 99.9% SLA; Google Pay, Google Ads, and parts of Assistant run on Flutter
+- **Strong typing + hot reload** keeps a small team productive
+
+**Alternatives considered (and why not):**
+
+- *SvelteKit PWA*: original framing for nah-vision. Rejected — iOS Safari blocks BLE, background sync, Web Share Target (inbound), and gates push behind install; EU iOS users lose push entirely under DMA. BLE-based proximity is a Nah USP, not a nice-to-have. See [the Flutter decision blog post](../../../docs/_posts/2026-05-19-the-flutter-decision.md) for the full back-and-forth.
+- *Native iOS (Swift) + Android (Kotlin)*: best UX, two codebases. Solo project will not finish two parallel apps.
+- *React Native*: viable. Flutter wins on rendering consistency and animation performance for our Path-inspired motion language; JS ecosystem advantage is irrelevant when the team is one Dart-friendly developer.
+
+**Trade-offs accepted:**
+
+- Bundle size: ~30-50MB iOS IPA vs ~5-15MB native Swift, ~1-2MB PWA. Tolerable for a 150-person private network.
+- Hiring is harder than RN/Web (6-8 week fill vs 3-4 week). Doesn't bite at solo scale; revisit if the project grows a team.
+- Flutter apps can be visually identifiable as Flutter. Mitigated by Nah's bespoke design language — when every animation is custom, "Flutter-feel" disappears.
+
+### 3. UI System: Flutter Material 3 + Cupertino + custom Nah widgets
+
+**Decision:** Build on Flutter's Material 3 + Cupertino widget foundations, layered with Nah's custom design tokens and widgets
+
+**Rationale:**
+
+- **Material 3 / Cupertino** give us accessible primitives (buttons, sheets, navigation) for free, with platform-correct behavior on Android vs iOS
+- **Custom Nah widgets** (`RadialMenu`, `MomentCard`, `TimelineClock`, `ReactionPicker`, etc.) live in `/packages/nah_ui` — owned by us, not a third-party theme dependency
+- **ThemeData + custom Theme extensions** carry our design tokens (pomegranate red, warm neutrals, Nunito display font, spring curves) into every widget
+- Path-style "handcrafted" feel comes from the custom layer, not from fighting a rigid component kit
 
 **Component ownership model:**
 
-- Generate base components from shadcn-svelte
-- Customize heavily for Nah's warm, Path-inspired aesthetic
-- Store in `/packages/ui` as Nah's design system
+- Build atop Flutter's standard widget library
+- Implement Nah-branded widgets in `/packages/nah_ui`
+- Tokens (colors, typography, spacing, motion) defined once in a `nah_theme.dart` module
 
 ### 4. State Management & Data Fetching
 
-**Decision:** TanStack Query (Svelte adapter) + SvelteKit's built-in load functions
+**Decision:** Bloc / Cubit for app state + Dio for HTTP + native WebSocket for Mastodon streaming
 
 **Rationale:**
 
-- TanStack Query handles caching, background refetching, and optimistic updates
-- SvelteKit's `load` functions provide server-side data fetching with streaming
-- Svelte stores for local UI state
-- IndexedDB (via `idb-keyval`) for offline timeline caching
+- **Bloc / Cubit** provides predictable unidirectional state flow with explicit events and states — fits well with Mastodon's REST + Streaming model
+- **Dio** is the standard mature HTTP client in Dart; interceptors for auth, retry, and offline queueing
+- **`web_socket_channel`** for the Mastodon Streaming API
+- **Hive** or **Drift (SQLite)** for offline timeline caching and queued posts
 
 **Data flow:**
 
-- Mastodon REST API for CRUD operations
+- Mastodon REST API for CRUD operations (via Dio)
 - Mastodon Streaming API (WebSocket) for real-time timeline updates
-- Local IndexedDB cache for offline viewing and fast re-open
+- Local Hive/Drift cache for offline viewing and fast re-open
+- Queued moments persisted locally, flushed when connectivity returns
 
 ### 5. Data Privacy Architecture
 
@@ -232,22 +237,23 @@ All posts default to **followers-only** visibility. The API layer enforces acces
 
 ### 10. Repository Structure
 
-**Decision:** Monorepo with pnpm workspaces
+**Decision:** Monorepo with mixed-language layout — Flutter app in `/apps/mobile`, Mastodon backend in `/apps/server`, Dart packages in `/packages/`
 
 **Structure:**
 
 ```text
-/apps/web          # SvelteKit PWA (main client)
-/apps/server       # Mastodon fork + Nah-specific config
-/packages/ui       # Nah design system (shadcn-svelte generated + customized)
+/apps/mobile        # Flutter app — iOS + Android (main client)
+/apps/server        # Mastodon fork + Nah-specific config
+/packages/nah_ui    # Nah design system: ThemeData, widgets, tokens
+/packages/nah_api   # Mastodon API client wrapper (typed Dart models)
 ```
 
 **Rationale:**
 
 - Single repo simplifies development and deployment
-- Shared UI package enables consistency
-- pnpm workspaces provide efficient dependency management
-- TypeScript everywhere (frontend strongly typed; backend remains Ruby)
+- Shared Dart packages keep design tokens and API models DRY
+- Flutter workspace via `pubspec.yaml` workspaces (Dart 3.5+) or `melos`
+- Dart on the client, Ruby on the server — boundaries are clean
 
 ### 11. Observability & Operations
 
@@ -336,11 +342,12 @@ Mastodon's basic DM support (direct visibility posts) is available at the infras
 |------|------------|
 | **Mastodon fork maintenance burden** | Stay close to upstream, only modify what's necessary. Our changes are surgical (config + friend limits + reactions). Rebase regularly on Mastodon releases. |
 | **Single instance = single point of failure** | Standard infrastructure practices: backups, monitoring, redundancy. Federation architecture exists if we ever need to scale horizontally. |
-| **Svelte ecosystem smaller than React** | Svelte 5 is mature. shadcn-svelte provides solid component foundation. TanStack Query has Svelte adapter. |
+| **Flutter bundle size (~30-50MB iOS)** | Acceptable for a private 150-person network where install friction is low. Optimize with deferred components and asset compression closer to v1. |
+| **Flutter hiring harder than RN/Web (6-8w vs 3-4w)** | Solo project initially. Revisit when team grows; Dart is approachable for any strong dev. |
 | **150-limit frustrates users** | Frame positively ("your closest 150"), provide tools to curate (inactive friend suggestions). |
 | **Competing with nostalgia** | Focus on the *feeling* Path created, not pixel-perfect recreation. Modernize where appropriate. |
 | **Community funding sustainability** | Transparent finances, clear value proposition, optional supporter perks. Start lean. |
-| **No native apps hurts adoption** | PWA provides 80% of native experience. Native wrapper (Capacitor) possible later. |
+| **iOS BLE proximity needs platform channels (CoreLocation)** | Accept ~20-50 lines of Swift for iBeacon proximity. Still vastly less than a full native iOS app. |
 | **Admin database access** | Transparent privacy policy. Standard for any hosted service. E2EE for DMs considered for v2. |
 
 ## Open Questions
@@ -350,7 +357,7 @@ Mastodon's basic DM support (direct visibility posts) is available at the infras
 3. **Onboarding**: How do users find their first friends without discoverability? Contact import? Invite codes?
 4. **Moderation**: In a 150-person network, who moderates? Is community self-policing sufficient?
 5. **Media storage costs**: S3 + CDN adds up. Offer reduced media quality for cost savings? Limit per-user storage?
-6. **Storybook**: Add Storybook for Svelte once design system stabilizes, or defer?
+6. **Widget gallery**: Add a Flutter widget catalog (`widgetbook`, `dashbook`, or hand-rolled gallery route) once design system stabilizes, or defer?
 
 ---
 
@@ -358,11 +365,13 @@ Mastodon's basic DM support (direct visibility posts) is available at the infras
 
 ```text
 ┌─────────────────────────────────────────────────────────────┐
-│                        FRONTEND                              │
-│  Svelte 5 + SvelteKit (PWA)                                 │
-│  ├── Tailwind CSS v4 + shadcn-svelte                        │
-│  ├── TanStack Query (caching, optimistic updates)           │
-│  └── IndexedDB (offline timeline)                           │
+│                       MOBILE CLIENT                          │
+│  Flutter 3.41+ / Dart 3.11+ (iOS + Android)                 │
+│  ├── Material 3 + Cupertino + custom Nah widgets            │
+│  ├── Bloc / Cubit (state management)                        │
+│  ├── Dio (HTTP) + web_socket_channel (streaming)            │
+│  ├── Hive / Drift (offline timeline + queued moments)       │
+│  └── Platform channels (BLE proximity, iOS Share Extension) │
 └─────────────────────────────────────────────────────────────┘
                               │
                     REST API + Streaming

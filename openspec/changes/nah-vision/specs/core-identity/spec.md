@@ -32,14 +32,14 @@ The app SHALL use a radial "+" menu (inspired by Path) for creating new content.
 - **WHEN** user taps an icon in the radial menu
 - **THEN** the appropriate content creation flow begins
 
-### Requirement: Mobile-first responsive design
+### Requirement: Mobile-first native app
 
-The app SHALL be designed mobile-first as a PWA, with touch interactions as the primary input method. Desktop experience SHALL be supported but secondary.
+The app SHALL be a Flutter mobile app for iOS and Android, with touch interactions as the primary input method. Web/desktop clients SHALL NOT ship in v1.
 
-#### Scenario: PWA installation
+#### Scenario: Mobile app install
 
-- **WHEN** user visits Nah on a mobile browser
-- **THEN** the app can be installed to the home screen and functions like a native app
+- **WHEN** a user installs Nah from the App Store or Play Store
+- **THEN** the app launches as a native iOS or Android app, with platform-appropriate navigation, gestures, and system integration
 
 #### Scenario: Offline capability
 

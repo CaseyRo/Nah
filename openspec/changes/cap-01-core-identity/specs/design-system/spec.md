@@ -1,37 +1,39 @@
 # Design System Spec
 
-Tailwind configuration, CSS custom properties, shadcn-svelte theme customization, and component primitives.
+Flutter `ThemeData`, custom `ThemeExtension`s, Dart token constants, and widget primitives — packaged in `/packages/nah_ui`.
+
+**Token representation:** all token values in this spec are platform-agnostic (hex colors, px sizes, ms durations). Implementation translates them into Dart constants and `ThemeData` / `ThemeExtension` instances. The CSS-syntax code blocks below describe the *values*; equivalent Dart implementations live in `nah_ui/lib/tokens/`.
 
 ## ADDED Requirements
 
-### Requirement: Color tokens defined as CSS custom properties
+### Requirement: Color tokens defined as Dart constants and ColorScheme
 
-The design system SHALL define all colors as CSS custom properties, allowing runtime theming and dark mode support.
+The design system SHALL define all colors as Dart `const Color` values in `nah_ui/lib/tokens/colors.dart`, exposed via Flutter's `ColorScheme` (for standard semantics) and a custom `NahPaletteTokens` `ThemeExtension` (for Nah-specific extras like surface levels 1-5 and status indicators).
 
 #### Scenario: Primary color usage
 
-- **WHEN** a component uses the primary action color
-- **THEN** it references `--color-primary` (#EE3423 pomegranate red)
+- **WHEN** a widget uses the primary action color
+- **THEN** it references `Theme.of(context).colorScheme.primary` (resolving to #EE3423 pomegranate red in light theme)
 
 #### Scenario: Dark mode colors
 
-- **WHEN** the system is in dark mode
-- **THEN** surface colors swap to dark variants via CSS custom properties
+- **WHEN** the system is in dark mode (`MediaQuery.platformBrightnessOf(context) == Brightness.dark`)
+- **THEN** `MaterialApp` resolves to `nahDarkTheme` and surface colors swap to dark variants automatically
 
-### Requirement: Brand typography — display font + system body
+### Requirement: Brand typography — display font + platform body
 
-The design system SHALL use a single display font for the logo and headings, with system fonts for body/UI text.
+The design system SHALL use a single display font for the logo and headings, with the platform default body font (San Francisco on iOS, Roboto on Android) for body/UI text.
 
-**Display font:** Nunito (recommended) — or Outfit or Poppins as alternatives. Rounded, friendly, warm. Loaded via Google Fonts or self-hosted.
+**Display font:** Nunito (recommended) — or Outfit or Poppins as alternatives. Rounded, friendly, warm. Bundled via the `google_fonts` package (with offline caching) or shipped in `assets/fonts/`.
 
-**Usage:**
+**Usage (Flutter `TextTheme`):**
 
-```css
-/* Display font — logo, headings, onboarding titles */
---font-display: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+```dart
+// Display font — logo, headings, onboarding titles
+displayLarge: GoogleFonts.nunito(fontWeight: FontWeight.w700, ...)
 
-/* Body/UI font — system stack for native feel and zero load time */
---font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+// Body/UI font — platform default, set via TextTheme defaults
+bodyLarge: TextStyle(fontFamily: null, ...)  // null = platform default
 ```
 
 **Where display font is used:**
@@ -86,8 +88,8 @@ The design system SHALL use a single display font for the logo and headings, wit
 #### Scenario: Display font loading
 
 - **WHEN** the app loads
-- **THEN** the display font is loaded with `font-display: swap` to prevent FOIT
-- **AND** system font is shown until the display font loads
+- **THEN** the display font is loaded asynchronously (via `google_fonts` runtime fetch + cache, or from bundled `assets/fonts/`)
+- **AND** the platform default font is shown until the display font is ready (no blocking, no FOIT)
 
 ### Requirement: Spacing scale based on 4px unit
 
@@ -131,23 +133,23 @@ The design system SHALL define animation duration and easing tokens, including s
 - **WHEN** a modal or menu enters
 - **THEN** it uses --duration-spring (500ms) with --ease-spring (overshoot curve)
 
-### Requirement: Tailwind config exports design tokens
+### Requirement: ThemeData and ThemeExtensions expose all design tokens
 
-The Tailwind configuration SHALL extend the default theme with all custom tokens (colors, spacing, animation).
+The `nah_ui` package SHALL expose a `nahLightTheme` / `nahDarkTheme` pair (Flutter `ThemeData`) plus custom `ThemeExtension`s (`NahPaletteTokens`, `NahSpacingTokens`, `NahRadiusTokens`, `NahMotionTokens`, `NahStatusTokens`) so every widget can resolve tokens via `Theme.of(context)`.
 
-#### Scenario: Using tokens in Tailwind classes
+#### Scenario: Using color tokens in a widget
 
-- **WHEN** a developer writes `bg-primary` or `p-4`
-- **THEN** it maps to the defined design tokens
+- **WHEN** a developer writes `color: Theme.of(context).colorScheme.primary`
+- **THEN** it resolves to the pomegranate red defined in tokens
 
-#### Scenario: Custom animation classes
+#### Scenario: Using motion tokens for spring animation
 
-- **WHEN** a developer needs spring animation
-- **THEN** they can use `animate-spring-in` class defined in Tailwind config
+- **WHEN** a developer needs spring animation timing
+- **THEN** they read `Theme.of(context).extension<NahMotionTokens>()!.springCurve` and `.springDuration`
 
 ### Requirement: Dark mode token architecture
 
-The design system SHALL define a complete dark mode palette scoped via `[data-theme="dark"]` or `prefers-color-scheme: dark`.
+The design system SHALL define a complete dark mode palette as a parallel `ThemeData` (`nahDarkTheme`) selected by `MaterialApp`'s `themeMode` based on `MediaQuery.platformBrightnessOf(context)`.
 
 **Light palette (default):**
 
@@ -211,14 +213,14 @@ The design system SHALL define a complete dark mode palette scoped via `[data-th
 
 #### Scenario: Automatic dark mode
 
-- **WHEN** user's system preference is `prefers-color-scheme: dark`
-- **THEN** `[data-theme="dark"]` is applied to the root element
-- **AND** all color tokens resolve to dark palette values
+- **WHEN** the user's system brightness is `Brightness.dark`
+- **THEN** `MaterialApp` resolves to `nahDarkTheme`
+- **AND** all token lookups via `Theme.of(context)` return dark palette values
 
 #### Scenario: Shadow-to-border swap
 
 - **WHEN** dark mode is active
-- **THEN** card shadows are replaced with subtle borders: `border: 1px solid var(--color-surface-4)`
+- **THEN** card widgets render with a 1px border using `surface-4` instead of a `BoxShadow`
 
 ### Requirement: Component specs
 
@@ -337,6 +339,6 @@ The design system SHALL define status indicator colors for presence states.
 - **WHEN** a friend is currently active
 - **THEN** their avatar shows a green online dot using `--color-status-online`
 
-### Requirement: Consider oklch color definitions
+### Requirement: Consider HSL/OKLCH color definitions for v2
 
-For future iterations, the design system SHOULD consider defining colors in oklch color space for programmatic dark mode derivation and perceptually uniform color manipulation. This is a v2 consideration — v1 uses hex values as defined above.
+For future iterations, the design system SHOULD consider defining colors in a perceptually uniform color space (OKLCH, via the `okhsl` Dart package or similar) for programmatic dark mode derivation. This is a v2 consideration — v1 uses hex values as defined above, exposed as `const Color(0xFF…)` in Dart.

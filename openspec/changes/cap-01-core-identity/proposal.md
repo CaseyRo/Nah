@@ -8,22 +8,22 @@ Nah needs a visual identity that immediately communicates "this is different fro
 
 This is the first implementation capability. We're creating:
 
-- **Design system foundation** — Color tokens, typography scale, spacing system, component primitives
+- **Design system foundation** — Color tokens, typography scale, spacing system, widget primitives
 - **Radial menu component** — The signature Path-inspired "+" menu with bloom animation
-- **PWA shell** — App manifest, service worker, offline support, install prompts
-- **Brand assets** — Logo, app icons, splash screens, favicon
+- **App shell** — Flutter app entry point, navigation scaffold, offline-cache wiring, lifecycle handling, install prompts via App Store / Play Store
+- **Brand assets** — Logo, app icons (iOS + Android), splash screens, marketing site favicon
 
 ## Capabilities
 
 ### New Capabilities
 
-- `design-system`: Tailwind config, CSS custom properties, shadcn-svelte theme customization. Defines the warm color palette (coral/pink primary from mockup), typography (friendly, readable), spacing, and base component styles.
+- `design-system`: Flutter `ThemeData` + custom Theme extensions, Dart token constants in `/packages/nah_ui`. Defines the warm color palette (pomegranate red primary), typography (Nunito display + system body), spacing, motion tokens, and base widget styles.
 
-- `radial-menu`: The iconic radial content creation menu. Svelte component with Framer Motion (or svelte/motion) animations. Blooms outward on tap, contains icons for moment types.
+- `radial-menu`: The iconic radial content creation widget. Flutter widget with `AnimationController` + spring physics (e.g. `flutter_animate` or hand-rolled `SpringSimulation`). Blooms outward on tap, contains icons for moment types.
 
-- `pwa-shell`: SvelteKit PWA configuration. Web app manifest, service worker for offline caching, install prompt handling, splash screens for iOS/Android.
+- `app-shell`: Flutter app shell — entry widget, route structure, `Bloc`/`Cubit` providers, offline cache initialization (Hive/Drift), push notification setup, deep-link handling, iOS + Android lifecycle.
 
-- `brand-assets`: Logo files (SVG, PNG at multiple sizes), app icons (192x192, 512x512), Apple touch icons, favicon, Open Graph images for social sharing.
+- `brand-assets`: Logo files (SVG, PNG at multiple sizes), iOS app icon set (1024px master + auto-generated variants), Android adaptive icon (foreground + background layers), iOS/Android splash screens, marketing site favicon + Open Graph images.
 
 ### Modified Capabilities
 
@@ -33,21 +33,23 @@ This is the first implementation capability. We're creating:
 
 ### Code
 
-- `/packages/ui` — New package for design system and shared components
-- `/apps/web` — SvelteKit app shell with PWA configuration
-- `/apps/web/src/lib/components` — Radial menu and core UI components
+- `/packages/nah_ui` — New Dart package for design system tokens and shared widgets
+- `/apps/mobile` — Flutter app shell, entry point, routing
+- `/apps/mobile/lib/widgets` — Radial menu and core UI widgets
 
-### Dependencies
+### Dependencies (Flutter / Dart)
 
-- `tailwindcss` ^4.0
-- `shadcn-svelte` (latest)
-- `bits-ui` (shadcn-svelte dependency)
-- `@sveltejs/kit` with adapter-static or adapter-auto
-- `vite-plugin-pwa` or SvelteKit service worker
+- `flutter_bloc` — state management
+- `dio` — HTTP client for Mastodon REST API
+- `web_socket_channel` — Mastodon Streaming API
+- `hive` or `drift` — offline cache and queued moments
+- `flutter_animate` (or hand-rolled `AnimationController` + `SpringSimulation`) — bloom and spring animations
+- `flutter_local_notifications` + `firebase_messaging` (or APNs direct) — push notifications
+- `geolocator`, `flutter_blue_plus` (later capabilities) — location, BLE proximity
+- `google_fonts` (or self-hosted) — Nunito display font
 
 ### Design Decisions Needed
 
-- Final color palette (coral/pink from mockup as starting point)
-- Typography choices (system fonts vs. custom web font)
-- Animation library (svelte/motion, motion one, or CSS-only)
-- Icon set (Lucide, Phosphor, or custom)
+- Final color palette (pomegranate red #EE3423 confirmed from nah-vision)
+- Animation approach (`flutter_animate` package vs. hand-rolled spring simulations)
+- Icon set (Phosphor for Flutter, Lucide port, or custom-drawn SVG-to-widget)

@@ -4,12 +4,12 @@ This vision change establishes the foundation. Implementation is broken into 8 c
 
 ## 1. Project Foundation
 
-- [ ] 1.1 Initialize monorepo with pnpm workspaces (`/apps/web`, `/apps/server`, `/packages/ui`)
-- [ ] 1.2 Set up SvelteKit project in `/apps/web` with TypeScript
-- [ ] 1.3 Configure Tailwind CSS v4 and shadcn-svelte
+- [ ] 1.1 Initialize monorepo layout (`/apps/mobile`, `/apps/server`, `/packages/nah_ui`, `/packages/nah_api`)
+- [ ] 1.2 Set up Flutter app in `/apps/mobile` (Flutter 3.41+, Dart 3.11+)
+- [ ] 1.3 Add core Flutter dependencies (`flutter_bloc`, `dio`, `web_socket_channel`, `hive` or `drift`)
 - [ ] 1.4 Set up Mastodon fork in `/apps/server` (Docker-based)
 - [ ] 1.5 Configure Mastodon for closed instance (federation OFF, followers-only default)
-- [ ] 1.6 Set up development environment (Docker Compose for local dev)
+- [ ] 1.6 Set up development environment (Docker Compose for local dev backend, Flutter toolchain for client)
 
 ## 2. Documentation & Brand
 

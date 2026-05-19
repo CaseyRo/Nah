@@ -20,22 +20,28 @@ The brand SHALL have a logo available in SVG (scalable), PNG (raster at multiple
 
 ### Requirement: App icons at required sizes
 
-The brand SHALL provide app icons at minimum: 192x192, 512x512 (PWA manifest), 180x180 (Apple touch icon), 32x32 and 16x16 (favicon).
+The brand SHALL provide:
 
-#### Scenario: PWA icon installation
+- **iOS app icon master:** 1024x1024 PNG (App Store), with auto-generated variants per Xcode asset catalog requirements
+- **Android adaptive icon:** foreground + background layers (108dp), generated at all required densities
+- **Marketing site favicon:** 32x32, 16x16, ICO format for the `/docs` Jekyll site
 
-- **WHEN** user installs PWA
-- **THEN** 512x512 icon is used for home screen (high DPI)
+#### Scenario: iOS install
 
-#### Scenario: Browser favicon
+- **WHEN** the user installs Nah from the App Store
+- **THEN** the home-screen icon uses the appropriate auto-generated variant of the 1024px master
+- **AND** iOS automatic corner masking does not crop important content
 
-- **WHEN** user views Nah in browser tab
-- **THEN** favicon (32x32 or 16x16) displays in tab
+#### Scenario: Android install
 
-#### Scenario: iOS home screen
+- **WHEN** the user installs Nah from Google Play
+- **THEN** the launcher uses the Android adaptive icon (foreground + background)
+- **AND** the icon renders correctly across launcher shape masks (circle, squircle, rounded square)
 
-- **WHEN** user adds to home screen on iOS
-- **THEN** 180x180 Apple touch icon is used
+#### Scenario: Marketing site favicon
+
+- **WHEN** a user views the Nah marketing/docs site in a browser
+- **THEN** the favicon (32x32 or 16x16) displays in the tab
 
 ### Requirement: Icon design matches brand identity
 
@@ -67,23 +73,28 @@ The brand SHALL provide Open Graph images (og:image) for link previews on social
 - **WHEN** sharing a user profile (future)
 - **THEN** custom OG image with user info could be generated
 
-### Requirement: Favicon with multiple formats
+### Requirement: Favicon for marketing site
 
-The brand SHALL provide favicon in ICO format (for legacy browsers) and PNG format (modern browsers).
+The marketing/docs site SHALL provide favicon in ICO format (legacy browsers) and PNG format (modern browsers). Note: the Flutter mobile app does not use favicons — these are for the Jekyll site only.
 
 #### Scenario: Favicon loading
 
-- **WHEN** browser loads Nah
-- **THEN** appropriate favicon format is served based on browser support
+- **WHEN** a browser loads the Nah marketing/docs site
+- **THEN** the appropriate favicon format is served based on browser support
 
 ### Requirement: Splash screen assets for mobile
 
-The brand SHALL provide splash screen images for iOS and Android PWA launch.
+The brand SHALL provide splash screen assets for iOS LaunchScreen and Android splash drawable.
 
-#### Scenario: iOS splash screen assets
+#### Scenario: iOS launch screen
 
-- **WHEN** Nah is added to iOS home screen
-- **THEN** appropriate splash images are available for different device sizes
+- **WHEN** Nah is launched on iOS
+- **THEN** the iOS LaunchScreen displays the Nah logo on the brand background, sized appropriately for each device class
+
+#### Scenario: Android splash screen
+
+- **WHEN** Nah is launched on Android
+- **THEN** the Android splash drawable (or Android 12+ splash API) displays the Nah logo on the brand background
 
 ### Requirement: Brand color consistency
 
@@ -131,5 +142,5 @@ The brand SHALL provide custom illustrated reaction icons (not system emoji) tha
 
 #### Scenario: Cross-platform consistency
 
-- **WHEN** reactions are shown on different devices/browsers
+- **WHEN** reactions are shown on iOS and Android
 - **THEN** they appear identical (unlike system emoji which vary by platform)

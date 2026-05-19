@@ -27,18 +27,17 @@ Nah stands on the shoulders of giants. We're grateful to these open source proje
 | Project | What we use it for |
 |---------|-------------------|
 | [@mastodon/mastodon](https://github.com/mastodon/mastodon) | Backend social networking engine (forked) |
-| [@sveltejs/svelte](https://github.com/sveltejs/svelte) | Frontend framework (Svelte 5) |
-| [@sveltejs/kit](https://github.com/sveltejs/kit) | App framework, routing, SSR |
-| [@huntabyte/shadcn-svelte](https://github.com/huntabyte/shadcn-svelte) | UI component primitives |
-| [@tailwindlabs/tailwindcss](https://github.com/tailwindlabs/tailwindcss) | Utility-first CSS |
-| [@TanStack/query](https://github.com/TanStack/query) | Data fetching & caching |
+| [@flutter/flutter](https://github.com/flutter/flutter) | Cross-platform mobile app framework (iOS + Android) |
+| [@dart-lang/sdk](https://github.com/dart-lang/sdk) | Dart language and SDK |
+| [@bloclibrary/bloc](https://github.com/felangel/bloc) | State management |
+| [@dio-package/dio](https://github.com/cfug/dio) | HTTP client for Mastodon API |
 
 ### Tooling
 
 | Project | What we use it for |
 |---------|-------------------|
 | [OpenSpec](https://openspec.dev) · [@openspec](https://github.com/openspec) | Specification-driven development workflow |
-| [@caddyserver/caddy](https://github.com/caddyserver/caddy) | Web server (planned) |
+| [@caddyserver/caddy](https://github.com/caddyserver/caddy) | Web server for marketing site (planned) |
 | [@getsentry/sentry](https://github.com/getsentry/sentry) | Error tracking |
 
 ---
@@ -47,8 +46,9 @@ Nah stands on the shoulders of giants. We're grateful to these open source proje
 
 | Layer | Technology |
 |-------|------------|
-| **Frontend** | Svelte 5 + SvelteKit (PWA) |
-| **UI** | Tailwind CSS v4 + shadcn-svelte |
+| **Mobile app** | Flutter 3.41+ / Dart 3.11+ (iOS + Android) |
+| **State** | Bloc / Cubit |
+| **Networking** | Dio + Mastodon REST/Streaming API |
 | **Backend** | Mastodon (vanilla fork, lightly modified) |
 | **Database** | PostgreSQL + Redis |
 | **Storage** | S3-compatible + CDN |
@@ -61,10 +61,10 @@ See [design.md](openspec/changes/nah-vision/design.md) for full architecture det
 
 ```text
 /apps
-  /web              # SvelteKit PWA (coming soon)
+  /mobile           # Flutter app — iOS + Android (coming soon)
   /server           # Mastodon fork (coming soon)
 /packages
-  /ui               # Nah design system (coming soon)
+  /ui               # Nah design system: ThemeData, widgets, tokens (coming soon)
 /docs
   /_posts           # Build-in-public blog posts
 /openspec
@@ -101,8 +101,10 @@ See [design.md](openspec/changes/nah-vision/design.md) for full architecture det
 
 ### Prerequisites
 
-- Node.js 20+
-- pnpm
+- Flutter 3.41+ (stable channel)
+- Dart 3.11+
+- Xcode 16+ (for iOS builds)
+- Android Studio / Android SDK (for Android builds)
 - Docker (for Mastodon backend)
 - Ruby 3.3+ (for local docs preview)
 
