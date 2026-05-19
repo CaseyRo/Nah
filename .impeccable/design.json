@@ -1,0 +1,327 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-19T12:00:00Z",
+  "title": "Design System: Nah",
+  "extensions": {
+    "colorMeta": {
+      "pomegranate": {
+        "role": "primary",
+        "displayName": "Pomegranate",
+        "canonical": "oklch(60.7% 0.215 30)",
+        "tonalRamp": [
+          "oklch(20% 0.08 30)",
+          "oklch(30% 0.13 30)",
+          "oklch(40% 0.17 30)",
+          "oklch(50% 0.20 30)",
+          "oklch(60% 0.215 30)",
+          "oklch(70% 0.18 30)",
+          "oklch(80% 0.13 30)",
+          "oklch(92% 0.06 30)"
+        ]
+      },
+      "pomegranate-hover": {
+        "role": "primary",
+        "displayName": "Pomegranate Hover",
+        "canonical": "oklch(54% 0.21 30)",
+        "tonalRamp": []
+      },
+      "pomegranate-light": {
+        "role": "primary",
+        "displayName": "Pomegranate Light",
+        "canonical": "oklch(72% 0.18 30)",
+        "tonalRamp": []
+      },
+      "surface-1": {
+        "role": "neutral",
+        "displayName": "Surface 1 (Walls White)",
+        "canonical": "oklch(100% 0 30)",
+        "tonalRamp": [
+          "oklch(15% 0.005 30)",
+          "oklch(25% 0.005 30)",
+          "oklch(40% 0.005 30)",
+          "oklch(55% 0.005 30)",
+          "oklch(70% 0.005 30)",
+          "oklch(85% 0.005 30)",
+          "oklch(95% 0.005 30)",
+          "oklch(100% 0 30)"
+        ]
+      },
+      "surface-2": {
+        "role": "neutral",
+        "displayName": "Surface 2 (Page Background)",
+        "canonical": "oklch(98% 0.005 30)",
+        "tonalRamp": []
+      },
+      "surface-3": {
+        "role": "neutral",
+        "displayName": "Surface 3 (Inset)",
+        "canonical": "oklch(96% 0.005 30)",
+        "tonalRamp": []
+      },
+      "surface-4": {
+        "role": "neutral",
+        "displayName": "Surface 4 (Border / Divider)",
+        "canonical": "oklch(92% 0.005 30)",
+        "tonalRamp": []
+      },
+      "surface-5": {
+        "role": "neutral",
+        "displayName": "Surface 5 (Disabled)",
+        "canonical": "oklch(88% 0.005 30)",
+        "tonalRamp": []
+      },
+      "text-1": {
+        "role": "neutral",
+        "displayName": "Text 1 (Primary)",
+        "canonical": "oklch(18% 0.005 30)",
+        "tonalRamp": []
+      },
+      "text-2": {
+        "role": "neutral",
+        "displayName": "Text 2 (Secondary)",
+        "canonical": "oklch(48% 0.005 30)",
+        "tonalRamp": []
+      },
+      "text-3": {
+        "role": "neutral",
+        "displayName": "Text 3 (Placeholder)",
+        "canonical": "oklch(68% 0.005 30)",
+        "tonalRamp": []
+      },
+      "text-4": {
+        "role": "neutral",
+        "displayName": "Text 4 (Hint)",
+        "canonical": "oklch(78% 0.005 30)",
+        "tonalRamp": []
+      },
+      "success": {
+        "role": "secondary",
+        "displayName": "Success Green",
+        "canonical": "oklch(70% 0.18 150)",
+        "tonalRamp": []
+      },
+      "warning": {
+        "role": "secondary",
+        "displayName": "Warning Amber",
+        "canonical": "oklch(75% 0.17 70)",
+        "tonalRamp": []
+      },
+      "error": {
+        "role": "secondary",
+        "displayName": "Error Red",
+        "canonical": "oklch(64% 0.22 25)",
+        "tonalRamp": []
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display (Nunito)",
+        "purpose": "Logo, screen titles, onboarding headings. Brand voice surfaces only."
+      },
+      "headline": {
+        "displayName": "Headline (Nunito)",
+        "purpose": "Screen titles, profile display names on the profile page only."
+      },
+      "title": {
+        "displayName": "Title (Nunito)",
+        "purpose": "Section headers within a screen."
+      },
+      "body": {
+        "displayName": "Body (Platform Sans)",
+        "purpose": "Moment text, card content, comments, prose. Platform default, never Nunito."
+      },
+      "label": {
+        "displayName": "Label (Platform Sans)",
+        "purpose": "Button text, tab labels, chip text, navigation."
+      }
+    },
+    "shadows": [
+      {
+        "name": "fab-ambient",
+        "value": "0 4px 12px rgba(238, 52, 35, 0.15)",
+        "purpose": "Radial FAB at-rest elevation. Pomegranate-tinted to extend the warm point."
+      },
+      {
+        "name": "bottom-sheet",
+        "value": "0 -4px 24px rgba(0, 0, 0, 0.08)",
+        "purpose": "Soft lift of composer or reaction sheet above the page."
+      },
+      {
+        "name": "toast",
+        "value": "0 4px 16px rgba(0, 0, 0, 0.10)",
+        "purpose": "Brief lift of a toast notification above the tab bar."
+      }
+    ],
+    "motion": [
+      {
+        "name": "duration-fast",
+        "value": "150ms",
+        "purpose": "Hovers, presses, micro-feedback."
+      },
+      {
+        "name": "duration-normal",
+        "value": "250ms",
+        "purpose": "Most transitions (color shifts, state changes, tab swaps)."
+      },
+      {
+        "name": "duration-slow",
+        "value": "400ms",
+        "purpose": "Modal and bottom-sheet entrances."
+      },
+      {
+        "name": "duration-spring",
+        "value": "500ms",
+        "purpose": "Radial menu bloom, bouncy entrances."
+      },
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Default decelerate. Exit animations, hover-out."
+      },
+      {
+        "name": "ease-in-out",
+        "value": "cubic-bezier(0.65, 0, 0.35, 1)",
+        "purpose": "Two-way transitions, swap animations."
+      },
+      {
+        "name": "ease-spring",
+        "value": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+        "purpose": "Spring overshoot. Radial menu, modal entrance, reaction pop."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "iphone-se",
+        "value": "375px"
+      },
+      {
+        "name": "iphone-standard",
+        "value": "390px"
+      },
+      {
+        "name": "iphone-pro-max",
+        "value": "428px"
+      },
+      {
+        "name": "android-compact",
+        "value": "360px"
+      },
+      {
+        "name": "android-medium",
+        "value": "412px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The pill-shaped Pomegranate primary action button. Used for Post, Sign In, Get Started, Confirm.",
+      "html": "<button class=\"ds-btn-primary\">Post</button>",
+      "css": ".ds-btn-primary { background: #EE3423; color: #FFFFFF; padding: 12px 24px; border-radius: 9999px; border: none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em; cursor: pointer; transition: background 150ms cubic-bezier(0.16, 1, 0.3, 1), transform 150ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-primary:hover { background: #D42D1E; } .ds-btn-primary:active { transform: scale(0.97); } .ds-btn-primary:focus-visible { outline: 2px solid #EE3423; outline-offset: 4px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Secondary action button. Used in composer toolbar, onboarding 'Skip', and other low-emphasis actions.",
+      "html": "<button class=\"ds-btn-ghost\">Skip</button>",
+      "css": ".ds-btn-ghost { background: #FFFFFF; color: #1A1A1A; padding: 12px 24px; border-radius: 9999px; border: none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em; cursor: pointer; transition: background 150ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-ghost:hover { background: #FAFAFA; } .ds-btn-ghost:active { background: #F5F5F5; }"
+    },
+    {
+      "name": "Radial FAB",
+      "kind": "button",
+      "refersTo": "fab-radial",
+      "description": "The signature Pomegranate floating action button that opens the radial moment-type menu.",
+      "html": "<button class=\"ds-fab\" aria-label=\"Create moment\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\"><line x1=\"12\" y1=\"5\" x2=\"12\" y2=\"19\"/><line x1=\"5\" y1=\"12\" x2=\"19\" y2=\"12\"/></svg></button>",
+      "css": ".ds-fab { background: #EE3423; color: #FFFFFF; width: 56px; height: 56px; border-radius: 9999px; border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(238, 52, 35, 0.15); cursor: pointer; transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 250ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-fab:hover { box-shadow: 0 6px 16px rgba(238, 52, 35, 0.22); } .ds-fab:active { transform: scale(0.95); } .ds-fab[aria-expanded=\"true\"] svg { transform: rotate(45deg); transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1); }"
+    },
+    {
+      "name": "Moment Card (Text variant)",
+      "kind": "card",
+      "refersTo": "moment-card",
+      "description": "The base card shell for moments. Text variant shown; photo/music/location/status variants share the header + footer.",
+      "html": "<article class=\"ds-card-moment\"><header class=\"ds-card-moment__head\"><div class=\"ds-avatar\"><span>EM</span></div><div class=\"ds-card-moment__meta\"><span class=\"ds-card-moment__name\">Emma</span><span class=\"ds-card-moment__time\">3h</span></div></header><div class=\"ds-card-moment__body ds-card-moment__body--text\"><p>Coffee in Berlin, finally a quiet morning.</p></div><footer class=\"ds-card-moment__foot\"><button class=\"ds-react-btn\" aria-label=\"React\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z\"/></svg></button><span class=\"ds-card-moment__comments\">4</span></footer></article>",
+      "css": ".ds-card-moment { background: #FFFFFF; border-radius: 8px; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1A1A; } .ds-card-moment__head { display: flex; align-items: center; gap: 12px; padding: 16px 16px 12px; } .ds-avatar { width: 40px; height: 40px; border-radius: 9999px; background: #FF6B5B; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.875rem; } .ds-card-moment__meta { display: flex; align-items: baseline; gap: 8px; flex: 1; } .ds-card-moment__name { font-family: Nunito, -apple-system, BlinkMacSystemFont, sans-serif; font-weight: 600; font-size: 1rem; color: #1A1A1A; } .ds-card-moment__time { font-size: 0.75rem; color: #6B6B6B; } .ds-card-moment__body--text { padding: 4px 24px 16px; font-size: 1.125rem; line-height: 1.5; color: #1A1A1A; } .ds-card-moment__body--text p { margin: 0; } .ds-card-moment__foot { display: flex; align-items: center; gap: 12px; padding: 12px 16px 16px; } .ds-react-btn { width: 32px; height: 32px; border-radius: 9999px; background: transparent; border: none; color: #6B6B6B; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: color 150ms cubic-bezier(0.16, 1, 0.3, 1), background 150ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-react-btn:hover { color: #EE3423; background: #FAFAFA; } .ds-card-moment__comments { font-size: 0.875rem; color: #6B6B6B; }"
+    },
+    {
+      "name": "Chip (Selected)",
+      "kind": "chip",
+      "refersTo": "chip-selected",
+      "description": "Selected-state filter chip. Used in composer for privacy ('Close Friends'), location, and 'With' active filters.",
+      "html": "<button class=\"ds-chip ds-chip--selected\">Close Friends</button>",
+      "css": ".ds-chip { background: #FAFAFA; color: #6B6B6B; height: 32px; padding: 0 12px; border-radius: 9999px; border: none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em; cursor: pointer; transition: background 200ms cubic-bezier(0.16, 1, 0.3, 1), color 200ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-chip--selected { background: #EE3423; color: #FFFFFF; } .ds-chip:hover:not(.ds-chip--selected) { background: #F5F5F5; }"
+    },
+    {
+      "name": "Bottom Sheet (Composer shell)",
+      "kind": "card",
+      "refersTo": "bottom-sheet",
+      "description": "The composer bottom sheet. Slides up from below with spring entrance, drag-to-dismiss.",
+      "html": "<div class=\"ds-sheet\"><div class=\"ds-sheet__handle\"></div><header class=\"ds-sheet__head\"><button class=\"ds-sheet__cancel\">Cancel</button><span class=\"ds-sheet__type\">Text</span><button class=\"ds-btn-primary\">Post</button></header><div class=\"ds-sheet__body\"><textarea class=\"ds-sheet__input\" placeholder=\"What's happening?\"></textarea></div><footer class=\"ds-sheet__tools\"><button class=\"ds-chip\">🔒 Close Friends</button><button class=\"ds-chip\">📍 Location</button><button class=\"ds-chip\">👥 With</button></footer></div>",
+      "css": ".ds-sheet { background: #FFFFFF; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 0 0 24px; max-height: 90vh; box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1A1A; } .ds-sheet__handle { width: 36px; height: 4px; background: #EBEBEB; border-radius: 9999px; margin: 12px auto 16px; } .ds-sheet__head { display: flex; align-items: center; justify-content: space-between; padding: 0 16px 16px; border-bottom: 1px solid #EBEBEB; } .ds-sheet__cancel { background: transparent; border: none; color: #6B6B6B; font-size: 0.875rem; font-weight: 500; cursor: pointer; padding: 8px 0; } .ds-sheet__type { font-family: Nunito, -apple-system, BlinkMacSystemFont, sans-serif; font-weight: 600; font-size: 1rem; color: #1A1A1A; } .ds-sheet__body { padding: 16px 16px 24px; } .ds-sheet__input { width: 100%; min-height: 120px; border: none; resize: none; font-family: inherit; font-size: 1.125rem; line-height: 1.5; color: #1A1A1A; background: transparent; outline: none; } .ds-sheet__input::placeholder { color: #9E9E9E; } .ds-sheet__tools { display: flex; gap: 8px; padding: 16px; border-top: 1px solid #EBEBEB; overflow-x: auto; }"
+    },
+    {
+      "name": "Reaction Picker",
+      "kind": "custom",
+      "refersTo": "reaction-button",
+      "description": "Horizontal popover showing the five custom Nah reactions. Appears above the heart button on tap.",
+      "html": "<div class=\"ds-react-picker\"><button class=\"ds-react-picker__item\" aria-label=\"Smile\">😊</button><button class=\"ds-react-picker__item\" aria-label=\"Wink\">😉</button><button class=\"ds-react-picker__item\" aria-label=\"Sad\">😢</button><button class=\"ds-react-picker__item\" aria-label=\"Wow\">😮</button><button class=\"ds-react-picker__item\" aria-label=\"Love\">❤️</button></div>",
+      "css": ".ds-react-picker { display: inline-flex; gap: 4px; padding: 8px; background: #FFFFFF; border-radius: 9999px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10); border: 1px solid #EBEBEB; } .ds-react-picker__item { width: 36px; height: 36px; border-radius: 9999px; background: transparent; border: none; font-size: 1.25rem; cursor: pointer; transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1), background 150ms cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; justify-content: center; } .ds-react-picker__item:hover { background: #FAFAFA; transform: scale(1.15); }"
+    },
+    {
+      "name": "Tab Bar",
+      "kind": "nav",
+      "refersTo": "moment-card",
+      "description": "The bottom 3-tab navigation. Feed, Friends, Profile. FAB sits above this bar.",
+      "html": "<nav class=\"ds-tabbar\" role=\"tablist\"><button class=\"ds-tabbar__tab ds-tabbar__tab--active\" role=\"tab\" aria-selected=\"true\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/></svg><span>Feed</span></button><button class=\"ds-tabbar__tab\" role=\"tab\" aria-selected=\"false\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"/></svg><span>Friends</span></button><button class=\"ds-tabbar__tab\" role=\"tab\" aria-selected=\"false\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"7\" r=\"4\"/><path d=\"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\"/></svg><span>Profile</span></button></nav>",
+      "css": ".ds-tabbar { display: flex; align-items: stretch; height: 56px; background: #FFFFFF; border-top: 1px solid #EBEBEB; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .ds-tabbar__tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: transparent; border: none; color: #6B6B6B; font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: color 150ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-tabbar__tab--active { color: #EE3423; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Private Garden",
+    "overview": "Nah is a walled garden. Mutual-entry only, hard-capped at 150 people, tended slowly over years rather than scrolled through in minutes. Every visual choice answers to that frame. Surfaces are warm and uncluttered, the way a garden is when you've just swept the path. Color is restrained, used the way a single flowering plant draws the eye in a green room. Motion is unhurried but alive, the way leaves move when you walk past. The system rejects the noise of public social media in its bones: no broadcast feeds, no algorithmic interleaving, no engagement-bait notification surfaces, no SaaS hero metrics. The garden is for the people already inside it.\n\nThe components are warm and considered. Soft 8–12px corners across the board, generous internal padding, handmade-adjacent rather than razor-precise. Spring physics on press and entrance, never sharp linear transitions. Every interactive surface should feel touched, not assembled. This is the antidote to dense product UI: nothing is crowded, nothing demands attention, everything earns it.\n\nColor is Restrained: warm whites carry 90% of every screen, pomegranate red carries the remaining 10%. The neutral palette stays cool-warm-balanced (a faint pull toward the pomegranate hue is the long-term direction, currently unrealized as pure greys). Type is split between Nunito for moments of brand voice (logo, screen titles, onboarding) and the platform default sans for everything else (body, labels, data, controls).",
+    "keyCharacteristics": [
+      "Light-primary identity, warm white surfaces, pomegranate accent ≤10% of pixels",
+      "Soft corners (8–12px), generous padding, handmade-adjacent geometry",
+      "Spring physics on motion, never bounce or elastic",
+      "One display font (Nunito) for brand voice, platform default for everything else",
+      "Glassmorphism scoped to exactly two surfaces (profile header compression, radial menu backdrop), forbidden elsewhere",
+      "Five distinct moment card layouts under one card shell",
+      "48px floating analog timeline clock as a signature element"
+    ],
+    "rules": [
+      { "name": "The One Voice Rule", "body": "Pomegranate appears on ≤10% of any rendered surface. Its rarity is the point. When two pomegranate elements are visible at once (e.g., FAB + active tab), neither is decorative; both are doing work.", "section": "colors" },
+      { "name": "The No-Black Rule", "body": "Pure black (#000000) is forbidden. Text uses #1A1A1A. Future palette refinements should tint neutrals toward the pomegranate hue (chroma 0.005–0.01 in OKLCH) rather than expanding the grey scale.", "section": "colors" },
+      { "name": "The Display-Off Rule", "body": "Nunito never appears on functional UI elements. Buttons use Label. Form labels use Label. Data uses Body or smaller.", "section": "typography" },
+      { "name": "The System-Body Rule", "body": "Body text always uses the platform default sans, never Nunito. The trade is intentional: a small loss of cross-platform pixel-identity, a large gain in feeling-like-the-OS.", "section": "typography" },
+      { "name": "The Flat-By-Default Rule", "body": "Surfaces are flat at rest. Shadows appear only on active or transient elements (FAB, bottom sheet, toast, modal). A card never has a shadow. A button never has a shadow. A tab bar never has a shadow.", "section": "elevation" },
+      { "name": "The Border-Replaces-Shadow Rule", "body": "In dark mode, every place that uses a shadow in light mode uses a 1px border instead. The rule cascades automatically; widgets check the theme brightness and swap.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep Pomegranate at ≤10% of any rendered screen. It is a focal point, not a fill.",
+      "Do use Nunito for the logo, screen titles, and onboarding headings. Use the platform default sans everywhere else.",
+      "Do use 8px corner radius on cards, 12px on bottom sheets, full-radius pills on buttons and chips. Never sharp 90° corners on touchable surfaces.",
+      "Do ship spring physics on every entrance, press, and dismiss. 400ms with overshoot for entrances, 250ms ease-out for exits.",
+      "Do use the 48px floating timeline clock as the signature scroll companion. It is the single most recognizable Nah element.",
+      "Do treat the 150-friend limit as a designed boundary, never a limitation. Visualize it as a ring or constellation when surfaced.",
+      "Do keep the Feed chronological, full stop. The visual hierarchy must never imply algorithmic ranking, suggestions, or 'you might like.'",
+      "Do use Pomegranate Light as a soft text-moment background tint, sparingly, opt-in.",
+      "Do show empty states with warm illustrations, never blank screens. 'Welcome home' framing on first run, 'You're all caught up' framing at end of feed."
+    ],
+    "donts": [
+      "Don't look like Instagram, TikTok, or X. No Stories rail at the top. No suggested-content interleaving. No infinite-scroll engagement bait. No algorithmic feed under any circumstance.",
+      "Don't look like LinkedIn or Threads. No follower counts. No public profiles. No professional-self-curation chrome.",
+      "Don't look like Discord or Slack. No aggressive unread counts as the primary navigation signal. No multi-server sidebars. Reactions surface as badges only, never as push.",
+      "Don't look like a VC-SaaS landing page. No gradient hero text. No three-feature card grids on any product surface. No hero-metric templates. No glassmorphism dashboards.",
+      "Don't use side-stripe borders (colored border-left or border-right greater than 1px). Never. On any card, list item, callout, or alert.",
+      "Don't use gradient text (background-clip: text with a gradient background). Solid colors only. Emphasis through weight or size.",
+      "Don't use glassmorphism outside the two approved surfaces: profile header compression overlay and radial menu backdrop. Forbidden everywhere else.",
+      "Don't use display fonts (Nunito) on buttons, form labels, data, timestamps, or any other functional UI element.",
+      "Don't use pure black (#000000) or pure white (#FFFFFF) for text. Text uses #1A1A1A.",
+      "Don't use bounce or elastic easing curves. Spring physics are warm; bounce and elastic are loud.",
+      "Don't add card grids of identical-size feature blocks. Each moment card variant has its own treatment; the Feed is varied by design.",
+      "Don't introduce a modal as a first-thought solution. Exhaust inline, progressive, and bottom-sheet alternatives first."
+    ]
+  }
+}
