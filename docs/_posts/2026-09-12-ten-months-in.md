@@ -7,7 +7,7 @@ tags: [audit, mastodon, business-model, architecture, ai]
 
 Ten months ago I wrote a prompt about an app I missed. Today this repo has thirteen commits, fourteen counting this post, eight decision records, a design system with oklch values, a blog you're reading, and not one line of app code.
 
-That's the honest starting point for this post. I asked for an audit of Nah? this week, and the first thing it told me was the thing I already knew and hadn't written down.
+That's the honest starting point for this post. I asked for [a full audit of Nah?]({{ '/research/concept-audit/' | relative_url }}) this week, and the first thing it told me was the thing I already knew and hadn't written down.
 
 ## What ten months actually produced
 
@@ -60,7 +60,7 @@ I'm leaning hard towards the second one. It's a real change, it would supersede 
 
 Nah? is deliberately anti-scroll and anti-sticky. No infinite feed, no counts, no streaks, one digest a day at most. A maybe-daily check-in with people you love, not an avalanche of slop.
 
-So I had the alternatives properly investigated this week, and the evidence is not kind to the romantic version of that idea. It is, however, unusually clear about what to do instead.
+So I had [the alternatives properly investigated]({{ '/research/what-makes-people-come-back/' | relative_url }}) this week, and the evidence is not kind to the romantic version of that idea. It is, however, unusually clear about what to do instead.
 
 - BeReal is the closest thing to "one deliberate check-in a day" that ever reached scale. Daily users went from roughly fifteen million at the end of 2022 to about six million by the spring of 2023. It had the strongest cue anyone has ever built for this, and it decayed fastest.
 - Yope sells itself on no algorithms and no ads, which is almost our sentence, and ships streaks and widgets anyway. Anti-algorithm does not apparently mean anti-habit-mechanic.
@@ -123,5 +123,7 @@ The audit ended with a build order, and I'm taking it:
 Steps one to three are documents, which is exactly what I said my problem was. So I'm giving them a deadline instead of a plan, and the measure of whether this post was worth writing is simple.
 
 The next post has a screenshot in it, or it doesn't count.
+
+Both research documents live in the repo now, under [Research]({{ '/research/' | relative_url }}), figures, sources and all.
 
 nah!

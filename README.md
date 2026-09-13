@@ -87,6 +87,8 @@ See [design.md](openspec/changes/nah-vision/design.md) for full architecture det
 ## Documentation
 
 - **[Vision & Specs](openspec/changes/nah-vision/)** — Why, what, and how
+- **[Research](docs/research/)** — Concept audit and the retention investigation
+- **[Decisions](docs/decisions/)** — Architecture decision records
 - **[Reflections](https://caseyro.github.io/Nah/)** — Build-in-public blog
 
 ---

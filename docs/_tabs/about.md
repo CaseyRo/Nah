@@ -32,11 +32,15 @@ Nah ("Not Alone Here") is a private social network limited to **150 friends** â€
 
 | Layer | Technology |
 |-------|------------|
-| Frontend | Svelte 5 + SvelteKit (PWA) |
-| UI | Tailwind CSS v4 + shadcn-svelte |
-| Backend | Mastodon (vanilla fork) |
-| Database | PostgreSQL + Redis |
-| Storage | S3-compatible + CDN |
+| Mobile app | Flutter / Dart (iOS + Android) |
+| State | Bloc / Cubit |
+| Backend | Under review. A Mastodon fork today, a small single-binary server proposed |
+| Storage | S3-compatible object storage |
+
+The client moved from a SvelteKit PWA to Flutter in May 2026. The backend choice
+is open again as of September 2026. Both are documented in
+[Decisions]({{ '/decisions/' | relative_url }}) and
+[Research]({{ '/research/' | relative_url }}).
 
 ## Status
 
