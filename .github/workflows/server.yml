@@ -1,5 +1,10 @@
-# Checks and builds for the circle server. Inert until apps/server exists, which
-# is deliberate: the gate should be in place before the first line of it lands.
+# Checks and builds for the circle server.
+#
+# This was written before apps/server existed, on purpose: the gate should be in
+# place before the first line of it lands. It was described as inert until then,
+# which was wrong — the paths filter below includes this file, so the push that
+# added it triggered a run that failed on `go vet` with no Go code to vet. That
+# is the one red mark at 8189297.
 name: Server
 
 on:
