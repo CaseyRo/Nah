@@ -154,6 +154,13 @@ and all things a single small binary can be built from.
 shape needed.** Buying someone else's core data model that lacks your core
 concept is not a shortcut.
 
+**The repo still says one circle per user.** ADR-0003 describes a single circle
+where invitation is connection, ADR-0008 scopes the MVP to that one circle, and
+PRODUCT.md still opens with 150 friends in one room. Many circles contradicts all
+three. That contradiction gates the data model, so it has to be settled in a
+decision record before any backend work starts, alongside the one that supersedes
+ADR-0002 on Mastodon.
+
 **Decouple the server from the circle.** The earlier recommendation of one server
 per group does not survive six bubbles per person. Nobody runs a server for a
 puppy class, and nobody pays six subscriptions. A server hosts many circles. A
