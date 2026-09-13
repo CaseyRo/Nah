@@ -75,9 +75,15 @@ func main() {
 }
 
 func serve(cfg config, store *nah.Store, log *slog.Logger) error {
+	// Sessions outlive the process because this key does (ADR-0015). Deploys
+	// are going to be frequent and nobody should be able to tell.
+	key, err := nah.SessionKey(cfg.dataDir)
+	if err != nil {
+		return err
+	}
 	srv := &http.Server{
 		Addr:              cfg.addr,
-		Handler:           nah.NewServer(store, nah.NewAuth(), log).Handler(),
+		Handler:           nah.NewServer(store, nah.NewAuth(key), log).Handler(),
 		ReadHeaderTimeout: 10 * time.Second,
 		ReadTimeout:       30 * time.Second,
 		WriteTimeout:      30 * time.Second,

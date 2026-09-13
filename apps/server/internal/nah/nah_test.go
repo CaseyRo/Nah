@@ -4,12 +4,16 @@ import (
 	"bytes"
 	"crypto/ed25519"
 	"crypto/rand"
+	"encoding/base64"
+	"encoding/binary"
 	"encoding/json"
 	"io"
 	"log/slog"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
+	"time"
 )
 
 // device is one phone: a keypair and a session token.
@@ -28,14 +32,28 @@ func newDevice(t *testing.T) *device {
 	return &device{pub: pub, priv: priv}
 }
 
+func testKey(t *testing.T) []byte {
+	t.Helper()
+	key, err := SessionKey(t.TempDir())
+	if err != nil {
+		t.Fatal(err)
+	}
+	return key
+}
+
 func newTestServer(t *testing.T) (*httptest.Server, *Store) {
 	t.Helper()
-	store, err := NewStore(t.TempDir())
+	dir := t.TempDir()
+	store, err := NewStore(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	key, err := SessionKey(dir)
 	if err != nil {
 		t.Fatal(err)
 	}
 	log := slog.New(slog.NewTextHandler(io.Discard, nil))
-	srv := httptest.NewServer(NewServer(store, NewAuth(), log).Handler())
+	srv := httptest.NewServer(NewServer(store, NewAuth(key), log).Handler())
 	t.Cleanup(func() {
 		srv.Close()
 		store.Close()
@@ -187,7 +205,7 @@ func TestStrangerCannotRead(t *testing.T) {
 }
 
 func TestChallengeIsSingleUse(t *testing.T) {
-	auth := NewAuth()
+	auth := NewAuth(testKey(t))
 	d := newDevice(t)
 	ch := auth.Challenge("c", d.pub)
 	sig := ed25519.Sign(d.priv, SignedMessage("c", ch))
@@ -201,7 +219,7 @@ func TestChallengeIsSingleUse(t *testing.T) {
 }
 
 func TestSignatureMustVerify(t *testing.T) {
-	auth := NewAuth()
+	auth := NewAuth(testKey(t))
 	d, impostor := newDevice(t), newDevice(t)
 
 	ch := auth.Challenge("c", d.pub)
@@ -317,5 +335,104 @@ func TestBadInvite(t *testing.T) {
 	d := newDevice(t)
 	if err := store.Join(circle, "not-an-invite", d.pub); err != ErrBadInvite {
 		t.Fatalf("got %v, want ErrBadInvite", err)
+	}
+}
+
+// TestSessionSurvivesARestart is the point of ADR-0015's revision: deploys are
+// frequent, and a token minted before one has to still work after it.
+func TestSessionSurvivesARestart(t *testing.T) {
+	dir := t.TempDir()
+	key, err := SessionKey(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	d := newDevice(t)
+
+	before := NewAuth(key)
+	ch := before.Challenge("c", d.pub)
+	token, _, err := before.Session("c", ch, d.pub, ed25519.Sign(d.priv, SignedMessage("c", ch)))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// A fresh process, reading the same key off the same volume.
+	reread, err := SessionKey(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(key, reread) {
+		t.Fatal("SessionKey generated a second key instead of reading the first")
+	}
+	after := NewAuth(reread)
+	pub, err := after.Lookup("c", token)
+	if err != nil {
+		t.Fatalf("token did not survive the restart: %v", err)
+	}
+	if !pub.Equal(d.pub) {
+		t.Error("token came back as the wrong device")
+	}
+
+	// Still bound to its circle, and worthless under a different key.
+	if _, err := after.Lookup("elsewhere", token); err == nil {
+		t.Error("token opened another circle")
+	}
+	if _, err := NewAuth(testKey(t)).Lookup("c", token); err == nil {
+		t.Error("token verified under a different signing key")
+	}
+}
+
+func TestTamperedTokenIsRejected(t *testing.T) {
+	auth := NewAuth(testKey(t))
+	d, impostor := newDevice(t), newDevice(t)
+	ch := auth.Challenge("c", d.pub)
+	token, _, err := auth.Session("c", ch, d.pub, ed25519.Sign(d.priv, SignedMessage("c", ch)))
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	parts := strings.SplitN(token, ".", 3)
+	if len(parts) != 3 {
+		t.Fatalf("token is not v1.claims.mac: %q", token)
+	}
+	claims, err := base64.RawURLEncoding.DecodeString(parts[1])
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	// Swap in another device's key, keeping the original MAC.
+	forged := append([]byte{}, claims[:8]...)
+	forged = append(forged, impostor.pub...)
+	forged = append(forged, claims[8+ed25519.PublicKeySize:]...)
+	swapped := parts[0] + "." + base64.RawURLEncoding.EncodeToString(forged) + "." + parts[2]
+	if _, err := auth.Lookup("c", swapped); err == nil {
+		t.Error("a token with someone else's key was accepted")
+	}
+
+	// Push the expiry out by a century, keeping the original MAC.
+	extended := append([]byte{}, claims...)
+	binary.BigEndian.PutUint64(extended[:8], uint64(time.Now().Add(100*365*24*time.Hour).UnixMilli()))
+	longer := parts[0] + "." + base64.RawURLEncoding.EncodeToString(extended) + "." + parts[2]
+	if _, err := auth.Lookup("c", longer); err == nil {
+		t.Error("a token with a stretched expiry was accepted")
+	}
+
+	for _, bad := range []string{"", ".", "v1", "v1.", "v2." + parts[1] + "." + parts[2], parts[1] + "." + parts[2]} {
+		if _, err := auth.Lookup("c", bad); err == nil {
+			t.Errorf("malformed token %q was accepted", bad)
+		}
+	}
+}
+
+func TestExpiredTokenIsRejected(t *testing.T) {
+	auth := NewAuth(testKey(t))
+	d := newDevice(t)
+	ch := auth.Challenge("c", d.pub)
+	token, expires, err := auth.Session("c", ch, d.pub, ed25519.Sign(d.priv, SignedMessage("c", ch)))
+	if err != nil {
+		t.Fatal(err)
+	}
+	auth.now = func() time.Time { return expires.Add(time.Second) }
+	if _, err := auth.Lookup("c", token); err == nil {
+		t.Error("an expired token was accepted")
 	}
 }

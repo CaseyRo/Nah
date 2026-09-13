@@ -21,7 +21,7 @@ The first half prints a circle id and an invite token. The second half serves on
 | Variable | Default | What it is |
 |---|---|---|
 | `NAH_ADDR` | `:8080` | listen address |
-| `NAH_DATA_DIR` | `./data` | where the circle files live |
+| `NAH_DATA_DIR` | `./data` | where the circle files and `session.key` live |
 
 In a container:
 
@@ -62,9 +62,16 @@ nah-auth-v1:<circle id>:<challenge>
 The prefix keeps the signature from meaning anything anywhere else, and the
 circle id keeps a signature captured on one circle from opening another.
 
-Sessions live in memory and die with the process, so a deploy logs everyone
-out. **The client must re-authenticate on a 401 without telling anyone.** That
-is the one client behaviour this design leans on.
+A session token carries its own claims and an HMAC over them, so it survives a
+restart and works across two instances sharing the data directory. Deploys are
+meant to be frequent and invisible, so nothing about a session is stored.
+
+The signing key is `session.key` in the data directory, generated on first run
+at `0600`. **It is the one file in there that is not ciphertext.** Lose it and
+everyone signs in again; leak it and anyone can mint a session for any key.
+
+The client should still re-authenticate on a 401 rather than showing a login
+screen, but it is no longer a per-deploy event.
 
 ## What is not here yet
 
