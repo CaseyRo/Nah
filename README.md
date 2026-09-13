@@ -4,7 +4,7 @@
 
 > *"Share with your circle, not the world."*
 
-Nah ("Not Alone Here") is a private social network limited to 150 friends — inspired by [Path](https://en.wikipedia.org/wiki/Path_(social_network)), built on modern open-source infrastructure, and designed to never compromise on intimacy.
+Nah ("Not Alone Here") is a private social network built out of circles — a family circle, a close-friends circle, a neighbourhood circle — each one capped at Dunbar's number. Inspired by [Path](https://en.wikipedia.org/wiki/Path_(social_network)), built on modern open-source infrastructure, and designed to never compromise on intimacy.
 
 **Viral? Nah. Vital.**
 
@@ -12,7 +12,7 @@ Nah ("Not Alone Here") is a private social network limited to 150 friends — in
 
 ## Core Principles
 
-- **Small by design** — 150 friends max (Dunbar's number)
+- **Small by design** — every circle is capped at Dunbar's number, and you belong to a few of them
 - **Private by default** — no public timelines, no algorithmic feeds
 - **Real friends, real moments** — mutual friendships, rich moment sharing
 - **No algorithmic theater** — chronological feed only, no engagement optimization
@@ -26,7 +26,8 @@ Nah stands on the shoulders of giants. We're grateful to these open source proje
 
 | Project | What we use it for |
 |---------|-------------------|
-| [@mastodon/mastodon](https://github.com/mastodon/mastodon) | Backend social networking engine (forked) |
+| [@pocketbase/pocketbase](https://github.com/pocketbase/pocketbase) | Go framework behind the Nah? Home server |
+| [@benbjohnson/litestream](https://github.com/benbjohnson/litestream) | Continuous SQLite backup |
 | [@flutter/flutter](https://github.com/flutter/flutter) | Cross-platform mobile app framework (iOS + Android) |
 | [@dart-lang/sdk](https://github.com/dart-lang/sdk) | Dart language and SDK |
 | [@bloclibrary/bloc](https://github.com/felangel/bloc) | State management |
@@ -49,9 +50,9 @@ Nah stands on the shoulders of giants. We're grateful to these open source proje
 | **Mobile app** | Flutter 3.41+ / Dart 3.11+ (iOS + Android) |
 | **State** | Bloc / Cubit |
 | **Networking** | Dio + Mastodon REST/Streaming API |
-| **Backend** | Mastodon (vanilla fork, lightly modified) |
-| **Database** | PostgreSQL + Redis |
-| **Storage** | S3-compatible + CDN |
+| **Backend** | Nah? Home — a single Go binary on PocketBase |
+| **Database** | SQLite, streamed off-box with Litestream |
+| **Storage** | Local disk or S3-compatible |
 
 ### Stack evolution
 
@@ -59,6 +60,7 @@ Nah stands on the shoulders of giants. We're grateful to these open source proje
 |---|---|---|
 | 2026-01 | ~~Svelte 5 + SvelteKit (PWA), Tailwind v4, shadcn-svelte, TanStack Query~~ | Act small, ship a PWA MVP. Mobile-first web. |
 | 2026-05-19 | Flutter 3.41+ / Dart, Bloc, Dio, Hive/Drift, Mastodon backend unchanged | Pivot to native via Flutter. See [ADR-0001 — Flutter over PWA](docs/decisions/0001-flutter-over-pwa.md) and the [Flutter decision blog post](https://caseyro.github.io/Nah/2026/05/19/the-flutter-decision/). |
+| 2026-09-13 | ~~Mastodon fork~~ → one Go binary on PocketBase with SQLite | Circles became the core data model, and nothing off the shelf has them. See [ADR-0009](docs/decisions/0009-circles-not-one-circle.md), [ADR-0010](docs/decisions/0010-small-server-not-mastodon.md) and the [circles research](docs/research/circles-and-the-backend.md). |
 
 The PWA framing is preserved struck-through in the OpenSpec history (`openspec/changes/cap-01-core-identity/specs/pwa-shell/spec.md`) so the evolution is visible, not erased.
 
@@ -71,7 +73,7 @@ See [design.md](openspec/changes/nah-vision/design.md) for full architecture det
 ```text
 /apps
   /mobile           # Flutter app — iOS + Android (coming soon)
-  /server           # Mastodon fork (coming soon)
+  /server           # Nah? Home — Go + PocketBase + SQLite (coming soon)
 /packages
   /ui               # Nah design system: ThemeData, widgets, tokens (coming soon)
 /docs

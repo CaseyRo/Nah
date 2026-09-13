@@ -8,7 +8,7 @@ date: 2026-04-26
 
 ## Status
 
-Accepted (2026-04-26).
+Accepted (2026-04-26). Amended by [ADR-0009](0009-circles-not-one-circle.html): the scope was cut for a single circle and needs re-cutting for circles.
 
 ## Context
 

@@ -2,13 +2,13 @@
 title: "ADR-0003 — Invitation is connection"
 permalink: /decisions/0003-connection-model/
 layout: page
-status: Accepted
+status: Superseded
 date: 2026-04-26
 ---
 
 ## Status
 
-Accepted (2026-04-26).
+Superseded by [ADR-0009](0009-circles-not-one-circle.html) (2026-09-13), which keeps invitation-is-connection but attaches it to a circle rather than to a single personal network. Accepted 2026-04-26.
 
 ## Context
 

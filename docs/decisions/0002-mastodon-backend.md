@@ -2,13 +2,13 @@
 title: "ADR-0002 — Mastodon as the backend foundation"
 permalink: /decisions/0002-mastodon-backend/
 layout: page
-status: Accepted
+status: Superseded
 date: 2026-01-28
 ---
 
 ## Status
 
-Accepted (2026-01-28). Unchanged through the April 2026 Flutter pivot.
+Superseded by [ADR-0010](0010-small-server-not-mastodon.html) (2026-09-13). Accepted 2026-01-28, unchanged through the April 2026 Flutter pivot.
 
 ## Context
 

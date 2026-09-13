@@ -18,6 +18,8 @@ Nah ("Not Alone Here") is a private social network capped at 150 friends (Dunbar
 
 **Success looks like:** 150-person networks where people post the kind of small daily moments they'd never put on Instagram, because there's nobody to perform for. Sustained use measured in years, not months. Quiet, present, returning. The success metric is time given back to relationships that matter, not engagement captured inside the app.
 
+**Updated 2026-09-13:** the model moved from one personal circle of 150 to many circles per person, each capped at Dunbar's number. A family circle, a close-friends circle, a neighbourhood circle. See [ADR-0009](docs/decisions/0009-circles-not-one-circle.md). The text below still describes the single-circle framing in places.
+
 ## Brand Personality
 
 Warm and quiet. Deliberate, not frictionless. Private by architecture, not by promise. Slow as a positive: the opposite of fast, infinite, optimized. Honest about its limits (150 friends, no public timeline, no virality, ever). Alive in the small craft details: a floating analog clock that hands match scrolled timestamps; custom illustrated reactions instead of system emoji; spring-physics animations that say someone touched every interaction.

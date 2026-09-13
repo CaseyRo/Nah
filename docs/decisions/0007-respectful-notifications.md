@@ -8,7 +8,7 @@ date: 2026-04-26
 
 ## Status
 
-Accepted (2026-04-26).
+Accepted (2026-04-26). Extended by [ADR-0009](0009-circles-not-one-circle.html), which makes the digest rhythm a per-circle setting.
 
 ## Context
 

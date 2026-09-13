@@ -13,13 +13,15 @@ ADRs are not specs. They're the *why* behind the spec. Future contributors (or f
 | # | Decision | Status |
 |---|---|---|
 | [0001](0001-flutter-over-pwa.html) | Flutter over PWA for the mobile client | Accepted (2026-04-26) |
-| [0002](0002-mastodon-backend.html) | Mastodon as the backend foundation | Accepted (2026-01) |
-| [0003](0003-connection-model.html) | Invitation is connection, no slot economy | Accepted (2026-04-26) |
+| [0002](0002-mastodon-backend.html) | Mastodon as the backend foundation | Superseded by 0010 |
+| [0003](0003-connection-model.html) | Invitation is connection, no slot economy | Superseded by 0009 |
 | [0004](0004-no-counts-anywhere.html) | No counts anywhere as the MVP headline | Accepted (2026-04-26) |
 | [0005](0005-ritual-onboarding.html) | Ritual onboarding (slow beat, one question, felt arrival, quiet space) | Accepted (2026-04-26) |
 | [0006](0006-three-moment-types.html) | Three moment types (text, voice, photo) | Accepted (2026-04-26) |
 | [0007](0007-respectful-notifications.html) | Notifications default to most respectful | Accepted (2026-04-26) |
-| [0008](0008-mvp-scope.html) | MVP scope: 5-10 friends, real usage, explicit not-in-MVP list | Accepted (2026-04-26) |
+| [0008](0008-mvp-scope.html) | MVP scope: 5-10 friends, real usage, explicit not-in-MVP list | Amended by 0009 |
+| [0009](0009-circles-not-one-circle.html) | Circles, not one circle | Accepted (2026-09-13) |
+| [0010](0010-small-server-not-mastodon.html) | A small server of our own, not Mastodon | Accepted (2026-09-13) |
 
 ## How to read these
 
