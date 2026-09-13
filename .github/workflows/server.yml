@@ -24,8 +24,8 @@ jobs:
   check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
         with:
           go-version: stable
           cache-dependency-path: apps/server/go.sum
@@ -46,8 +46,8 @@ jobs:
         # than x86 ones and cost one line here.
         goarch: [amd64, arm64]
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-go@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-go@v7
         with:
           go-version: stable
           cache-dependency-path: apps/server/go.sum
@@ -57,7 +57,7 @@ jobs:
           GOOS: linux
           GOARCH: ${{ matrix.goarch }}
         run: go build -trimpath -ldflags="-s -w" -o "nah-server-${{ matrix.goarch }}" ./cmd/server
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: nah-server-${{ matrix.goarch }}
           path: apps/server/nah-server-${{ matrix.goarch }}
