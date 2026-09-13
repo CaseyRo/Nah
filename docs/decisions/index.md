@@ -27,6 +27,7 @@ ADRs are not specs. They're the *why* behind the spec. Future contributors (or f
 | [0013](0013-no-aggregated-feed.html) | No aggregated feed, a circle is a room you enter | Proposed (2026-09-13) |
 | [0014](0014-the-go-setup.html) | The Go setup, and how it ships | Accepted (2026-09-13) |
 | [0015](0015-no-passwords-a-key-on-the-device.html) | No passwords, a key on the device | Accepted (2026-09-13) |
+| [0016](0016-the-moment-envelope.html) | The moment envelope, and why it is not HTML | Proposed (2026-09-13) |
 
 ## How to read these
 

@@ -48,6 +48,10 @@ because there is no aggregated anything ([ADR-0013](../../docs/decisions/0013-no
 Byte fields (`public_key`, `signature`, `blob`) are base64 in JSON, which is
 what Go's `encoding/json` does with `[]byte` and what Dart's `base64` produces.
 
+`blob` is the ciphertext of a moment envelope ([ADR-0016](../../docs/decisions/0016-the-moment-envelope.md)).
+Nothing on this side knows or may ever learn what is in it — not the type, not
+the length of the text, not whether it has a photo.
+
 The two moment routes want `Authorization: Bearer <token>`.
 
 ### Signing in
