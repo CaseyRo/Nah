@@ -8,6 +8,8 @@ repos:
     hooks:
       - id: markdownlint
         args: ["--fix", "--disable", "MD013", "MD033", "MD036", "MD041", "--"]
+        # Generated platform code is the tool's to write, not ours to lint.
+        exclude: ^apps/mobile/(ios|android|macos|windows|linux|web)/
 
   # YAML linting (openspec, Jekyll config)
   - repo: https://github.com/adrienverge/yamllint
