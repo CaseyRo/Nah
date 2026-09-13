@@ -25,6 +25,7 @@ ADRs are not specs. They're the *why* behind the spec. Future contributors (or f
 | [0011](0011-plain-go-and-a-database-per-circle.html) | Plain Go, and one database per circle | Accepted (2026-09-13) |
 | [0012](0012-encrypted-on-device.html) | Content encrypted on the device, and we hold no keys | Proposed (2026-09-13) |
 | [0013](0013-no-aggregated-feed.html) | No aggregated feed, a circle is a room you enter | Proposed (2026-09-13) |
+| [0014](0014-the-go-setup.html) | The Go setup, and how it ships | Accepted (2026-09-13) |
 
 ## How to read these
 

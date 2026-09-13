@@ -1,0 +1,64 @@
+# Checks and builds for the circle server. Inert until apps/server exists, which
+# is deliberate: the gate should be in place before the first line of it lands.
+name: Server
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/server/**'
+      - '.github/workflows/server.yml'
+  pull_request:
+    paths:
+      - 'apps/server/**'
+      - '.github/workflows/server.yml'
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    working-directory: apps/server
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache-dependency-path: apps/server/go.sum
+      - run: go vet ./...
+      - name: staticcheck
+        run: go run honnef.co/go/tools/cmd/staticcheck@latest ./...
+      - name: tests, with the race detector
+        run: go test -race ./...
+      - name: known vulnerabilities
+        run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+
+  build:
+    needs: check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Home hardware is not a target, but ARM cloud instances are cheaper
+        # than x86 ones and cost one line here.
+        goarch: [amd64, arm64]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: stable
+          cache-dependency-path: apps/server/go.sum
+      - name: build a static binary
+        env:
+          CGO_ENABLED: '0'
+          GOOS: linux
+          GOARCH: ${{ matrix.goarch }}
+        run: go build -trimpath -ldflags="-s -w" -o "nah-server-${{ matrix.goarch }}" ./cmd/server
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nah-server-${{ matrix.goarch }}
+          path: apps/server/nah-server-${{ matrix.goarch }}
+          retention-days: 7
