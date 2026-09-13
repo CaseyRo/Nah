@@ -36,3 +36,14 @@ _site/
 .jekyll-cache/
 .jekyll-metadata
 Gemfile.lock
+
+# Circle databases. A circle's file is somebody's family album; it never
+# belongs in git, not even an empty one.
+data/
+*.db
+*.db-shm
+*.db-wal
+
+# Server binaries
+nah-server
+nah-server-*

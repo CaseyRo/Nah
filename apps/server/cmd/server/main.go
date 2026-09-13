@@ -1,0 +1,108 @@
+// Command server runs a Nah? circle server, and creates circles on it.
+//
+//	server                      serve
+//	server create-circle        make a circle, print its id and first invite
+//
+// Configuration is environment variables read into a struct at start, per
+// ADR-0014. There is no configuration file and there is no flag parsing.
+package main
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"log/slog"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
+	"github.com/CaseyRo/Nah/apps/server/internal/nah"
+)
+
+type config struct {
+	addr    string
+	dataDir string
+}
+
+func load() config {
+	return config{
+		addr:    env("NAH_ADDR", ":8080"),
+		dataDir: env("NAH_DATA_DIR", "./data"),
+	}
+}
+
+func env(key, fallback string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return fallback
+}
+
+func main() {
+	log := slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	cfg := load()
+
+	store, err := nah.NewStore(cfg.dataDir)
+	if err != nil {
+		log.Error("cannot open the data directory", "dir", cfg.dataDir, "err", err)
+		os.Exit(1)
+	}
+	defer store.Close()
+
+	if len(os.Args) > 1 {
+		if os.Args[1] != "create-circle" {
+			fmt.Fprintf(os.Stderr, "unknown command %q; try create-circle, or no arguments to serve\n", os.Args[1])
+			os.Exit(2)
+		}
+		id, invite, err := store.Create()
+		if err != nil {
+			log.Error("cannot create a circle", "err", err)
+			os.Exit(1)
+		}
+		// The content key is not ours to make: it is generated on the device and
+		// travels after the '#' of the invite link (ADR-0012). This prints the
+		// half the server owns.
+		fmt.Printf("circle %s\ninvite %s\n", id, invite)
+		return
+	}
+
+	if err := serve(cfg, store, log); err != nil {
+		log.Error("server stopped", "err", err)
+		os.Exit(1)
+	}
+}
+
+func serve(cfg config, store *nah.Store, log *slog.Logger) error {
+	srv := &http.Server{
+		Addr:              cfg.addr,
+		Handler:           nah.NewServer(store, nah.NewAuth(), log).Handler(),
+		ReadHeaderTimeout: 10 * time.Second,
+		ReadTimeout:       30 * time.Second,
+		WriteTimeout:      30 * time.Second,
+		IdleTimeout:       2 * time.Minute,
+	}
+
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
+	defer stop()
+
+	errc := make(chan error, 1)
+	go func() {
+		log.Info("listening", "addr", cfg.addr, "data", cfg.dataDir)
+		errc <- srv.ListenAndServe()
+	}()
+
+	select {
+	case err := <-errc:
+		if errors.Is(err, http.ErrServerClosed) {
+			return nil
+		}
+		return err
+	case <-ctx.Done():
+		log.Info("shutting down")
+		shutdown, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+		defer cancel()
+		return srv.Shutdown(shutdown)
+	}
+}

@@ -26,12 +26,12 @@ Nah stands on the shoulders of giants. We're grateful to these open source proje
 
 | Project | What we use it for |
 |---------|-------------------|
-| [@pocketbase/pocketbase](https://github.com/pocketbase/pocketbase) | Go framework behind the Nah? Home server |
 | [@benbjohnson/litestream](https://github.com/benbjohnson/litestream) | Continuous SQLite backup |
 | [@flutter/flutter](https://github.com/flutter/flutter) | Cross-platform mobile app framework (iOS + Android) |
 | [@dart-lang/sdk](https://github.com/dart-lang/sdk) | Dart language and SDK |
 | [@bloclibrary/bloc](https://github.com/felangel/bloc) | State management |
-| [@dio-package/dio](https://github.com/cfug/dio) | HTTP client for Mastodon API |
+| [@dio-package/dio](https://github.com/cfug/dio) | HTTP client |
+| [@modernc-org/sqlite](https://gitlab.com/cznic/sqlite) | Pure-Go SQLite driver, so the server needs no cgo |
 
 ### Tooling
 
@@ -39,7 +39,6 @@ Nah stands on the shoulders of giants. We're grateful to these open source proje
 |---------|-------------------|
 | [OpenSpec](https://openspec.dev) · [@openspec](https://github.com/openspec) | Specification-driven development workflow |
 | [@caddyserver/caddy](https://github.com/caddyserver/caddy) | Web server for marketing site (planned) |
-| [@getsentry/sentry](https://github.com/getsentry/sentry) | Error tracking |
 
 ---
 
@@ -49,10 +48,10 @@ Nah stands on the shoulders of giants. We're grateful to these open source proje
 |-------|------------|
 | **Mobile app** | Flutter 3.41+ / Dart 3.11+ (iOS + Android) |
 | **State** | Bloc / Cubit |
-| **Networking** | Dio + Mastodon REST/Streaming API |
-| **Backend** | Nah? Home — a single Go binary on PocketBase |
-| **Database** | SQLite, streamed off-box with Litestream |
-| **Storage** | Local disk or S3-compatible |
+| **Networking** | Dio + the circle server's own API |
+| **Backend** | Nah? Home — one static Go binary, `net/http`, no framework |
+| **Database** | SQLite, one file per circle, streamed off-box with Litestream |
+| **Storage** | Local disk or S3-compatible — ciphertext either way |
 
 ### Stack evolution
 
@@ -61,6 +60,8 @@ Nah stands on the shoulders of giants. We're grateful to these open source proje
 | 2026-01 | ~~Svelte 5 + SvelteKit (PWA), Tailwind v4, shadcn-svelte, TanStack Query~~ | Act small, ship a PWA MVP. Mobile-first web. |
 | 2026-05-19 | Flutter 3.41+ / Dart, Bloc, Dio, Hive/Drift, Mastodon backend unchanged | Pivot to native via Flutter. See [ADR-0001 — Flutter over PWA](docs/decisions/0001-flutter-over-pwa.md) and the [Flutter decision blog post](https://caseyro.github.io/Nah/2026/05/19/the-flutter-decision/). |
 | 2026-09-13 | ~~Mastodon fork~~ → one Go binary on PocketBase with SQLite | Circles became the core data model, and nothing off the shelf has them. See [ADR-0009](docs/decisions/0009-circles-not-one-circle.md), [ADR-0010](docs/decisions/0010-small-server-not-mastodon.md) and the [circles research](docs/research/circles-and-the-backend.md). |
+| 2026-09-13 | ~~PocketBase~~ → plain Go, one SQLite file per circle | Measured rather than argued: PocketBase peaked at 705 MB against plain Go's 73.5 MB, unexplained by three experiments. See [ADR-0011](docs/decisions/0011-plain-go-and-a-database-per-circle.md), [ADR-0014](docs/decisions/0014-the-go-setup.md) and the [spike results](https://caseyro.github.io/Nah/research/spike-results/). |
+| 2026-09-13 | Content encrypted on the device; sign-in is an Ed25519 key, not a password | The server has no use for plaintext, so it should not hold any. See [ADR-0012](docs/decisions/0012-encrypted-on-device.md) and [ADR-0015](docs/decisions/0015-no-passwords-a-key-on-the-device.md). |
 
 The PWA framing is preserved struck-through in the OpenSpec history (`openspec/changes/cap-01-core-identity/specs/pwa-shell/spec.md`) so the evolution is visible, not erased.
 
@@ -73,7 +74,7 @@ See [design.md](openspec/changes/nah-vision/design.md) for full architecture det
 ```text
 /apps
   /mobile           # Flutter app — iOS + Android (coming soon)
-  /server           # Nah? Home — Go + PocketBase + SQLite (coming soon)
+  /server           # Nah? Home — Go + SQLite, one database per circle
 /packages
   /ui               # Nah design system: ThemeData, widgets, tokens (coming soon)
 /docs
