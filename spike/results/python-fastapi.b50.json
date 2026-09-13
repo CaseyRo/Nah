@@ -1,0 +1,8 @@
+{
+  "requests_c50": 50000,
+  "concurrency": 50,
+  "rps_c50": 1977,
+  "feed_p50_ms_c50": 18.69,
+  "feed_p95_ms_c50": 37.17,
+  "feed_p99_ms_c50": 46.46
+}

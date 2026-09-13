@@ -8,7 +8,7 @@ date: 2026-09-13
 
 ## Status
 
-Accepted (2026-09-13). Supersedes [ADR-0002](0002-mastodon-backend.html).
+Accepted (2026-09-13). Supersedes [ADR-0002](0002-mastodon-backend.html). Amended by [ADR-0011](0011-plain-go-and-a-database-per-circle.html): the server, the single binary and SQLite all stand, but the spike measured PocketBase at seven times the memory of plain Go and it was dropped.
 
 ## Context
 

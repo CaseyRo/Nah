@@ -1,0 +1,23 @@
+{
+  "candidate": "dart-shelf",
+  "idle_rss_mb": 15.9,
+  "peak_rss_mb": 56.8,
+  "artifact_mb": 6.5,
+  "db_mb": 54.2,
+  "seeded": 116800,
+  "seconds": 10.4,
+  "inserts_per_sec": 11215,
+  "post_p50_ms": 0.85,
+  "post_p95_ms": 5.92,
+  "cold_start_ms": 34,
+  "requests_c1": 1000,
+  "rps_c1": 3248,
+  "feed_p50_ms_c1": 0.23,
+  "feed_p95_ms_c1": 0.47,
+  "feed_p99_ms_c1": 2.31,
+  "requests_c50": 50000,
+  "rps_c50": 5781,
+  "feed_p50_ms_c50": 8.31,
+  "feed_p95_ms_c50": 10.23,
+  "feed_p99_ms_c50": 13.76
+}

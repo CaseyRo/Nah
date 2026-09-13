@@ -33,6 +33,12 @@ notifications, whether anyone pays, and why the calm ones keep dying.
 Mastodon, the wider fediverse or Matrix express that? What per-circle digests,
 dying circles and archives should look like.
 
+### [Spike results: which runtime, and how many databases]({{ '/research/spike-results/' | relative_url }})
+
+*13 September 2026.* Four candidate servers measured against thresholds written
+in advance, plus the SQLite topology question and the digest storm. The result
+overturned the framework choice.
+
 ## Related
 
 - [Decisions]({{ '/decisions/' | relative_url }}) — the architecture decision records

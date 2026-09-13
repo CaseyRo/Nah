@@ -1,0 +1,7 @@
+{
+  "seeded": 116800,
+  "seconds": 18.0,
+  "inserts_per_sec": 6482,
+  "post_p50_ms": 1.27,
+  "post_p95_ms": 9.37
+}

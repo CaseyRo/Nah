@@ -1,0 +1,11 @@
+# Throwaway build output and fixtures. The code and the numbers are the artifact.
+candidates/*/pbspike
+candidates/*/plainspike
+candidates/*/dartspike
+candidates/*/pb_data/
+candidates/*/data.db*
+candidates/*/.venv/
+candidates/*/.dart_tool/
+candidates/*/pubspec.lock
+results/*.rss.txt
+candidates/*/__pycache__/

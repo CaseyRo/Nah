@@ -1,0 +1,23 @@
+{
+  "candidate": "go-pocketbase",
+  "idle_rss_mb": 54.7,
+  "peak_rss_mb": 719.0,
+  "artifact_mb": 32.9,
+  "db_mb": 112.2,
+  "seeded": 116800,
+  "seconds": 18.0,
+  "inserts_per_sec": 6482,
+  "post_p50_ms": 1.27,
+  "post_p95_ms": 9.37,
+  "cold_start_ms": 121,
+  "requests_c1": 1000,
+  "rps_c1": 3164,
+  "feed_p50_ms_c1": 0.19,
+  "feed_p95_ms_c1": 0.47,
+  "feed_p99_ms_c1": 3.39,
+  "requests_c50": 50000,
+  "rps_c50": 8403,
+  "feed_p50_ms_c50": 5.14,
+  "feed_p95_ms_c50": 12.38,
+  "feed_p99_ms_c50": 18.71
+}

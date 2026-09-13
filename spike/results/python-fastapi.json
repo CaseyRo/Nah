@@ -1,0 +1,23 @@
+{
+  "candidate": "python-fastapi",
+  "idle_rss_mb": 278.2,
+  "peak_rss_mb": 404.0,
+  "artifact_mb": 38.3,
+  "db_mb": 80.1,
+  "seeded": 116800,
+  "seconds": 17.0,
+  "inserts_per_sec": 6890,
+  "post_p50_ms": 1.03,
+  "post_p95_ms": 6.51,
+  "cold_start_ms": 432,
+  "requests_c1": 1000,
+  "rps_c1": 2007,
+  "feed_p50_ms_c1": 0.41,
+  "feed_p95_ms_c1": 0.45,
+  "feed_p99_ms_c1": 3.12,
+  "requests_c50": 50000,
+  "rps_c50": 1977,
+  "feed_p50_ms_c50": 18.69,
+  "feed_p95_ms_c50": 37.17,
+  "feed_p99_ms_c50": 46.46
+}

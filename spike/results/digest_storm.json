@@ -1,0 +1,20 @@
+{
+  "all_at_once": {
+    "circles": 5000,
+    "pushes_sent": 2046,
+    "workers": 32,
+    "spread_seconds": 0,
+    "wall_seconds": 0.7,
+    "per_circle_p50_ms": 0.26,
+    "per_circle_p95_ms": 31.22
+  },
+  "spread_over_10s": {
+    "circles": 5000,
+    "pushes_sent": 2046,
+    "workers": 32,
+    "spread_seconds": 10,
+    "wall_seconds": 10.01,
+    "per_circle_p50_ms": 0.11,
+    "per_circle_p95_ms": 1.75
+  }
+}

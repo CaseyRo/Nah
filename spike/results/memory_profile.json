@@ -1,0 +1,62 @@
+[
+  {
+    "candidate": "go-pocketbase",
+    "requests": 5000,
+    "idle_mb": 41.6,
+    "peak_mb": 555.0,
+    "right_after_mb": 479.8,
+    "after_15s_idle_mb": 18.9
+  },
+  {
+    "candidate": "go-pocketbase",
+    "requests": 20000,
+    "idle_mb": 80.5,
+    "peak_mb": 586.6,
+    "right_after_mb": 523.3,
+    "after_15s_idle_mb": 127.8
+  },
+  {
+    "candidate": "go-pocketbase",
+    "requests": 50000,
+    "idle_mb": 77.9,
+    "peak_mb": 705.1,
+    "right_after_mb": 628.5,
+    "after_15s_idle_mb": 20.0
+  },
+  {
+    "candidate": "go-plain",
+    "requests": 50000,
+    "idle_mb": 19.2,
+    "peak_mb": 73.5,
+    "right_after_mb": 70.8,
+    "after_15s_idle_mb": 48.5
+  },
+  {
+    "candidate": "dart-shelf",
+    "requests": 50000,
+    "idle_mb": 15.7,
+    "peak_mb": 56.4,
+    "right_after_mb": 53.9,
+    "after_15s_idle_mb": 47.5
+  },
+  {
+    "candidate": "go-pocketbase (raw query, no record layer)",
+    "requests": 50000,
+    "idle_mb": 92.2,
+    "peak_mb": 587.0,
+    "right_after_mb": 434.8,
+    "after_15s_idle_mb": 347.6,
+    "feed_p95_ms_c50": 10.19,
+    "rps_c50": 10705
+  },
+  {
+    "candidate": "go-pocketbase (raw query, request logging off)",
+    "requests": 50000,
+    "idle_mb": 29.1,
+    "peak_mb": 536.6,
+    "right_after_mb": 292.6,
+    "after_15s_idle_mb": 223.2,
+    "feed_p95_ms_c50": 9.24,
+    "rps_c50": 11268
+  }
+]

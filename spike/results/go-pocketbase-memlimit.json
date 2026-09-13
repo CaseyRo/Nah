@@ -1,0 +1,16 @@
+[
+  {
+    "GOMEMLIMIT": "256MiB",
+    "idle_rss_mb": 63.8,
+    "peak_rss_mb": 732.1,
+    "feed_p95_ms_c50": 11.75,
+    "rps_c50": 8586
+  },
+  {
+    "GOMEMLIMIT": "128MiB",
+    "idle_rss_mb": 100.1,
+    "peak_rss_mb": 742.0,
+    "feed_p95_ms_c50": 11.48,
+    "rps_c50": 8646
+  }
+]

@@ -1,0 +1,35 @@
+{
+  "fixture": {
+    "circles": 50,
+    "moments_per_circle": 2000,
+    "build_seconds": 1.7
+  },
+  "shared_db": {
+    "concurrent_writes": {
+      "writers": 16,
+      "writes": 3200,
+      "seconds": 0.19,
+      "writes_per_sec": 16963,
+      "write_p50_ms": 0.02,
+      "write_p95_ms": 0.04,
+      "write_max_ms": 172.4
+    },
+    "export_one_circle_ms": 8,
+    "delete_one_circle_ms": 2,
+    "vacuum_after_delete_ms": 170
+  },
+  "db_per_circle": {
+    "concurrent_writes": {
+      "writers": 16,
+      "writes": 3200,
+      "seconds": 0.16,
+      "writes_per_sec": 20202,
+      "write_p50_ms": 0.62,
+      "write_p95_ms": 1.47,
+      "write_max_ms": 3.14
+    },
+    "export_one_circle_ms": 0,
+    "delete_one_circle_ms": 0,
+    "open_connections_at_200_circles": 200
+  }
+}
