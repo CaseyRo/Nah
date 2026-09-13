@@ -1,6 +1,6 @@
 ---
 title: "Measuring Instead of Arguing (or: the framework that wanted 700 megabytes)"
-date: 2026-09-13 18:00:00 +0200
+date: 2026-09-13 12:00:00 +0200
 categories: [Architecture, Decisions]
 tags: [spike, go, sqlite, benchmarks, decision-log]
 ---
