@@ -27,6 +27,12 @@ its own.
 mechanics work, why BeReal collapsed, what the research says about habits and
 notifications, whether anyone pays, and why the calm ones keep dying.
 
+### [Circles and the backend question]({{ '/research/circles-and-the-backend/' | relative_url }})
+
+*13 September 2026.* A person belongs to many overlapping circles at once. Can
+Mastodon, the wider fediverse or Matrix express that? What per-circle digests,
+dying circles and archives should look like.
+
 ## Related
 
 - [Decisions]({{ '/decisions/' | relative_url }}) — the architecture decision records
