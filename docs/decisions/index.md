@@ -20,14 +20,15 @@ ADRs are not specs. They're the *why* behind the spec. Future contributors (or f
 | [0006](0006-three-moment-types.html) | Three moment types (text, voice, photo) | Accepted (2026-04-26) |
 | [0007](0007-respectful-notifications.html) | Notifications default to most respectful | Accepted (2026-04-26) |
 | [0008](0008-mvp-scope.html) | MVP scope: 5-10 friends, real usage, explicit not-in-MVP list | Amended by 0009 |
-| [0009](0009-circles-not-one-circle.html) | Circles, not one circle | Accepted (2026-09-13) |
+| [0009](0009-circles-not-one-circle.html) | Circles, not one circle | Superseded by 0017 |
 | [0010](0010-small-server-not-mastodon.html) | A small server of our own, not Mastodon | Accepted (2026-09-13) |
 | [0011](0011-plain-go-and-a-database-per-circle.html) | Plain Go, and one database per circle | Accepted (2026-09-13) |
 | [0012](0012-encrypted-on-device.html) | Content encrypted on the device, and we hold no keys | Proposed (2026-09-13) |
-| [0013](0013-no-aggregated-feed.html) | No aggregated feed, a circle is a room you enter | Proposed (2026-09-13) |
+| [0013](0013-no-aggregated-feed.html) | No aggregated feed, a circle is a room you enter | Superseded by 0017 |
 | [0014](0014-the-go-setup.html) | The Go setup, and how it ships | Accepted (2026-09-13) |
 | [0015](0015-no-passwords-a-key-on-the-device.html) | No passwords, a key on the device | Accepted (2026-09-13) |
 | [0016](0016-the-moment-envelope.html) | The moment envelope, and why it is not HTML | Proposed (2026-09-13) |
+| [0017](0017-one-network-of-a-hundred-and-fifty.html) | One network of a hundred and fifty, not circles | Accepted (2026-09-13) |
 
 ## How to read these
 

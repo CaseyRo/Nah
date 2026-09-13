@@ -2,13 +2,17 @@
 title: "ADR-0013 — No aggregated feed. A circle is a room you enter"
 permalink: /decisions/0013-no-aggregated-feed/
 layout: page
-status: Proposed
+status: Superseded by ADR-0017
 date: 2026-09-13
 ---
 
 ## Status
 
-Proposed (2026-09-13). Corrects the client design assumed by [ADR-0009](0009-circles-not-one-circle.html), which described the app merging a person's circles into one view.
+**Superseded by [ADR-0017](0017-one-network-of-a-hundred-and-fifty.html)** (2026-09-13), later the same day, along with the [ADR-0009](0009-circles-not-one-circle.html) it was correcting.
+
+Proposed (2026-09-13). Corrected the client design assumed by ADR-0009, which described the app merging a person's circles into one view.
+
+It argued against merging several audiences back into one stream. With one audience there is nothing to merge, so the objection does not survive its premise. What it was protecting — chronological, finite, unranked — survives in ADR-0017 without the caching and prefetching that made switching rooms feel instant, because there are no longer rooms to switch between.
 
 ## Context
 

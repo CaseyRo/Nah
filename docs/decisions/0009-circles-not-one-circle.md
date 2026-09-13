@@ -2,13 +2,17 @@
 title: "ADR-0009 — Circles, not one circle"
 permalink: /decisions/0009-circles-not-one-circle/
 layout: page
-status: Accepted
+status: Superseded by ADR-0017
 date: 2026-09-13
 ---
 
 ## Status
 
-Accepted (2026-09-13). Supersedes [ADR-0003](0003-connection-model.html). Amends [ADR-0007](0007-respectful-notifications.html) and [ADR-0008](0008-mvp-scope.html).
+**Superseded by [ADR-0017](0017-one-network-of-a-hundred-and-fifty.html)** (2026-09-13), later the same day.
+
+Accepted (2026-09-13). Superseded [ADR-0003](0003-connection-model.html), which ADR-0017 has now largely restored. Amended [ADR-0007](0007-respectful-notifications.html) and [ADR-0008](0008-mvp-scope.html).
+
+Two things brought it down. Copying Dunbar's number onto each circle turned an ego-network figure into a claim about group size, which it has never been. And a circle turned out to be a group chat with the chat removed, so it competed with a group people already had and lost. The observation underneath it — that a person's audiences are plural — was right; the conclusion that the plurality wants rooms was not.
 
 ## Context
 
