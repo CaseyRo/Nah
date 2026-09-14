@@ -1,10 +1,9 @@
-// Command server runs a Nah? circle server, and creates circles on it.
-//
-//	server                      serve
-//	server create-circle        make a circle, print its id and first invite
+// Command server runs a Nah? server.
 //
 // Configuration is environment variables read into a struct at start, per
-// ADR-0014. There is no configuration file and there is no flag parsing.
+// ADR-0014. There is no configuration file, no flag parsing and no subcommand:
+// a person registers from the app on first run, so there is nothing for an
+// operator to create.
 package main
 
 import (
@@ -41,6 +40,13 @@ func env(key, fallback string) string {
 }
 
 func main() {
+	// create-circle went with circles (ADR-0017). Refuse rather than quietly
+	// serve, in case something still calls it.
+	if len(os.Args) > 1 {
+		fmt.Fprintln(os.Stderr, "server takes no arguments; configure it with NAH_ADDR and NAH_DATA_DIR")
+		os.Exit(2)
+	}
+
 	log := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	cfg := load()
 
@@ -50,23 +56,6 @@ func main() {
 		os.Exit(1)
 	}
 	defer store.Close()
-
-	if len(os.Args) > 1 {
-		if os.Args[1] != "create-circle" {
-			fmt.Fprintf(os.Stderr, "unknown command %q; try create-circle, or no arguments to serve\n", os.Args[1])
-			os.Exit(2)
-		}
-		id, invite, err := store.Create()
-		if err != nil {
-			log.Error("cannot create a circle", "err", err)
-			os.Exit(1)
-		}
-		// The content key is not ours to make: it is generated on the device and
-		// travels after the '#' of the invite link (ADR-0012). This prints the
-		// half the server owns.
-		fmt.Printf("circle %s\ninvite %s\n", id, invite)
-		return
-	}
 
 	if err := serve(cfg, store, log); err != nil {
 		log.Error("server stopped", "err", err)

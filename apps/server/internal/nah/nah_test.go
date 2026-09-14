@@ -7,20 +7,26 @@ import (
 	"encoding/base64"
 	"encoding/binary"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"io"
 	"log/slog"
+	mathrand "math/rand/v2"
 	"net/http"
 	"net/http/httptest"
+	"sort"
 	"strings"
+	"sync/atomic"
 	"testing"
 	"time"
 )
 
-// device is one phone: a keypair and a session token.
+// device is one phone: a keypair, the person it registered as, and a session.
 type device struct {
-	pub   ed25519.PublicKey
-	priv  ed25519.PrivateKey
-	token string
+	pub    ed25519.PublicKey
+	priv   ed25519.PrivateKey
+	person string
+	token  string
 }
 
 func newDevice(t *testing.T) *device {
@@ -41,24 +47,57 @@ func testKey(t *testing.T) []byte {
 	return key
 }
 
-func newTestServer(t *testing.T) (*httptest.Server, *Store) {
+func newStore(t *testing.T) *Store {
 	t.Helper()
-	dir := t.TempDir()
-	store, err := NewStore(dir)
+	store, err := NewStore(t.TempDir())
 	if err != nil {
 		t.Fatal(err)
 	}
-	key, err := SessionKey(dir)
+	t.Cleanup(store.Close)
+	return store
+}
+
+func register(t *testing.T, store *Store) string {
+	t.Helper()
+	id, err := store.Register(newDevice(t).pub)
 	if err != nil {
 		t.Fatal(err)
 	}
+	return id
+}
+
+func invite(t *testing.T, store *Store, person string) string {
+	t.Helper()
+	token, err := store.Invite(person)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return token
+}
+
+func mustPost(t *testing.T, store *Store, person, blob string) {
+	t.Helper()
+	if _, err := store.Post(person, []byte(blob)); err != nil {
+		t.Fatal(err)
+	}
+}
+
+// ticking is a clock that moves on a second every time it is read, so no two
+// moments in a test share a time and newest first is never decided by a tie.
+func ticking() func() time.Time {
+	var n atomic.Int64
+	start := time.Date(2026, 9, 14, 12, 0, 0, 0, time.UTC)
+	return func() time.Time { return start.Add(time.Duration(n.Add(1)) * time.Second) }
+}
+
+func newTestServer(t *testing.T) *httptest.Server {
+	t.Helper()
+	store := newStore(t)
+	store.now = ticking()
 	log := slog.New(slog.NewTextHandler(io.Discard, nil))
-	srv := httptest.NewServer(NewServer(store, NewAuth(key), log).Handler())
-	t.Cleanup(func() {
-		srv.Close()
-		store.Close()
-	})
-	return srv, store
+	srv := httptest.NewServer(NewServer(store, NewAuth(testKey(t)), log).Handler())
+	t.Cleanup(srv.Close)
+	return srv
 }
 
 func call(t *testing.T, srv *httptest.Server, method, path, token string, body any) (int, []byte) {
@@ -90,11 +129,25 @@ func call(t *testing.T, srv *httptest.Server, method, path, token string, body a
 	return res.StatusCode, out
 }
 
-// signIn runs the whole of ADR-0015 from the client side: ask for a challenge,
-// sign it, exchange the signature for a token.
-func (d *device) signIn(t *testing.T, srv *httptest.Server, circle string) {
+// join is a phone's first minute: register as a person, then sign in the way
+// ADR-0015 describes — ask for a challenge, sign it, trade the signature for a
+// token.
+func join(t *testing.T, srv *httptest.Server) *device {
 	t.Helper()
-	status, body := call(t, srv, "POST", "/v1/circles/"+circle+"/challenge", "",
+	d := newDevice(t)
+	status, body := call(t, srv, "POST", "/v1/people", "", map[string]any{"public_key": d.pub})
+	if status != http.StatusCreated {
+		t.Fatalf("register: status %d: %s", status, body)
+	}
+	var reg struct {
+		ID string `json:"id"`
+	}
+	if err := json.Unmarshal(body, &reg); err != nil {
+		t.Fatal(err)
+	}
+	d.person = reg.ID
+
+	status, body = call(t, srv, "POST", "/v1/people/"+d.person+"/challenge", "",
 		map[string]any{"public_key": d.pub})
 	if status != http.StatusOK {
 		t.Fatalf("challenge: status %d: %s", status, body)
@@ -106,8 +159,8 @@ func (d *device) signIn(t *testing.T, srv *httptest.Server, circle string) {
 		t.Fatal(err)
 	}
 
-	sig := ed25519.Sign(d.priv, SignedMessage(circle, ch.Challenge))
-	status, body = call(t, srv, "POST", "/v1/circles/"+circle+"/session", "", map[string]any{
+	sig := ed25519.Sign(d.priv, SignedMessage(d.person, ch.Challenge))
+	status, body = call(t, srv, "POST", "/v1/people/"+d.person+"/session", "", map[string]any{
 		"public_key": d.pub,
 		"challenge":  ch.Challenge,
 		"signature":  sig,
@@ -122,98 +175,288 @@ func (d *device) signIn(t *testing.T, srv *httptest.Server, circle string) {
 		t.Fatal(err)
 	}
 	d.token = s.Token
+	return d
 }
 
-// TestTwoDevicesOneCircle is CDI-1835 without the phones: two devices join one
-// circle, each posts a moment, and each sees both.
-func TestTwoDevicesOneCircle(t *testing.T) {
-	srv, store := newTestServer(t)
-	circle, invite, err := store.Create()
-	if err != nil {
+// connect is what a touch or a link carries: a makes an invite and b redeems it.
+func connect(t *testing.T, srv *httptest.Server, a, b *device) {
+	t.Helper()
+	status, body := call(t, srv, "POST", "/v1/people/"+a.person+"/invites", a.token, nil)
+	if status != http.StatusCreated {
+		t.Fatalf("invite: status %d: %s", status, body)
+	}
+	var inv struct {
+		Invite string `json:"invite"`
+	}
+	if err := json.Unmarshal(body, &inv); err != nil {
 		t.Fatal(err)
 	}
-
-	a, b := newDevice(t), newDevice(t)
-	for _, d := range []*device{a, b} {
-		if status, body := call(t, srv, "POST", "/v1/circles/"+circle+"/join", "",
-			map[string]any{"invite": invite, "public_key": d.pub}); status != http.StatusNoContent {
-			t.Fatalf("join: status %d: %s", status, body)
-		}
-		d.signIn(t, srv, circle)
+	if status, body := call(t, srv, "POST", "/v1/people/"+b.person+"/connections", b.token,
+		map[string]any{"person": a.person, "invite": inv.Invite}); status != http.StatusNoContent {
+		t.Fatalf("connect: status %d: %s", status, body)
 	}
+}
+
+func (d *device) post(t *testing.T, srv *httptest.Server, blob string) {
+	t.Helper()
+	if status, body := call(t, srv, "POST", "/v1/people/"+d.person+"/moments", d.token,
+		map[string]any{"blob": []byte(blob)}); status != http.StatusCreated {
+		t.Fatalf("post: status %d: %s", status, body)
+	}
+}
+
+func (d *device) feed(t *testing.T, srv *httptest.Server) []Moment {
+	t.Helper()
+	status, body := call(t, srv, "GET", "/v1/people/"+d.person+"/feed", d.token, nil)
+	if status != http.StatusOK {
+		t.Fatalf("feed: status %d: %s", status, body)
+	}
+	var feed []Moment
+	if err := json.Unmarshal(body, &feed); err != nil {
+		t.Fatal(err)
+	}
+	return feed
+}
+
+// TestTwoPeopleConnected is CDI-1835 without the phones: two people connect,
+// each posts a moment, and each sees both.
+func TestTwoPeopleConnected(t *testing.T) {
+	srv := newTestServer(t)
+	a, b := join(t, srv), join(t, srv)
+	connect(t, srv, a, b)
 
 	// The server stores ciphertext. These bytes stand in for it; nothing here
 	// ever tries to read them.
-	for _, tc := range []struct {
-		d    *device
-		blob []byte
-	}{{a, []byte("ciphertext from A")}, {b, []byte("ciphertext from B")}} {
-		if status, body := call(t, srv, "POST", "/v1/circles/"+circle+"/moments", tc.d.token,
-			map[string]any{"blob": tc.blob}); status != http.StatusCreated {
-			t.Fatalf("post: status %d: %s", status, body)
-		}
-	}
+	a.post(t, srv, "ciphertext from A")
+	b.post(t, srv, "ciphertext from B")
 
 	for name, d := range map[string]*device{"A": a, "B": b} {
-		status, body := call(t, srv, "GET", "/v1/circles/"+circle+"/moments", d.token, nil)
-		if status != http.StatusOK {
-			t.Fatalf("%s feed: status %d: %s", name, status, body)
-		}
-		var feed []Moment
-		if err := json.Unmarshal(body, &feed); err != nil {
-			t.Fatal(err)
-		}
+		feed := d.feed(t, srv)
 		if len(feed) != 2 {
 			t.Fatalf("%s sees %d moments, want 2", name, len(feed))
 		}
 		// Newest first.
-		if !bytes.Equal(feed[0].Blob, []byte("ciphertext from B")) {
+		if string(feed[0].Blob) != "ciphertext from B" {
 			t.Errorf("%s: feed is not newest first: %q", name, feed[0].Blob)
 		}
-		if feed[0].AuthorID == feed[1].AuthorID {
-			t.Errorf("%s: both moments claim the same author", name)
+		if feed[0].AuthorID != b.person || feed[1].AuthorID != a.person {
+			t.Errorf("%s: authors are %s and %s, want B then A", name, feed[0].AuthorID, feed[1].AuthorID)
 		}
 	}
 }
 
 func TestStrangerCannotRead(t *testing.T) {
-	srv, store := newTestServer(t)
-	circle, invite, err := store.Create()
-	if err != nil {
-		t.Fatal(err)
-	}
-	member := newDevice(t)
-	call(t, srv, "POST", "/v1/circles/"+circle+"/join", "",
-		map[string]any{"invite": invite, "public_key": member.pub})
-	member.signIn(t, srv, circle)
+	srv := newTestServer(t)
+	a, stranger := join(t, srv), join(t, srv)
+	a.post(t, srv, "only for the people A is connected to")
 
-	if status, _ := call(t, srv, "GET", "/v1/circles/"+circle+"/moments", "", nil); status != http.StatusUnauthorized {
+	feed := "/v1/people/" + a.person + "/feed"
+	if status, _ := call(t, srv, "GET", feed, "", nil); status != http.StatusUnauthorized {
 		t.Errorf("no token: status %d, want 401", status)
 	}
-	if status, _ := call(t, srv, "GET", "/v1/circles/"+circle+"/moments", "not-a-token", nil); status != http.StatusUnauthorized {
+	if status, _ := call(t, srv, "GET", feed, "not-a-token", nil); status != http.StatusUnauthorized {
 		t.Errorf("bogus token: status %d, want 401", status)
 	}
 
-	// A session is bound to the circle it was issued for.
-	other, _, err := store.Create()
+	// A session is bound to the person it was issued for.
+	if status, _ := call(t, srv, "GET", feed, stranger.token, nil); status != http.StatusUnauthorized {
+		t.Errorf("someone else's token: status %d, want 401", status)
+	}
+	if status, _ := call(t, srv, "POST", "/v1/people/"+a.person+"/moments", stranger.token,
+		map[string]any{"blob": []byte("forged")}); status != http.StatusUnauthorized {
+		t.Errorf("posting as someone else: status %d, want 401", status)
+	}
+
+	// And a feed holds only the people its reader is connected to.
+	if got := stranger.feed(t, srv); len(got) != 0 {
+		t.Errorf("a stranger's own feed shows %d moments from someone they never connected to", len(got))
+	}
+}
+
+// TestFeedMatchesReadingEveryFile holds Feed's shortcut to account. It stops
+// reading once nobody left can have anything newer than its page (CDI-1879),
+// and that has to give exactly the page that reading everybody's file would.
+func TestFeedMatchesReadingEveryFile(t *testing.T) {
+	store := newStore(t)
+	rng := mathrand.New(mathrand.NewPCG(1, 2))
+	var at time.Time
+	store.now = func() time.Time { return at }
+
+	const people, most = 40, 40
+	persons := make([]string, people)
+	for i := range persons {
+		persons[i] = register(t, store)
+	}
+
+	// Every moment gets a second of its own, posted in no particular order, so a
+	// file's row ids say nothing about time.
+	base := time.Date(2025, 9, 14, 0, 0, 0, 0, time.UTC)
+	seconds := rng.Perm(people * most)
+	posted := map[string][]Moment{}
+	for i, p := range persons {
+		for j := range rng.IntN(most + 1) {
+			at = base.Add(time.Duration(seconds[i*most+j]) * time.Second)
+			m, err := store.Post(p, fmt.Appendf(nil, "moment %d by %s", j, p))
+			if err != nil {
+				t.Fatal(err)
+			}
+			posted[p] = append(posted[p], m)
+		}
+	}
+
+	connections := map[string][]string{}
+	for i, a := range persons {
+		for _, b := range persons[i+1:] {
+			if rng.IntN(3) == 0 {
+				if err := store.Connect(b, a, invite(t, store, a)); err != nil {
+					t.Fatal(err)
+				}
+				connections[a] = append(connections[a], b)
+				connections[b] = append(connections[b], a)
+			}
+		}
+	}
+
+	for _, limit := range []int{1, 10, 200} {
+		for _, reader := range persons {
+			want := append([]Moment{}, posted[reader]...)
+			for _, c := range connections[reader] {
+				want = append(want, posted[c]...)
+			}
+			sort.Slice(want, func(i, j int) bool { return newer(want[i], want[j]) })
+			want = want[:min(limit, len(want))]
+
+			got, err := store.Feed(reader, limit)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if len(got) != len(want) {
+				t.Fatalf("limit %d, %s: feed has %d moments, reading every file gives %d", limit, reader, len(got), len(want))
+			}
+			for i := range want {
+				g, w := got[i], want[i]
+				if g.AuthorID != w.AuthorID || g.ID != w.ID || g.CreatedAt != w.CreatedAt || !bytes.Equal(g.Blob, w.Blob) {
+					t.Fatalf("limit %d, %s: moment %d is %s/%d, reading every file gives %s/%d",
+						limit, reader, i, g.AuthorID, g.ID, w.AuthorID, w.ID)
+				}
+			}
+		}
+	}
+}
+
+// TestPostFromAnotherInstanceArrives is a rolling deploy in miniature: two
+// stores on one volume, a moment taken by the old one, and a feed read from the
+// new one. Feed trusts what it remembers about who posted last for
+// newestRecheck, so after that the moment has to be there.
+func TestPostFromAnotherInstanceArrives(t *testing.T) {
+	dir := t.TempDir()
+	stores := make([]*Store, 2)
+	for i := range stores {
+		s, err := NewStore(dir)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(s.Close)
+		stores[i] = s
+	}
+	old, neu := stores[0], stores[1]
+	now := time.Date(2026, 9, 14, 12, 0, 0, 0, time.UTC)
+	old.now = func() time.Time { return now }
+	neu.now = old.now
+
+	reader, author, other := register(t, neu), register(t, neu), register(t, neu)
+	for _, p := range []string{author, other} {
+		if err := neu.Connect(reader, p, invite(t, neu, p)); err != nil {
+			t.Fatal(err)
+		}
+	}
+	mustPost(t, neu, author, "before the deploy")
+	now = now.Add(500 * time.Millisecond)
+	mustPost(t, neu, other, "a little later")
+
+	// Reading a feed teaches the new instance who posted last.
+	if _, err := neu.Feed(reader, 1); err != nil {
+		t.Fatal(err)
+	}
+
+	// The old instance, still draining, takes a newer moment from author.
+	now = now.Add(500 * time.Millisecond)
+	mustPost(t, old, author, "during the deploy")
+
+	now = now.Add(newestRecheck)
+	feed, err := neu.Feed(reader, 1)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if status, _ := call(t, srv, "GET", "/v1/circles/"+other+"/moments", member.token, nil); status != http.StatusUnauthorized {
-		t.Errorf("token reused on another circle: status %d, want 401", status)
+	if len(feed) != 1 {
+		t.Fatalf("feed has %d moments, want 1", len(feed))
+	}
+	if got := string(feed[0].Blob); got != "during the deploy" {
+		t.Fatalf("a recheck later, the new instance's feed starts with %q; want the moment the old one took", got)
+	}
+}
+
+// TestNetworkCap is ADR-0017's cap: 150, counted by the server, on both sides.
+func TestNetworkCap(t *testing.T) {
+	store := newStore(t)
+	hub := register(t, store)
+	hubInvite := invite(t, store, hub)
+	for i := range NetworkCap {
+		if err := store.Connect(register(t, store), hub, hubInvite); err != nil {
+			t.Fatalf("connection %d: %v", i+1, err)
+		}
+	}
+	mustPost(t, store, hub, "from the hub")
+
+	// Full as the one who made the invite: nothing is written on either side.
+	late := register(t, store)
+	if err := store.Connect(late, hub, hubInvite); !errors.Is(err, ErrNetworkFull) {
+		t.Fatalf("connection %d: got %v, want ErrNetworkFull", NetworkCap+1, err)
+	}
+
+	// Full as the one redeeming: the inviter's side is written first and has to
+	// be undone, or the inviter would be reading the hub one-way.
+	inviter := register(t, store)
+	if err := store.Connect(hub, inviter, invite(t, store, inviter)); !errors.Is(err, ErrNetworkFull) {
+		t.Fatalf("redeeming while full: got %v, want ErrNetworkFull", err)
+	}
+
+	for name, p := range map[string]string{"late": late, "inviter": inviter} {
+		feed, err := store.Feed(p, 10)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(feed) != 0 {
+			t.Errorf("%s can read the hub after the connection was refused", name)
+		}
+	}
+}
+
+func TestBadInvite(t *testing.T) {
+	store := newStore(t)
+	a, b, c := register(t, store), register(t, store), register(t, store)
+	if err := store.Connect(b, a, "not-an-invite"); !errors.Is(err, ErrBadInvite) {
+		t.Errorf("made-up invite: got %v, want ErrBadInvite", err)
+	}
+	fromA := invite(t, store, a)
+	if err := store.Connect(b, c, fromA); !errors.Is(err, ErrBadInvite) {
+		t.Errorf("A's invite presented as C's: got %v, want ErrBadInvite", err)
+	}
+	if err := store.Connect(a, a, fromA); !errors.Is(err, ErrOwnInvite) {
+		t.Errorf("own invite: got %v, want ErrOwnInvite", err)
 	}
 }
 
 func TestChallengeIsSingleUse(t *testing.T) {
 	auth := NewAuth(testKey(t))
 	d := newDevice(t)
-	ch := auth.Challenge("c", d.pub)
-	sig := ed25519.Sign(d.priv, SignedMessage("c", ch))
+	ch := auth.Challenge("p", d.pub)
+	sig := ed25519.Sign(d.priv, SignedMessage("p", ch))
 
-	if _, _, err := auth.Session("c", ch, d.pub, sig); err != nil {
+	if _, _, err := auth.Session("p", ch, d.pub, sig); err != nil {
 		t.Fatalf("first use: %v", err)
 	}
-	if _, _, err := auth.Session("c", ch, d.pub, sig); err == nil {
+	if _, _, err := auth.Session("p", ch, d.pub, sig); err == nil {
 		t.Error("a replayed challenge was accepted")
 	}
 }
@@ -222,44 +465,19 @@ func TestSignatureMustVerify(t *testing.T) {
 	auth := NewAuth(testKey(t))
 	d, impostor := newDevice(t), newDevice(t)
 
-	ch := auth.Challenge("c", d.pub)
-	if _, _, err := auth.Session("c", ch, d.pub, ed25519.Sign(impostor.priv, SignedMessage("c", ch))); err == nil {
+	ch := auth.Challenge("p", d.pub)
+	if _, _, err := auth.Session("p", ch, d.pub, ed25519.Sign(impostor.priv, SignedMessage("p", ch))); err == nil {
 		t.Error("a signature from the wrong key was accepted")
 	}
 
-	// A signature over a different circle's message must not open this one.
-	ch = auth.Challenge("c", d.pub)
-	if _, _, err := auth.Session("c", ch, d.pub, ed25519.Sign(d.priv, SignedMessage("elsewhere", ch))); err == nil {
-		t.Error("a signature bound to another circle was accepted")
+	// A signature made for a different person must not sign in as this one.
+	ch = auth.Challenge("p", d.pub)
+	if _, _, err := auth.Session("p", ch, d.pub, ed25519.Sign(d.priv, SignedMessage("someone-else", ch))); err == nil {
+		t.Error("a signature bound to another person was accepted")
 	}
 }
 
-func TestMemberCap(t *testing.T) {
-	store, err := NewStore(t.TempDir())
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer store.Close()
-	circle, invite, err := store.Create()
-	if err != nil {
-		t.Fatal(err)
-	}
-	for i := 0; i < MemberCap; i++ {
-		pub, _, err := ed25519.GenerateKey(rand.Reader)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if err := store.Join(circle, invite, pub); err != nil {
-			t.Fatalf("member %d: %v", i, err)
-		}
-	}
-	pub, _, _ := ed25519.GenerateKey(rand.Reader)
-	if err := store.Join(circle, invite, pub); err != ErrCircleFull {
-		t.Fatalf("member %d: got %v, want ErrCircleFull", MemberCap+1, err)
-	}
-}
-
-func TestCircleIDIsNotAPath(t *testing.T) {
+func TestPersonIDIsNotAPath(t *testing.T) {
 	for _, id := range []string{
 		"../../etc/passwd",
 		"..",
@@ -278,13 +496,8 @@ func TestCircleIDIsNotAPath(t *testing.T) {
 		t.Errorf("ValidID(NewID()) = false for %q", id)
 	}
 
-	store, err := NewStore(t.TempDir())
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer store.Close()
-	if _, err := store.Feed("../../etc/passwd", 10); err != ErrBadCircleID {
-		t.Errorf("Feed with a traversal id: got %v, want ErrBadCircleID", err)
+	if _, err := newStore(t).Feed("../../etc/passwd", 10); !errors.Is(err, ErrBadPersonID) {
+		t.Errorf("Feed with a traversal id: got %v, want ErrBadPersonID", err)
 	}
 }
 
@@ -294,17 +507,8 @@ func TestMigrationsAreIdempotent(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	circle, invite, err := store.Create()
-	if err != nil {
-		t.Fatal(err)
-	}
-	d := newDevice(t)
-	if err := store.Join(circle, invite, d.pub); err != nil {
-		t.Fatal(err)
-	}
-	if _, err := store.Post(circle, d.pub, []byte("ciphertext")); err != nil {
-		t.Fatal(err)
-	}
+	p := register(t, store)
+	mustPost(t, store, p, "ciphertext")
 	store.Close()
 
 	// Reopening steps user_version, finds it already at the end, and changes nothing.
@@ -313,28 +517,12 @@ func TestMigrationsAreIdempotent(t *testing.T) {
 		t.Fatal(err)
 	}
 	defer reopened.Close()
-	feed, err := reopened.Feed(circle, 10)
+	feed, err := reopened.Feed(p, 10)
 	if err != nil {
 		t.Fatal(err)
 	}
 	if len(feed) != 1 {
 		t.Fatalf("after reopen: %d moments, want 1", len(feed))
-	}
-}
-
-func TestBadInvite(t *testing.T) {
-	store, err := NewStore(t.TempDir())
-	if err != nil {
-		t.Fatal(err)
-	}
-	defer store.Close()
-	circle, _, err := store.Create()
-	if err != nil {
-		t.Fatal(err)
-	}
-	d := newDevice(t)
-	if err := store.Join(circle, "not-an-invite", d.pub); err != ErrBadInvite {
-		t.Fatalf("got %v, want ErrBadInvite", err)
 	}
 }
 
@@ -349,8 +537,8 @@ func TestSessionSurvivesARestart(t *testing.T) {
 	d := newDevice(t)
 
 	before := NewAuth(key)
-	ch := before.Challenge("c", d.pub)
-	token, _, err := before.Session("c", ch, d.pub, ed25519.Sign(d.priv, SignedMessage("c", ch)))
+	ch := before.Challenge("p", d.pub)
+	token, _, err := before.Session("p", ch, d.pub, ed25519.Sign(d.priv, SignedMessage("p", ch)))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -364,7 +552,7 @@ func TestSessionSurvivesARestart(t *testing.T) {
 		t.Fatal("SessionKey generated a second key instead of reading the first")
 	}
 	after := NewAuth(reread)
-	pub, err := after.Lookup("c", token)
+	pub, err := after.Lookup("p", token)
 	if err != nil {
 		t.Fatalf("token did not survive the restart: %v", err)
 	}
@@ -372,11 +560,11 @@ func TestSessionSurvivesARestart(t *testing.T) {
 		t.Error("token came back as the wrong device")
 	}
 
-	// Still bound to its circle, and worthless under a different key.
-	if _, err := after.Lookup("elsewhere", token); err == nil {
-		t.Error("token opened another circle")
+	// Still bound to its person, and worthless under a different key.
+	if _, err := after.Lookup("someone-else", token); err == nil {
+		t.Error("token signed in as another person")
 	}
-	if _, err := NewAuth(testKey(t)).Lookup("c", token); err == nil {
+	if _, err := NewAuth(testKey(t)).Lookup("p", token); err == nil {
 		t.Error("token verified under a different signing key")
 	}
 }
@@ -384,8 +572,8 @@ func TestSessionSurvivesARestart(t *testing.T) {
 func TestTamperedTokenIsRejected(t *testing.T) {
 	auth := NewAuth(testKey(t))
 	d, impostor := newDevice(t), newDevice(t)
-	ch := auth.Challenge("c", d.pub)
-	token, _, err := auth.Session("c", ch, d.pub, ed25519.Sign(d.priv, SignedMessage("c", ch)))
+	ch := auth.Challenge("p", d.pub)
+	token, _, err := auth.Session("p", ch, d.pub, ed25519.Sign(d.priv, SignedMessage("p", ch)))
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -404,7 +592,7 @@ func TestTamperedTokenIsRejected(t *testing.T) {
 	forged = append(forged, impostor.pub...)
 	forged = append(forged, claims[8+ed25519.PublicKeySize:]...)
 	swapped := parts[0] + "." + base64.RawURLEncoding.EncodeToString(forged) + "." + parts[2]
-	if _, err := auth.Lookup("c", swapped); err == nil {
+	if _, err := auth.Lookup("p", swapped); err == nil {
 		t.Error("a token with someone else's key was accepted")
 	}
 
@@ -412,12 +600,12 @@ func TestTamperedTokenIsRejected(t *testing.T) {
 	extended := append([]byte{}, claims...)
 	binary.BigEndian.PutUint64(extended[:8], uint64(time.Now().Add(100*365*24*time.Hour).UnixMilli()))
 	longer := parts[0] + "." + base64.RawURLEncoding.EncodeToString(extended) + "." + parts[2]
-	if _, err := auth.Lookup("c", longer); err == nil {
+	if _, err := auth.Lookup("p", longer); err == nil {
 		t.Error("a token with a stretched expiry was accepted")
 	}
 
 	for _, bad := range []string{"", ".", "v1", "v1.", "v2." + parts[1] + "." + parts[2], parts[1] + "." + parts[2]} {
-		if _, err := auth.Lookup("c", bad); err == nil {
+		if _, err := auth.Lookup("p", bad); err == nil {
 			t.Errorf("malformed token %q was accepted", bad)
 		}
 	}
@@ -426,13 +614,13 @@ func TestTamperedTokenIsRejected(t *testing.T) {
 func TestExpiredTokenIsRejected(t *testing.T) {
 	auth := NewAuth(testKey(t))
 	d := newDevice(t)
-	ch := auth.Challenge("c", d.pub)
-	token, expires, err := auth.Session("c", ch, d.pub, ed25519.Sign(d.priv, SignedMessage("c", ch)))
+	ch := auth.Challenge("p", d.pub)
+	token, expires, err := auth.Session("p", ch, d.pub, ed25519.Sign(d.priv, SignedMessage("p", ch)))
 	if err != nil {
 		t.Fatal(err)
 	}
 	auth.now = func() time.Time { return expires.Add(time.Second) }
-	if _, err := auth.Lookup("c", token); err == nil {
+	if _, err := auth.Lookup("p", token); err == nil {
 		t.Error("an expired token was accepted")
 	}
 }

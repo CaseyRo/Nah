@@ -46,19 +46,23 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("ok\n"))
 	})
-	mux.HandleFunc("POST /v1/circles/{circle}/join", s.throttle(s.handleJoin))
-	mux.HandleFunc("POST /v1/circles/{circle}/challenge", s.throttle(s.handleChallenge))
-	mux.HandleFunc("POST /v1/circles/{circle}/session", s.throttle(s.handleSession))
-	mux.HandleFunc("GET /v1/circles/{circle}/moments", s.handleFeed)
-	mux.HandleFunc("POST /v1/circles/{circle}/moments", s.handlePost)
+	mux.HandleFunc("POST /v1/people", s.throttle(s.handleRegister))
+	mux.HandleFunc("POST /v1/people/{person}/challenge", s.throttle(s.handleChallenge))
+	mux.HandleFunc("POST /v1/people/{person}/session", s.throttle(s.handleSession))
+	mux.HandleFunc("POST /v1/people/{person}/invites", s.handleInvite)
+	mux.HandleFunc("POST /v1/people/{person}/connections", s.handleConnect)
+	mux.HandleFunc("GET /v1/people/{person}/feed", s.handleFeed)
+	mux.HandleFunc("POST /v1/people/{person}/moments", s.handlePost)
 	return s.logging(mux)
 }
 
 // --- handlers ---
 
-func (s *Server) handleJoin(w http.ResponseWriter, r *http.Request) {
+// handleRegister makes a person for a device. It is open, like installing the
+// app: a person with no connections can read nothing and reach nobody, and
+// connecting still takes a touch or an invite.
+func (s *Server) handleRegister(w http.ResponseWriter, r *http.Request) {
 	var in struct {
-		Invite    string `json:"invite"`
 		PublicKey []byte `json:"public_key"`
 	}
 	if !decode(w, r, &in) {
@@ -68,17 +72,12 @@ func (s *Server) handleJoin(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	switch err := s.store.Join(r.PathValue("circle"), in.Invite, pub); {
-	case err == nil:
-		w.WriteHeader(http.StatusNoContent)
-	case errors.Is(err, ErrCircleFull):
-		// Language, never a number (ADR-0004).
-		fail(w, http.StatusConflict, "This circle is full.")
-	case errors.Is(err, ErrBadInvite):
-		fail(w, http.StatusForbidden, "This invitation is no longer valid.")
-	default:
+	id, err := s.store.Register(pub)
+	if err != nil {
 		s.oops(w, r, err)
+		return
 	}
+	write(w, http.StatusCreated, map[string]string{"id": id})
 }
 
 func (s *Server) handleChallenge(w http.ResponseWriter, r *http.Request) {
@@ -92,15 +91,15 @@ func (s *Server) handleChallenge(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	circle := r.PathValue("circle")
-	// A challenge is issued without checking membership on purpose: answering
-	// differently for a stranger would turn this into a membership oracle.
-	if !ValidID(circle) {
-		fail(w, http.StatusNotFound, "No such circle.")
+	person := r.PathValue("person")
+	// A challenge is issued without checking whose key this is on purpose:
+	// answering differently for a stranger would turn this into an oracle.
+	if !ValidID(person) {
+		fail(w, http.StatusNotFound, "No such person.")
 		return
 	}
 	write(w, http.StatusOK, map[string]any{
-		"challenge": s.auth.Challenge(circle, pub),
+		"challenge": s.auth.Challenge(person, pub),
 	})
 }
 
@@ -117,17 +116,17 @@ func (s *Server) handleSession(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	circle := r.PathValue("circle")
-	member, err := s.store.IsMember(circle, pub)
+	person := r.PathValue("person")
+	owns, err := s.store.Owns(person, pub)
 	if err != nil {
 		s.storeErr(w, r, err)
 		return
 	}
-	if !member {
-		fail(w, http.StatusForbidden, "This device is not a member of that circle.")
+	if !owns {
+		fail(w, http.StatusForbidden, "This device does not belong to that person.")
 		return
 	}
-	token, expires, err := s.auth.Session(circle, in.Challenge, pub, in.Signature)
+	token, expires, err := s.auth.Session(person, in.Challenge, pub, in.Signature)
 	if err != nil {
 		fail(w, http.StatusUnauthorized, "That did not verify. Ask for a new challenge and try again.")
 		return
@@ -138,8 +137,51 @@ func (s *Server) handleSession(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
+func (s *Server) handleInvite(w http.ResponseWriter, r *http.Request) {
+	person, ok := s.authorize(w, r)
+	if !ok {
+		return
+	}
+	token, err := s.store.Invite(person)
+	if err != nil {
+		s.storeErr(w, r, err)
+		return
+	}
+	write(w, http.StatusCreated, map[string]string{"invite": token})
+}
+
+// handleConnect redeems an invite for the person in the path. The body names
+// who made it; a touch and a link both deliver exactly these two things.
+func (s *Server) handleConnect(w http.ResponseWriter, r *http.Request) {
+	person, ok := s.authorize(w, r)
+	if !ok {
+		return
+	}
+	var in struct {
+		Person string `json:"person"`
+		Invite string `json:"invite"`
+	}
+	if !decode(w, r, &in) {
+		return
+	}
+	switch err := s.store.Connect(person, in.Person, in.Invite); {
+	case err == nil:
+		w.WriteHeader(http.StatusNoContent)
+	case errors.Is(err, ErrNetworkFull):
+		// Language, never a number (ADR-0004). Either side can be the full one;
+		// CDI-1842 owns the real sentence, and this placeholder fits both.
+		fail(w, http.StatusConflict, "There is no room for this connection right now.")
+	case errors.Is(err, ErrBadInvite):
+		fail(w, http.StatusForbidden, "This invitation is no longer valid.")
+	case errors.Is(err, ErrOwnInvite):
+		fail(w, http.StatusBadRequest, "That is your own invitation.")
+	default:
+		s.storeErr(w, r, err)
+	}
+}
+
 func (s *Server) handleFeed(w http.ResponseWriter, r *http.Request) {
-	circle, _, ok := s.authorize(w, r)
+	person, ok := s.authorize(w, r)
 	if !ok {
 		return
 	}
@@ -147,7 +189,7 @@ func (s *Server) handleFeed(w http.ResponseWriter, r *http.Request) {
 	if n, err := strconv.Atoi(r.URL.Query().Get("limit")); err == nil && n > 0 {
 		limit = min(n, maxFeedLimit)
 	}
-	moments, err := s.store.Feed(circle, limit)
+	moments, err := s.store.Feed(person, limit)
 	if err != nil {
 		s.storeErr(w, r, err)
 		return
@@ -156,7 +198,7 @@ func (s *Server) handleFeed(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handlePost(w http.ResponseWriter, r *http.Request) {
-	circle, pub, ok := s.authorize(w, r)
+	person, ok := s.authorize(w, r)
 	if !ok {
 		return
 	}
@@ -170,7 +212,7 @@ func (s *Server) handlePost(w http.ResponseWriter, r *http.Request) {
 		fail(w, http.StatusBadRequest, "A moment cannot be empty.")
 		return
 	}
-	m, err := s.store.Post(circle, pub, in.Blob)
+	m, err := s.store.Post(person, in.Blob)
 	if err != nil {
 		s.storeErr(w, r, err)
 		return
@@ -180,31 +222,31 @@ func (s *Server) handlePost(w http.ResponseWriter, r *http.Request) {
 
 // --- plumbing ---
 
-// authorize resolves the bearer token to a member of the circle in the path.
-func (s *Server) authorize(w http.ResponseWriter, r *http.Request) (circle string, pub ed25519.PublicKey, ok bool) {
-	circle = r.PathValue("circle")
+// authorize resolves the bearer token to the person in the path.
+func (s *Server) authorize(w http.ResponseWriter, r *http.Request) (person string, ok bool) {
+	person = r.PathValue("person")
 	token, found := strings.CutPrefix(r.Header.Get("Authorization"), "Bearer ")
 	if !found || token == "" {
 		fail(w, http.StatusUnauthorized, "Sign in first.")
-		return "", nil, false
+		return "", false
 	}
-	pub, err := s.auth.Lookup(circle, token)
+	pub, err := s.auth.Lookup(person, token)
 	if err != nil {
 		fail(w, http.StatusUnauthorized, "That session has expired. Sign in again.")
-		return "", nil, false
+		return "", false
 	}
-	// Checked per request rather than at sign-in, so that removing a member
-	// takes effect immediately once M5 can remove one.
-	member, err := s.store.IsMember(circle, pub)
+	// Checked per request rather than at sign-in, so that replacing a lost
+	// phone's key takes effect immediately once M5 can do that.
+	owns, err := s.store.Owns(person, pub)
 	if err != nil {
 		s.storeErr(w, r, err)
-		return "", nil, false
+		return "", false
 	}
-	if !member {
-		fail(w, http.StatusForbidden, "This device is not a member of that circle.")
-		return "", nil, false
+	if !owns {
+		fail(w, http.StatusForbidden, "This device does not belong to that person.")
+		return "", false
 	}
-	return circle, pub, true
+	return person, true
 }
 
 func (s *Server) throttle(h http.HandlerFunc) http.HandlerFunc {
@@ -222,7 +264,7 @@ func (s *Server) logging(next http.Handler) http.Handler {
 		start := time.Now()
 		rec := &statusRecorder{ResponseWriter: w, status: http.StatusOK}
 		next.ServeHTTP(rec, r)
-		// Paths carry circle ids and nothing else. No body, ever: it is ciphertext
+		// Paths carry person ids and nothing else. No body, ever: it is ciphertext
 		// and it is not ours.
 		s.log.Info("request",
 			"method", r.Method,
@@ -243,8 +285,8 @@ func (r *statusRecorder) WriteHeader(code int) {
 }
 
 func (s *Server) storeErr(w http.ResponseWriter, r *http.Request, err error) {
-	if errors.Is(err, ErrNoCircle) || errors.Is(err, ErrBadCircleID) {
-		fail(w, http.StatusNotFound, "No such circle.")
+	if errors.Is(err, ErrNoPerson) || errors.Is(err, ErrBadPersonID) {
+		fail(w, http.StatusNotFound, "No such person.")
 		return
 	}
 	s.oops(w, r, err)

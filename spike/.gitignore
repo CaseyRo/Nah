@@ -2,6 +2,8 @@
 candidates/*/pbspike
 candidates/*/plainspike
 candidates/*/dartspike
+candidates/*/faninspike
+candidates/*/data/
 candidates/*/pb_data/
 candidates/*/data.db*
 candidates/*/.venv/

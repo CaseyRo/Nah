@@ -1,4 +1,4 @@
-# Checks and builds for the circle server.
+# Checks and builds for the Nah? server.
 #
 # This was written before apps/server existed, on purpose: the gate should be in
 # place before the first line of it lands. It was described as inert until then,

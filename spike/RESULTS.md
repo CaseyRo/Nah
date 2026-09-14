@@ -129,6 +129,108 @@ database side only. The real constraint is Apple and Google, and that lives in
 the relay, which is a separate service by necessity anyway. Spreading is still
 worth doing, because it costs nothing and it is the relay that will thank us.
 
+## The feed, read fan-in (14 September, CDI-1879)
+
+ADR-0017 replaced circles with one network of up to 150 people per person, and
+"the feed is one query" went with them. A feed is now the newest moments of
+everyone a person is connected to, each in a file of their own. Nothing above
+measured that.
+
+Same machine, same harness, same thresholds. Plain Go was rerun first, through
+the harness as it stood, to check the machine still gave M0's numbers: feed p95
+at 50 readers 8.59 ms against 8.46, 13,833 reads/sec against 13,951, peak
+74.6 MB against 74.2. After the harness gained a people mode it was run once
+more in circle mode: 8.37 ms and 14,368 reads/sec. Seeding was 14% slower than
+M0 on that run, inside the spread of the two reruns.
+
+Fixture: **1,000 people, one year of history, 221,044 moments**, a file each.
+80% post about every five days, 15% daily and 5% five times a day. Everyone is
+connected to exactly 150 others, the cap; a second run connects everyone to 30.
+The candidate, `candidates/go-fanin`, copies `apps/server`'s store: the same
+pragmas, one writer and eight readers per file, files opened on first use and
+never closed.
+
+| | Every file, whole rows | Every file, keys first | Newest poster first | Newest poster first |
+|---|---|---|---|---|
+| Connections each | 150 | 150 | 150 | 30 |
+| Feed p95, 1 reader | 6.6 ms | 3.7 ms | **0.86 ms** | 1.13 ms |
+| Feed p95, 50 readers | 196.6 ms | 54.2 ms | **23.6 ms** | 13.2 ms |
+| Feeds/sec, 50 readers | 289 | 1,262 | **3,509** | 6,237 |
+| Idle memory | 25.6 MB | 56.8 MB | 56.2 MB | 27.3 MB |
+| Peak under load | 690.0 MB | 361.9 MB | **254.4 MB** | 321.1 MB |
+| Cold start to first feed | 394 ms | 390 ms | 409 ms | 80 ms |
+| Post p95 | 1.98 ms | 1.84 ms | 2.00 ms | 1.95 ms |
+| Files open after the benchmark | 9,171 | 9,378 | 7,067 | 7,830 |
+
+Against the thresholds:
+
+| Threshold | Whole rows | Keys first | Newest first, 150 | Newest first, 30 |
+|---|---|---|---|---|
+| Feed p95 under 50 ms | **fail** | **fail** | pass | pass |
+| Post p95 under 100 ms | pass | pass | pass | pass |
+| Idle under 150 MB | pass | pass | pass | pass |
+| Peak under 400 MB | **fail** | pass | pass | pass |
+| Cold start under 2 s | pass | pass | pass | pass |
+
+### Reading every file fails, and not on the queries
+
+The obvious shape asks each connection's file for its newest thirty, merges,
+and keeps thirty. For one reader that is 181 feeds a second. For fifty it is
+289: ten cores bought 1.6 times the throughput. A CPU profile under load said
+why.
+
+- **21% of CPU was `fcntl`.** SQLite takes and releases a file lock around every
+  read transaction, and this feed is 151 of them per request. Reading pages was
+  0.1%; everything was already in cache.
+- **Half of all CPU was stepping from the index into the table** to fetch a blob,
+  and 4,470 of the 4,500 rows fetched per feed never reached the page.
+- **Those discarded blobs were 73% of all allocation**, which is the 690 MB peak.
+
+Reading only `(id, created_at)`, which the index covers, and fetching blobs for
+the thirty that make the page fixed the memory and quadrupled throughput. It
+still failed latency by four milliseconds. What remains is a transaction per
+file, and no query shape removes that.
+
+### Newest poster first
+
+Reading fewer files does. Keep, per person, the time of their newest moment.
+Visit connections most recent poster first, and stop at the first whose newest
+moment is older than the page already collected: nobody after them can have
+anything newer. A feed then reads at most 31 files however many connections
+there are, and usually far fewer, because a few people post most of the moments.
+
+That is one number per person, not a timeline cache. It is set when the process
+takes a post, and read back from the file after 30 seconds, because two
+instances on one volume during a rolling deploy (CDI-1876) would otherwise hide
+each other's newest moments. The benchmark ran with that recheck on.
+
+It was checked rather than trusted: for 100 readers, the pages from keys first
+and from newest first were compared with the whole-row read of every file. None
+differed.
+
+**Decision: read fan-in from per-person files, newest poster first.** Export,
+delete and move stay file operations, which is why ADR-0011 chose a file per
+circle. Writing every moment into 150 feed files was not measured, because
+nothing here needed it.
+
+### What it costs anyway
+
+- **Seven to nine open files per person** with a file open: 7,067 at a thousand.
+  At ten thousand people on one host that is seventy thousand descriptors, and
+  the handle cache `apps/server` never evicts would need an LRU.
+- **About a quarter of a megabyte per open file.** Idle memory follows files
+  open, not connections: 56 MB with 151 files open, 27 MB with 31. Peak was
+  254 MB at 150 connections and 321 MB at 30, where the server was also doing
+  nearly twice the work; this run cannot separate the two.
+- **Cold start is now the first feed**, which opens and reads up to 151 files:
+  409 ms, against 34 ms for one query on one file. Inside two seconds, and paid
+  once per person per process.
+- **Write-ahead logs, if the process dies.** 68 MB of database left 2.5 GB of log
+  files behind, because the harness kills the server rather than stopping it and
+  a file keeps its log until a checkpoint. `apps/server` closes every file on
+  SIGTERM, which checkpoints them. The database size these runs report is
+  inflated by exactly this, so it is left out of the table.
+
 ## What is not measured yet
 
 - **Restore from backup** needs Litestream installed. Threshold 7 is open.

@@ -48,9 +48,9 @@ Nah stands on the shoulders of giants. We're grateful to these open source proje
 |-------|------------|
 | **Mobile app** | Flutter 3.41+ / Dart 3.11+ (iOS + Android) |
 | **State** | Bloc / Cubit |
-| **Networking** | Dio + the circle server's own API |
+| **Networking** | Dio + the Nah? server's own API |
 | **Backend** | Nah? Home — one static Go binary, `net/http`, no framework |
-| **Database** | SQLite, one file per circle, streamed off-box with Litestream |
+| **Database** | SQLite, one file per person, streamed off-box with Litestream |
 | **Storage** | Local disk or S3-compatible — ciphertext either way |
 
 ### Stack evolution
@@ -62,6 +62,7 @@ Nah stands on the shoulders of giants. We're grateful to these open source proje
 | 2026-09-13 | ~~Mastodon fork~~ → one Go binary on PocketBase with SQLite | Circles became the core data model, and nothing off the shelf has them. See [ADR-0009](docs/decisions/0009-circles-not-one-circle.md), [ADR-0010](docs/decisions/0010-small-server-not-mastodon.md) and the [circles research](docs/research/circles-and-the-backend.md). |
 | 2026-09-13 | ~~PocketBase~~ → plain Go, one SQLite file per circle | Measured rather than argued: PocketBase peaked at 705 MB against plain Go's 73.5 MB, unexplained by three experiments. See [ADR-0011](docs/decisions/0011-plain-go-and-a-database-per-circle.md), [ADR-0014](docs/decisions/0014-the-go-setup.md) and the [spike results](https://caseyro.github.io/Nah/research/spike-results/). |
 | 2026-09-13 | Content encrypted on the device; sign-in is an Ed25519 key, not a password | The server has no use for plaintext, so it should not hold any. See [ADR-0012](docs/decisions/0012-encrypted-on-device.md) and [ADR-0015](docs/decisions/0015-no-passwords-a-key-on-the-device.md). |
+| 2026-09-14 | ~~One SQLite file per circle~~ → one per person, the feed read newest poster first | Circles gave way to one network of 150 per person, which made the feed a fan-in. Measured before it was built. See [ADR-0017](docs/decisions/0017-one-network-of-a-hundred-and-fifty.md), the amended [ADR-0011](docs/decisions/0011-plain-go-and-a-database-per-circle.md) and the [spike results](https://caseyro.github.io/Nah/research/spike-results/). |
 
 The PWA framing is preserved struck-through in the OpenSpec history (`openspec/changes/cap-01-core-identity/specs/pwa-shell/spec.md`) so the evolution is visible, not erased.
 
@@ -74,7 +75,7 @@ See [design.md](openspec/changes/nah-vision/design.md) for full architecture det
 ```text
 /apps
   /mobile           # Flutter app — iOS + Android (coming soon)
-  /server           # Nah? Home — Go + SQLite, one database per circle
+  /server           # Nah? Home — Go + SQLite, one database per person
 /packages
   /ui               # Nah design system: ThemeData, widgets, tokens (coming soon)
 /docs

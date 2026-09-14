@@ -12,5 +12,8 @@ own SQLite database or shares one.
 - `candidates/` — one minimal server per language, each implementing exactly two
   endpoints: post a moment, and list a circle's feed
 - `RESULTS.md` — what was measured, filled in as it happens
+- `candidates/go-fanin` and `harness.py --degree N` — added for CDI-1879 after
+  ADR-0017: one file per person, and a feed read fan-in across everyone they are
+  connected to. Its outcome is the 2026-09-14 amendment to ADR-0011.
 
 The outcome is ADR-0011. When that is merged, this directory has done its job.

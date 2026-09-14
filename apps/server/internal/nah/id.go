@@ -10,7 +10,7 @@ import (
 // NewID is a UUIDv7: 48 bits of millisecond timestamp, then randomness.
 // Hand-rolled per ADR-0014 — this is the whole library.
 //
-// Time-ordered matters here because a circle id is also a filename, and
+// Time-ordered matters here because a person id is also a filename, and
 // a directory listing that sorts by creation time is worth forty lines.
 func NewID() string {
 	var b [16]byte
@@ -28,7 +28,7 @@ func NewID() string {
 	return h[0:8] + "-" + h[8:12] + "-" + h[12:16] + "-" + h[16:20] + "-" + h[20:32]
 }
 
-// ValidID is the guard on every circle id that arrives from a URL. A circle id
+// ValidID is the guard on every person id that arrives from a URL. A person id
 // becomes a path, so anything that is not exactly this shape is refused before
 // it reaches the filesystem.
 func ValidID(s string) bool {

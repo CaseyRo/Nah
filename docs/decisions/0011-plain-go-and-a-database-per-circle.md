@@ -10,6 +10,8 @@ date: 2026-09-13
 
 Accepted (2026-09-13). Amends [ADR-0010](0010-small-server-not-mastodon.html), which chose Go but named PocketBase as the framework. The server, the single binary and SQLite all stand. PocketBase does not.
 
+Amended (2026-09-14) after [ADR-0017](0017-one-network-of-a-hundred-and-fifty.html): one database per person rather than per circle, and a feed read fan-in across those files, measured before it was built. See the amendment at the end.
+
 ## Context
 
 ADR-0010 settled that Nah? needs its own small server rather than Mastodon, Matrix or anything else off the shelf, and proposed building it on PocketBase because it brings sign-in, file storage, backups and an admin interface for free.
@@ -55,3 +57,18 @@ Negative / acknowledged cost:
 - A cheap ARM box behaves differently enough to change the ranking. Not yet measured.
 - The client-side encryption thresholds fail on a real phone, which would move the bottleneck off the server entirely and make this whole comparison a footnote.
 - Per-circle databases become an operational problem at a scale this spike did not reach, for example thousands of circles on one host exhausting file handles or making backup unmanageable.
+
+## Amendment, 2026-09-14: a database per person, and the feed measured again
+
+[ADR-0017](0017-one-network-of-a-hundred-and-fifty.html) replaced circles with one network of up to 150 per person, and the file boundary moved with it: **one SQLite database per person**, holding their device key, their connections, their invites and their moments. The reasons above carry over unchanged and get stronger, because a person leaving, exporting or being deleted is the case the product promises most.
+
+It broke one thing this decision relied on. The feed was one query against one file. It is now the newest moments of everyone a person is connected to, each in a file of their own. CDI-1879 measured that before the server was changed, on the same machine and harness, against the same thresholds, at 1,000 people each connected to 150. The numbers are in [the spike results]({{ '/research/spike-results/' | relative_url }}).
+
+- **Reading every connection's file fails.** 196.6 ms p95 at 50 readers with whole rows, and a 690 MB peak; 54.2 ms reading only ids and times. The threshold is 50 ms. The cost is not the queries but the transactions: SQLite takes a file lock around each read, and this is 151 of them per request.
+- **Reading newest poster first passes.** Each person's newest-moment time is kept in memory, connections are visited most recent first, and the read stops at the first whose newest moment is older than the page already held. 23.6 ms p95 at 50 readers, a 254 MB peak, and at most 31 files read per feed however many connections there are. For 100 readers it returned exactly the pages the exhaustive read did.
+- **That is not the timeline cache ADR-0017 said would prove it wrong.** It is one number per person, read again from the file every 30 seconds, so that a second instance on the same volume cannot hide someone's moment for longer than that.
+- **Writing every moment into 150 feed files stays rejected**, unmeasured, because nothing needed it: 150 copies of each ciphertext, and a deleted moment touching 150 files.
+
+What it costs, written down now rather than discovered: seven to nine open files and about a quarter of a megabyte per person with a file open, so the handle limit this decision already worried about arrives at thousands of people per host; and a first feed after a restart that has to open up to 151 files, 409 ms against 34 ms.
+
+One addition to what would prove this wrong: networks where everyone posts constantly, so that stopping early no longer saves reads. The fixture had one heavy poster in twenty, and a network of 150 of them has not been measured.

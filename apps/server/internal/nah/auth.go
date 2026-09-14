@@ -16,7 +16,7 @@ import (
 
 // Sign-in per ADR-0015: no passwords. The device holds an Ed25519 key, the
 // server hands out a challenge, and a signature over that challenge buys a
-// session token.
+// session token for one person.
 //
 // A session token carries its own claims and a MAC over them, so it survives a
 // restart. Deploys are going to be frequent and nobody should be able to tell
@@ -28,8 +28,8 @@ const (
 	sessionTTL   = 30 * 24 * time.Hour
 
 	// signPrefix domain-separates this signature from anything else the same
-	// identity key might ever sign, and binds it to one circle so a signature
-	// captured on one circle cannot open another.
+	// identity key might ever sign, and binds it to one person so a signature
+	// captured for one person cannot sign in as another.
 	signPrefix = "nah-auth-v1:"
 
 	// tokenVersion prefixes every session token so the format can change later
@@ -48,8 +48,8 @@ var (
 
 // SignedMessage is what a device signs to prove it holds the key. The client
 // must build exactly this string.
-func SignedMessage(circleID, challenge string) []byte {
-	return []byte(signPrefix + circleID + ":" + challenge)
+func SignedMessage(personID, challenge string) []byte {
+	return []byte(signPrefix + personID + ":" + challenge)
 }
 
 // SessionKey reads the key that signs session tokens, generating it on first
@@ -85,7 +85,7 @@ func SessionKey(dir string) ([]byte, error) {
 }
 
 type challenge struct {
-	circleID string
+	personID string
 	pub      ed25519.PublicKey
 	expires  time.Time
 }
@@ -108,20 +108,21 @@ func NewAuth(key []byte) *Auth {
 	}
 }
 
-// Challenge issues a nonce for one public key on one circle. It is accepted
-// exactly once; ADR-0015 rejects a client-chosen timestamp for this reason.
-func (a *Auth) Challenge(circleID string, pub ed25519.PublicKey) string {
+// Challenge issues a nonce for one public key signing in as one person. It is
+// accepted exactly once; ADR-0015 rejects a client-chosen timestamp for this
+// reason.
+func (a *Auth) Challenge(personID string, pub ed25519.PublicKey) string {
 	c := NewToken()
 	a.mu.Lock()
 	defer a.mu.Unlock()
 	a.sweep()
-	a.challenges[c] = challenge{circleID: circleID, pub: pub, expires: a.now().Add(challengeTTL)}
+	a.challenges[c] = challenge{personID: personID, pub: pub, expires: a.now().Add(challengeTTL)}
 	return c
 }
 
 // Session consumes a challenge and, if the signature verifies, returns a
 // bearer token and its expiry.
-func (a *Auth) Session(circleID, chal string, pub ed25519.PublicKey, sig []byte) (string, time.Time, error) {
+func (a *Auth) Session(personID, chal string, pub ed25519.PublicKey, sig []byte) (string, time.Time, error) {
 	a.mu.Lock()
 	c, ok := a.challenges[chal]
 	// Burn it whether or not it verifies: one challenge, one attempt.
@@ -129,25 +130,26 @@ func (a *Auth) Session(circleID, chal string, pub ed25519.PublicKey, sig []byte)
 	now := a.now()
 	a.mu.Unlock()
 
-	if !ok || now.After(c.expires) || c.circleID != circleID || !c.pub.Equal(pub) {
+	if !ok || now.After(c.expires) || c.personID != personID || !c.pub.Equal(pub) {
 		return "", time.Time{}, ErrBadChallenge
 	}
-	if !ed25519.Verify(pub, SignedMessage(circleID, chal), sig) {
+	if !ed25519.Verify(pub, SignedMessage(personID, chal), sig) {
 		return "", time.Time{}, ErrBadSignature
 	}
 
 	expires := now.Add(sessionTTL)
-	return a.mint(circleID, pub, expires), expires, nil
+	return a.mint(personID, pub, expires), expires, nil
 }
 
-// Lookup returns the public key a token stands for on this circle.
+// Lookup returns the public key a token stands for, if it was issued for this
+// person.
 //
 // The token carries its claims and is trusted only because the MAC verifies, so
 // this survives a restart and works across instances sharing the data
 // directory. The cost is that one token cannot be revoked before it expires;
-// removing a member is what actually revokes access, and http.go checks
-// membership on every request for exactly that reason.
-func (a *Auth) Lookup(circleID, token string) (ed25519.PublicKey, error) {
+// replacing the person's device key is what actually revokes access, and
+// http.go checks the key on every request for exactly that reason.
+func (a *Auth) Lookup(personID, token string) (ed25519.PublicKey, error) {
 	version, rest, ok := strings.Cut(token, ".")
 	if !ok || version != tokenVersion {
 		return nil, ErrNoSession
@@ -168,25 +170,25 @@ func (a *Auth) Lookup(circleID, token string) (ed25519.PublicKey, error) {
 		return nil, ErrNoSession
 	}
 
-	// claims: expiry (8 bytes) | public key (32 bytes) | circle id
+	// claims: expiry (8 bytes) | public key (32 bytes) | person id
 	if len(claims) < 8+ed25519.PublicKeySize {
 		return nil, ErrNoSession
 	}
 	expires := time.UnixMilli(int64(binary.BigEndian.Uint64(claims[:8])))
 	pub := ed25519.PublicKey(claims[8 : 8+ed25519.PublicKeySize])
-	circle := string(claims[8+ed25519.PublicKeySize:])
+	person := string(claims[8+ed25519.PublicKeySize:])
 
-	if circle != circleID || a.now().After(expires) {
+	if person != personID || a.now().After(expires) {
 		return nil, ErrNoSession
 	}
 	return pub, nil
 }
 
-func (a *Auth) mint(circleID string, pub ed25519.PublicKey, expires time.Time) string {
-	claims := make([]byte, 0, 8+ed25519.PublicKeySize+len(circleID))
+func (a *Auth) mint(personID string, pub ed25519.PublicKey, expires time.Time) string {
+	claims := make([]byte, 0, 8+ed25519.PublicKeySize+len(personID))
 	claims = binary.BigEndian.AppendUint64(claims, uint64(expires.UnixMilli()))
 	claims = append(claims, pub...)
-	claims = append(claims, circleID...)
+	claims = append(claims, personID...)
 	return tokenVersion + "." +
 		base64.RawURLEncoding.EncodeToString(claims) + "." +
 		base64.RawURLEncoding.EncodeToString(a.mac(claims))

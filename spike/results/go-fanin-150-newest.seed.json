@@ -1,0 +1,11 @@
+{
+  "seeded": 221044,
+  "seconds": 13.5,
+  "inserts_per_sec": 16352,
+  "post_p50_ms": 0.85,
+  "post_p95_ms": 2.0,
+  "people": 1000,
+  "degree": 150,
+  "connections": 75000,
+  "connect_seconds": 5.4
+}
