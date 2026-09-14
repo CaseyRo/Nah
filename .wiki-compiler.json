@@ -1,0 +1,57 @@
+{
+  "version": 2,
+  "mode": "codebase",
+  "name": "Nah?",
+  "sources": [
+    {
+      "path": "./",
+      "exclude": [
+        ".git/",
+        "docs/wiki/",
+        ".agents/",
+        ".claude/",
+        ".cursor/",
+        "openspec/",
+        "docs/_posts/",
+        "docs/research/",
+        "docs/_tabs/",
+        "docs/_site/",
+        "spike/results/",
+        "apps/mobile/ios/",
+        "apps/mobile/android/",
+        "build/",
+        ".dart_tool/",
+        ".venv/",
+        "__pycache__/",
+        "node_modules/",
+        "vendor/"
+      ]
+    }
+  ],
+  "output": "docs/wiki/",
+  "service_discovery": "auto",
+  "knowledge_files": [
+    "README.md",
+    "apps/*/README.md",
+    "spike/README.md",
+    "spike/THRESHOLDS.md",
+    "spike/RESULTS.md",
+    "docs/decisions/[0-9][0-9][0-9][0-9]-*.md",
+    "apps/server/Dockerfile",
+    ".github/workflows/*.yml",
+    ".pre-commit-config.yaml",
+    "mise.toml"
+  ],
+  "deep_scan": false,
+  "auto_update": "prompt",
+  "article_sections": [
+    { "name": "Purpose", "description": "What this part does, who depends on it, and where it sits in Nah?", "required": true },
+    { "name": "Architecture", "description": "Key files, structure and entry points, pointing into the code rather than restating it" },
+    { "name": "Talks To", "description": "What it depends on, what depends on it, and how they communicate" },
+    { "name": "Key Decisions", "description": "Why it is built this way, from the decision records and READMEs, linked rather than retold" },
+    { "name": "Running It", "description": "How to run, test, build and deploy it" },
+    { "name": "Gotchas", "description": "Known issues, edge cases, failure modes and open questions" },
+    { "name": "Sources", "description": "Backlinks to all contributing files", "required": true }
+  ],
+  "link_style": "markdown"
+}

@@ -57,6 +57,8 @@ exclude:
   - LICENSE
   - node_modules
   - vendor
+  # The codebase wiki lives here for agents and contributors, not for the site.
+  - wiki
 
 # Collections
 collections:

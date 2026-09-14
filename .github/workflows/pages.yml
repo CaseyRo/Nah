@@ -5,6 +5,8 @@ on:
     branches: ["main"]
     paths:
       - 'docs/**'
+      # The codebase wiki is not published, so compiling it rebuilds nothing.
+      - '!docs/wiki/**'
       - '.github/workflows/pages.yml'
   workflow_dispatch:
 
