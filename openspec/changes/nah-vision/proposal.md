@@ -1,78 +1,46 @@
-# Nah Vision Proposal
+# Nah? vision
 
 ## Why
 
-Social media has become performance theater. We broadcast to hundreds of "friends" we barely know, curate ourselves for algorithmic approval, and measure worth in viral moments. The result: loneliness dressed as connection.
-
-Path showed us another way. From 2010-2018, it proved people *want* intimate digital spaces — a place to share life's real moments with their actual close circle. Path reached 50M users and turned down a $100M Google offer. But it chased growth, diluted its intimacy (raising friend limits from 50 to 500), and eventually died in Facebook's shadow.
-
-**Nah** ("Not Alone Here") is the spiritual successor to Path — built on its lessons, powered by modern open-source infrastructure, and designed to never compromise on intimacy. The opportunity is now: social media fatigue is at an all-time high, and people are hungry for spaces that feel like home, not a stage.
+Nah? is a private social network for the people one person is actually close to: up to 150 of them, joined by invitation, reading one chronological feed that ends. The January version of this change described a Path successor built on a Mastodon fork, with friend requests, an inner circle, reactions, comments, view receipts and a donation model. Most of that has since been decided differently (ADR-0004 to ADR-0017), and its nine specs duplicated capabilities that cap-01 to cap-09 own. What holds across every capability is a short list of principles. This change now specifies only those, so each capability can be checked against them.
 
 **Viral? Nah. Vital.**
 
 ## What Changes
 
-This is a greenfield project. We're creating a new social network from scratch with these foundational principles:
-
-- **Small by design**: Hard cap of 150 friends (Dunbar's number) — the cognitive limit for stable relationships
-- **Private by default**: No public timeline, no discoverability, no algorithmic feed
-- **Real friends, real moments**: Mutual friendship model (both must accept), rich moment sharing (photos, music, location, sleep/wake)
-- **No algorithmic theater**: Chronological feed only, no engagement optimization, no ads
-- **Open-source & community-funded**: Transparent code, donation-supported, no data mining
-- **Modern infrastructure**: Mastodon/ActivityPub backend with custom Path-inspired frontend
+- **product-principles**: the rules every capability keeps:
+  - one network of up to 150 per person, with no circles and no audience picker
+  - connection is mutual, and physical first
+  - joining is by invitation, and nothing is public or discoverable
+  - the feed is chronological and unranked
+  - no numbers about people
+  - the server keeps moments it cannot read
+  - moments never leave the network they were posted to
+  - no AI in the product
+  - nothing is sold and nothing advertises
+  - notifications default to the most respectful option
+  - the code stays open under AGPL-3.0-or-later, and every fork keeps the attribution
+- **Moved out**: the January specs for friend circles, moments, reactions, comments, messaging, ambient presence, user ownership and community funding. Each now sits in its capability's folder as `from-nah-vision.md`, source material to restate. Comments get a change of their own, `cap-09-comments`. The January core-identity spec is removed, because cap-01 restated it on 2026-09-15.
+- **Removed**, each superseded by a decision record listed in design.md:
+  - the Mastodon fork and ActivityPub
+  - friend requests, the inner circle and followers-only visibility
+  - email and password accounts
+  - Sentry and Prometheus
+  - S3 with a CDN
+  - the `nah_ui` and `nah_api` packages
 
 ## Capabilities
 
 ### New Capabilities
 
-- `core-identity`: App identity, branding, and design language — the "coming home" aesthetic inspired by Path's warm, polished UI
-- `friend-circles`: Dunbar-limited connections (150 max), mutual friendship model, inner circle support for selective sharing
-- `moments`: Timeline of life moments — photos, text, music, location, sleep/wake status, auto-location check-ins
-- `reactions`: Custom illustrated reaction icons (not system emoji or "like"), configurable view receipts, "who viewed" transparency
-- `comments`: Threaded replies on moments from friends (single-level threading, friends-only visibility)
-- `messaging`: Private 1:1 and small group chat with optional ephemeral messages (Path Talk inspired) — **deferred to v1.5**
-- `ambient-presence`: Opt-in status sharing — what you're listening to, battery level, transit status — subtle cues that deepen presence
-- `user-ownership`: Data export, account portability, transparent privacy controls
-- `community-funding`: Donation model, optional supporter perks (badges, themes), crowdfunded feature roadmap
+- `product-principles`: the guarantees Nah? makes to the people in it, which every other capability has to keep.
 
 ### Modified Capabilities
 
-*None — this is a new project.*
+None: `openspec/specs/` holds no specs yet.
 
 ## Impact
 
-### Technical Foundation
-
-- Backend: Mastodon instance (Ruby on Rails, PostgreSQL, Redis) configured for closed/private operation
-- Client: Flutter mobile app (iOS + Android), one codebase, native feel; web/desktop deferred
-  - ~~Originally (2026-01): Modern web app (React/Vue/Svelte) as PWA, mobile-first design.~~ Revised 2026-05-19 per [ADR-0001](../../../docs/decisions/0001-flutter-over-pwa.md).
-- Storage: S3-compatible media storage with CDN
-- Protocol: ActivityPub foundation (federation disabled initially, but architecture supports future expansion)
-
-### Design Direction
-
-- **Light-primary identity**: Warm white surfaces, pomegranate red (#EE3423) accents — the default visual experience
-- Dark mode as secondary theme, respecting system preference (not the primary identity)
-- Path's signature radial "+" menu for posting
-- Warm color palette, smooth spring animations, "coming home" feel
-- Clock-style timeline, cover photos, profile header compression with frosted glass
-- Custom illustrated reaction icons (not system emoji) with friend avatars
-- Glassmorphism scoped to exactly 2 contexts: profile header compression overlay + radial menu backdrop
-
-### Business Model
-
-- No ads, no data sales
-- Community donations (Patreon, Open Collective, in-app)
-- Optional digital goods (sticker packs, themes) with proceeds to project
-- Transparent financial reporting
-
-### Philosophical Commitments
-
-- Never raise the friend limit above 150
-- Never add public/viral features
-- Never optimize for "engagement" over connection
-- Always remain open-source
-
----
-
-*"Nah is a private home for your closest people — to share life without performing for the internet."*
+- Every capability change, cap-01 to cap-09, is checked against `product-principles` when it is restated.
+- The architecture this change once described lives in the decision records and the codebase wiki; design.md points at them.
+- No code changes. As far as the M1 server and app exist, the principles already hold in them. The exceptions are named in the spec with their milestone: sealing moments waits on CDI-1863, the touch on CDI-1840, and the digest on CDI-1850.

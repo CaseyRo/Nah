@@ -1,55 +1,31 @@
-# Nah Vision Tasks
+# Nah? vision tasks
 
-This vision change establishes the foundation. Implementation is broken into 8 capability changes (listed in section 4).
+Specification only this round. The principles are checked here against what exists; the work for each capability lives in its own change.
 
-## 1. Project Foundation
+## 1. Principles that already hold in M1
 
-- [ ] 1.1 Initialize monorepo layout (`/apps/mobile`, `/apps/server`, `/packages/nah_ui`, `/packages/nah_api`)
-- [ ] 1.2 Set up Flutter app in `/apps/mobile` (Flutter 3.41+, Dart 3.11+)
-- [ ] 1.3 Add core Flutter dependencies (`flutter_bloc`, `dio`, `web_socket_channel`, `hive` or `drift`)
-- [ ] 1.4 Set up Mastodon fork in `/apps/server` (Docker-based)
-- [ ] 1.5 Configure Mastodon for closed instance (federation OFF, followers-only default)
-- [ ] 1.6 Set up development environment (Docker Compose for local dev backend, Flutter toolchain for client)
+- [x] 1.1 The server enforces the limit of 150 (CDI-1830)
+- [x] 1.2 Joining is by invitation only; the first person on a server uses `server invite`
+- [x] 1.3 Moments are stored as opaque blobs behind a seal byte (CDI-1862)
+- [x] 1.4 The feed is newest first, one page, unranked (CDI-1833)
+- [x] 1.5 AGPL-3.0-or-later, with the attribution term in `NOTICE`
 
-## 2. Documentation & Brand
+## 2. Principles waiting on a milestone
 
-- [ ] 2.1 Finalize privacy policy (plain language, transparent about admin access)
-- [ ] 2.2 Create landing page content (micro-manifesto, value proposition)
-- [ ] 2.3 Publish GitHub Pages docs site
-- [ ] 2.4 Set up community channels (GitHub Discussions, Discord, or similar)
+- [ ] 2.1 Seal moments on the device with the poster's content key (CDI-1863, M2)
+- [ ] 2.2 Connect by touching two phones (CDI-1840, M2), with the link as the exception (CDI-1839)
+- [ ] 2.3 A daily digest that stays silent on quiet days (CDI-1850, M4)
+- [ ] 2.4 Publish the no-AI and no-sharing guarantee (CDI-1859)
+- [ ] 2.5 Keep the app free of analytics, trackers and AI SDKs, checked in CI (CDI-1860)
 
-## 3. Infrastructure Scaffolding
+## 3. Capability changes, restated one at a time
 
-- [ ] 3.1 Set up S3-compatible storage for media
-- [ ] 3.2 Configure CDN for media delivery
-- [ ] 3.3 Set up Sentry for error tracking
-- [ ] 3.4 Configure basic monitoring (Prometheus + Grafana)
-- [ ] 3.5 Set up CI/CD pipeline (GitHub Actions)
-
-## 4. Capability Implementation (Separate Changes)
-
-Each capability has its own OpenSpec change. Work through in order:
-
-- [ ] 4.1 Complete `cap-01-core-identity` — App identity, branding, design language, radial menu
-- [ ] 4.2 Complete `cap-02-friend-circles` — 150-friend limit, mutual friendships, inner circle
-- [ ] 4.3 Complete `cap-03-moments` — Timeline, moment types (photo, text, music, location, sleep/wake)
-- [ ] 4.4 Complete `cap-04-reactions` — Emoji reactions, read receipts, who-viewed
-- [ ] 4.5 Complete `cap-05-messaging` — Private DMs, group chat, ephemeral messages
-- [ ] 4.6 Complete `cap-06-ambient-presence` — Opt-in status sharing (music, location, battery)
-- [ ] 4.7 Complete `cap-07-user-ownership` — Data export, account deletion, privacy controls
-- [ ] 4.8 Complete `cap-08-community-funding` — Donation model, supporter perks, transparent finances
-
-## 5. Launch Preparation
-
-- [ ] 5.1 Internal alpha testing (invite-only)
-- [ ] 5.2 Security review of Mastodon modifications
-- [ ] 5.3 Load testing for expected initial user base
-- [ ] 5.4 Finalize backup and recovery procedures
-- [ ] 5.5 Prepare launch communications
-
-## 6. Post-Launch
-
-- [ ] 6.1 Set up community feedback collection
-- [ ] 6.2 Establish contribution guidelines for open source
-- [ ] 6.3 Create public roadmap
-- [ ] 6.4 Set up donation infrastructure (Open Collective, GitHub Sponsors)
+- [x] 3.1 `cap-01-core-identity`
+- [ ] 3.2 `cap-02-friend-circles`
+- [ ] 3.3 `cap-03-moments`
+- [ ] 3.4 `cap-04-reactions`
+- [ ] 3.5 `cap-05-messaging`
+- [ ] 3.6 `cap-06-ambient-presence`
+- [ ] 3.7 `cap-07-user-ownership`
+- [ ] 3.8 `cap-08-community-funding`
+- [ ] 3.9 `cap-09-comments`
