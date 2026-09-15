@@ -4,7 +4,7 @@
 
 Sources span 2026-04-26 to 2026-09-14. The app was scaffolded on 2026-09-13 and reached the M1 walking skeleton on 2026-09-14.
 
-The app is how a person uses Nah?: a Flutter app for iOS and Android that talks only to the [server](server.md). As of M1 it does four things. It gives the phone an identity of its own and signs in with it, shows one page of the feed from you and the people you are connected to, posts text moments, and connects two people by pasting an invitation.
+The app is how a person uses Nah?: a Flutter app for iOS and Android that talks only to the [server](server.md). As of M1 it gives the phone an identity of its own, joins by invitation and signs in, shows one page of the feed from you and the people you are connected to, posts text moments, and connects two people by pasting an invitation.
 
 Much of what has been decided about the app is not built yet: ritual onboarding, voice and photo moments, the daily digest, and connecting by touching phones.
 
@@ -12,7 +12,7 @@ Much of what has been decided about the app is not built yet: ritual onboarding,
 
 The [app README](../../../apps/mobile/README.md) is the canonical description of what M1 does. The code:
 
-- [`lib/main.dart`](../../../apps/mobile/lib/main.dart): the one screen, with the composer, the feed and the connect sheet.
+- [`lib/main.dart`](../../../apps/mobile/lib/main.dart): the one screen: joining by invitation, then the composer, the feed and the connect sheet.
 - [`lib/feed_cubit.dart`](../../../apps/mobile/lib/feed_cubit.dart): that screen's states, with every failure turned into a sentence.
 - [`lib/server.dart`](../../../apps/mobile/lib/server.dart): the device identity, sign-in and the calls to the server. It is deliberately thin until a client package the app owns replaces it.
 - [`lib/moment.dart`](../../../apps/mobile/lib/moment.dart): writing a moment's envelope and reading one back.
@@ -32,9 +32,9 @@ Newest first. Each decision record is the canonical home for its reasoning.
 
 - **2026-09-14:** moments travel unencrypted until each person has a content key (CDI-1863). The first byte of every blob names its seal, so what is posted now stays readable once encryption lands ([app README](../../../apps/mobile/README.md)).
 - **2026-09-13:** one feed and one audience, with no audience picker; connecting is physical first and the link is the exception ([ADR-0017](../../decisions/0017-one-network-of-a-hundred-and-fifty.md)). M1 stands in for both with a pasted invitation.
-- **2026-09-13:** a moment is a versioned envelope whose fallback sentence is written by the app that posts it, and every envelope read back is hostile input ([ADR-0016](../../decisions/0016-the-moment-envelope.md), still proposed).
+- **2026-09-13:** a moment is a versioned envelope whose fallback sentence is written by the app that posts it, and every envelope read back is hostile input ([ADR-0016](../../decisions/0016-the-moment-envelope.md)).
 - **2026-09-13:** identity is a key made on the device, and the identity key is not the content key ([ADR-0015](../../decisions/0015-no-passwords-a-key-on-the-device.md)).
-- **2026-09-13:** content is encrypted on the device ([ADR-0012](../../decisions/0012-encrypted-on-device.md), still proposed).
+- **2026-09-13:** content is encrypted on the device ([ADR-0012](../../decisions/0012-encrypted-on-device.md), not built until CDI-1863).
 - **2026-04-26:** the first release has no reactions, comments, drafts or editing, and moments are immutable ([ADR-0008](../../decisions/0008-mvp-scope.md), amended since).
 - **2026-04-26:** notifications default to one daily digest, with nothing sent on a day with nothing in it ([ADR-0007](../../decisions/0007-respectful-notifications.md)). Not built.
 - **2026-04-26:** three moment types, text, voice and photo ([ADR-0006](../../decisions/0006-three-moment-types.md)). Only text exists so far.
@@ -44,7 +44,7 @@ Newest first. Each decision record is the canonical home for its reasoning.
 
 ## Running It [coverage: medium -- 2 sources]
 
-From `apps/mobile`, with a server running on the same machine:
+From `apps/mobile`, with a server running on the same machine and, for the first person on it, an invitation from `go run ./cmd/server invite` in `apps/server`:
 
 ```bash
 flutter run
@@ -58,8 +58,8 @@ If Flutter is not on your path, prefix either with `mise exec --`, which uses th
 - **The server address is compiled in.** The iOS simulator reaches `127.0.0.1`; an Android emulator needs `10.0.2.2`.
 - **Moments are not encrypted yet.** Until CDI-1863, anyone holding the server's data directory can read them. See [opaque moments](../concepts/opaque-moments.md).
 - **The connect sheet shows a raw `person#invite` string.** It is a stand-in for the touch and the link, not the intended experience.
-- **A server that no longer knows this phone's person gets a new registration, silently.** That is what a wiped development server looks like, and the new person has no connections. See `start` in `lib/server.dart`.
-- **The root README's prerequisites predate the current stack.** They name Flutter 3.41 and Docker for a Mastodon backend; `mise.toml` is the version that builds.
+- **A server that no longer knows this phone's person sends the phone back to asking for an invitation.** That is what a wiped development server looks like. See `start` in `lib/server.dart`.
+- **The two-person test needs a fresh operator invitation for every run**, because each one is single-use. The command is at the top of `test/two_people_test.dart`.
 - **No workflow checks the app on push.** Its checks run locally ([delivery](delivery.md)).
 
 ## Sources

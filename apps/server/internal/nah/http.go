@@ -58,12 +58,14 @@ func (s *Server) Handler() http.Handler {
 
 // --- handlers ---
 
-// handleRegister makes a person for a device. It is open, like installing the
-// app: a person with no connections can read nothing and reach nobody, and
-// connecting still takes a touch or an invite.
+// handleRegister makes a person for a device, by invitation only. An invite from
+// someone already here connects the two of them as well; an operator's invite,
+// naming no person, is how the first person on a server arrives.
 func (s *Server) handleRegister(w http.ResponseWriter, r *http.Request) {
 	var in struct {
 		PublicKey []byte `json:"public_key"`
+		Person    string `json:"person"`
+		Invite    string `json:"invite"`
 	}
 	if !decode(w, r, &in) {
 		return
@@ -72,12 +74,18 @@ func (s *Server) handleRegister(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	id, err := s.store.Register(pub)
-	if err != nil {
+	switch id, err := s.store.Register(pub, in.Person, in.Invite); {
+	case err == nil:
+		write(w, http.StatusCreated, map[string]string{"id": id})
+	case errors.Is(err, ErrNoInvite):
+		fail(w, http.StatusBadRequest, "Nah? is by invitation. Ask someone you know for theirs.")
+	case errors.Is(err, ErrBadInvite):
+		fail(w, http.StatusForbidden, "This invitation is no longer valid.")
+	case errors.Is(err, ErrNetworkFull):
+		fail(w, http.StatusConflict, "There is no room for this connection right now.")
+	default:
 		s.oops(w, r, err)
-		return
 	}
-	write(w, http.StatusCreated, map[string]string{"id": id})
 }
 
 func (s *Server) handleChallenge(w http.ResponseWriter, r *http.Request) {

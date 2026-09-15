@@ -11,7 +11,7 @@ cd apps/server && go run ./cmd/server
 cd apps/mobile && flutter run
 ```
 
-The server listens on `:8080`, which is where the app looks by default. The checks are `go vet ./... && go test -race ./...` in `apps/server` and `flutter analyze && flutter test` in `apps/mobile`.
+The server listens on `:8080`, which is where the app looks by default. Nah? is by invitation, so the app first asks for one: `go run ./cmd/server invite` in `apps/server` prints a single-use invitation for the first person on the server. The checks are `go vet ./... && go test -race ./...` in `apps/server` and `flutter analyze && flutter test` in `apps/mobile`.
 
 ## Where things are
 
@@ -23,7 +23,7 @@ The server listens on `:8080`, which is where the app looks by default. The chec
 
 ## Where it stands, 2026-09-14
 
-M1, the walking skeleton, works on one machine: two people can register, connect, post and read each other's moments, through the real app and the real server. What remains of M1 is two physical phones on a deployed server, and that deploy does not exist yet.
+M1, the walking skeleton, works on one machine: two people can join by invitation, post and read each other's moments, through the real app and the real server. What remains of M1 is two physical phones on a deployed server, and that deploy does not exist yet.
 
 ## Reading this wiki
 

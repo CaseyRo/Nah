@@ -15,13 +15,18 @@ class Unreachable extends FeedState {
   const Unreachable();
 }
 
+/// This phone has not joined yet, and needs an invitation to.
+class Uninvited extends FeedState {
+  const Uninvited();
+}
+
 class Ready extends FeedState {
   const Ready(this.moments);
   final List<Moment> moments;
 }
 
-/// The one screen: signing in, the feed, and the few things a person can do
-/// from it. Anything that goes wrong comes back as a sentence.
+/// The one screen: joining, signing in, the feed, and the few things a person
+/// can do from it. Anything that goes wrong comes back as a sentence.
 class FeedCubit extends Cubit<FeedState> {
   FeedCubit(this._server) : super(const Starting());
 
@@ -34,6 +39,8 @@ class FeedCubit extends Cubit<FeedState> {
     try {
       await _server.start();
       emit(Ready(await _server.feed()));
+    } on NeedsInvitation {
+      emit(const Uninvited());
     } on Exception {
       emit(const Unreachable());
     }
@@ -47,6 +54,11 @@ class FeedCubit extends Cubit<FeedState> {
       emit(const Unreachable());
     }
   }
+
+  /// Joins with an invitation, then shows the feed. Returns a sentence to show
+  /// if it did not go through.
+  Future<String?> join(String invitation) =>
+      _attempt(() => _server.join(invitation));
 
   /// Posts, then reloads, so the moment shows where everyone else will see it.
   /// Returns a sentence to show if it did not go through.

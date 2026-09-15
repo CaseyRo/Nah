@@ -1,14 +1,24 @@
 {
-  "last_compiled": "2026-09-14",
+  "last_compiled": "2026-09-15",
   "mode": "codebase",
-  "topics": ["server", "mobile", "spike", "delivery"],
-  "concepts": ["invisible-deploys", "opaque-moments"],
-  "source_locations": ["./"],
+  "topics": [
+    "server",
+    "mobile",
+    "spike",
+    "delivery"
+  ],
+  "concepts": [
+    "invisible-deploys",
+    "opaque-moments"
+  ],
+  "source_locations": [
+    "./"
+  ],
   "total_sources_scanned": 28,
   "sources": {
-    "README.md": "42945b0f411f2dfba5cc1a3101080a8b44204713",
-    "apps/server/README.md": "bcb54015a6d0672e77fc077a43e34d1b54371c2d",
-    "apps/mobile/README.md": "4e6ad49c14dc35ea4ac33d631c8da38464da5ffd",
+    "README.md": "8fba538d5aa1cd2ac2ab870f1d30af2205a043bf",
+    "apps/server/README.md": "de895f5f2524edd9f673d65ad5665e6ece33b316",
+    "apps/mobile/README.md": "ae2e0048d11cd49bc2facbfdf69b8893c1455cfa",
     "apps/server/Dockerfile": "64979c526de91034bed942107f7b03c3a57df271",
     "spike/README.md": "396f7492b5139c661321db8abb5274b858c5d1cd",
     "spike/THRESHOLDS.md": "27c79133d4e6efcdd34491cd8446ed42a4dfb62a",
@@ -28,11 +38,11 @@
     "docs/decisions/0009-circles-not-one-circle.md": "72f2d0d22ddcfe96269c8dcb12f1f61f178ef883",
     "docs/decisions/0010-small-server-not-mastodon.md": "2c80abddcc2492409bec9641b868b4d28636d738",
     "docs/decisions/0011-plain-go-and-a-database-per-circle.md": "8418ec0e5808171d758daabcca1de970207040d2",
-    "docs/decisions/0012-encrypted-on-device.md": "cf647a4ec8011f32245ec14a62264e21b49f9959",
+    "docs/decisions/0012-encrypted-on-device.md": "fb78b41127c9714fbd05dffba995151ced016551",
     "docs/decisions/0013-no-aggregated-feed.md": "f030d58d16477722308cb6ed63598623314da786",
     "docs/decisions/0014-the-go-setup.md": "dcf9615780332e5e835fa83468cfde8aa78dea04",
     "docs/decisions/0015-no-passwords-a-key-on-the-device.md": "f44dd6269b34f1cb5a0632307a6bf6f72e5c8454",
-    "docs/decisions/0016-the-moment-envelope.md": "6599bbe3d03a47e9f4f153a0894f9c337f6a101d",
+    "docs/decisions/0016-the-moment-envelope.md": "2c9b60ae787fa82f25998733d10bdc3534fe440c",
     "docs/decisions/0017-one-network-of-a-hundred-and-fifty.md": "c9fc86c706af11d3bffe28e521df7404fe4c9c05"
   }
 }

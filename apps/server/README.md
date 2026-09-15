@@ -13,11 +13,13 @@ The decisions behind it: [ADR-0011](../../docs/decisions/0011-plain-go-and-a-dat
 ## Run it locally
 
 ```bash
+go run ./cmd/server invite
 go run ./cmd/server
 ```
 
-It serves on `:8080`. There is nothing to create first: a person registers from
-the app. It reads two environment variables:
+The first prints a single-use invitation for the first person on this server,
+to paste into the app. The second serves on `:8080`. Both read two environment
+variables:
 
 | Variable | Default | What it is |
 |---|---|---|
@@ -28,6 +30,7 @@ In a container:
 
 ```bash
 docker build -t nah-server .
+docker run --rm -v "$PWD/data:/data" nah-server invite
 docker run --rm -p 8080:8080 -v "$PWD/data:/data" nah-server
 ```
 
@@ -39,7 +42,7 @@ path, and the feed is the only one that reads anybody else's file.
 | | |
 |---|---|
 | `GET /healthz` | is it up |
-| `POST /v1/people` | `{public_key}` → `{id}` |
+| `POST /v1/people` | `{public_key, invite, person}` → `{id}`; `person` is who made the invite |
 | `POST /v1/people/{person}/challenge` | `{public_key}` → `{challenge}` |
 | `POST /v1/people/{person}/session` | `{public_key, challenge, signature}` → `{token, expires_at}` |
 | `POST /v1/people/{person}/invites` | → `{invite}` |
@@ -61,12 +64,21 @@ A moment's `id` is unique among its author's moments, not across a feed;
 
 ### Registering and connecting
 
-Registration is open, like installing the app, and shares the unauthenticated
-rate limit with sign-in. A person with no connections can read nothing and reach
-nobody.
+Nobody arrives uninvited. Registering takes an invite, and the route shares the
+unauthenticated rate limit with sign-in:
 
-To connect, one person makes an invite and the other redeems it: `{person}` in
-the path is whoever redeems, and the body names who made it. A touch and a link
+- **From someone already here.** The body names who made the invite, and
+  registering connects the two of them in the same step.
+- **From the operator,** for the first person on a server. `server invite` prints
+  a single-use invitation, and the server keeps only its hash, as an empty file
+  under `invites/` in the data directory. The body names no person.
+
+A refused registration leaves no person behind. The app writes an invitation as
+`person#invite`, and an operator's as `#invite`.
+
+Two people who have both joined connect through `/connections`: one makes an
+invite and the other redeems it. `{person}` in the path is whoever redeems, and
+the body names who made it. A touch and a link
 carry the same two things, so there is one route for both and the server cannot
 tell them apart ([CDI-1839](https://linear.app/cdit/issue/CDI-1839), [CDI-1840](https://linear.app/cdit/issue/CDI-1840)).
 Connection is mutual and immediate. The cap of 150 is counted on both sides, and
@@ -113,8 +125,8 @@ rolling deploy, is in everyone's feed within that.
 
 - **Media.** Text moments only; the request body is capped at 1 MiB. Photo and
   voice are M3, and they get an upload path rather than this one.
-- **Invite states.** An invite does not expire, is not single-use and cannot be
-  revoked yet (CDI-1842). The link format, with the content key after the `#`
+- **Invite states.** A person's invite does not expire, is not single-use and
+  cannot be revoked yet, and an operator's does not expire (CDI-1842). The link format, with the content key after the `#`
   where the server never sees it, is CDI-1836.
 - **Names.** Nobody's display name is on the server. What a person is called
   travels inside the ciphertext, where it belongs.
@@ -130,6 +142,7 @@ go run honnef.co/go/tools/cmd/staticcheck@latest ./...
 go run golang.org/x/vuln/cmd/govulncheck@latest ./...
 ```
 
-`TestTwoPeopleConnected` is CDI-1835 with the phones taken out: two people
-connect, each posts, and each sees both. `TestFeedMatchesReadingEveryFile` holds
+`TestTwoPeopleConnected` is CDI-1835 with the phones taken out: one person joins
+through the other's invitation, each posts, and each sees both.
+`TestRegistrationIsByInvitation` holds the rule that nobody arrives uninvited. `TestFeedMatchesReadingEveryFile` holds
 the feed's shortcut to exactly the page that reading every file would give.

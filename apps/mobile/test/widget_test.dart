@@ -13,6 +13,7 @@ class _FakeServer implements Server {
   List<Moment> moments;
   Completer<void>? hold;
   bool reachable = true;
+  bool joined = true;
   String? refusal;
   final posted = <String>[];
   final connected = <String>[];
@@ -26,6 +27,13 @@ class _FakeServer implements Server {
     if (!reachable) {
       throw Exception('SocketException: connection refused (127.0.0.1:8080)');
     }
+    if (!joined) throw const NeedsInvitation();
+  }
+
+  @override
+  Future<void> join(String invitation) async {
+    if (refusal != null) throw Refused(refusal!);
+    joined = true;
   }
 
   @override
@@ -65,6 +73,33 @@ void main() {
     // Nothing technical ever reaches a person's screen.
     expect(find.textContaining('127.0.0.1'), findsNothing);
     expect(find.textContaining('Exception'), findsNothing);
+  });
+
+  testWidgets('a phone that has not joined asks for an invitation, and joins '
+      'with one', (tester) async {
+    final server = _FakeServer()..joined = false;
+    await tester.pumpWidget(NahApp(server: server));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('Nah? is by invitation. Paste the one someone sent you.'),
+      findsOneWidget,
+    );
+    // There is nobody to connect with until this phone is someone.
+    expect(find.byTooltip('Connect'), findsNothing);
+
+    final join = find.widgetWithText(FilledButton, 'Join');
+    server.refusal = 'This invitation is no longer valid.';
+    await tester.enterText(find.byType(TextField), 'someone#their-invite');
+    await tester.tap(join);
+    await tester.pumpAndSettle();
+    expect(find.text('This invitation is no longer valid.'), findsOneWidget);
+
+    server.refusal = null;
+    await tester.tap(join);
+    await tester.pumpAndSettle();
+    expect(server.joined, isTrue);
+    expect(find.text('Say something to your people'), findsOneWidget);
+    expect(find.byTooltip('Connect'), findsOneWidget);
   });
 
   testWidgets('the feed is shown in the order the server gives, yours marked', (

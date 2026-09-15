@@ -1,9 +1,10 @@
 // Nah? — a private home for your closest people.
 //
-// M1, the walking skeleton (CDI-1833, CDI-1834): sign in, read the feed, post a
-// text moment, and connect by pasting an invitation. The design system, the
-// radial menu, the timeline clock, the spring physics and the onboarding ritual
-// are all decided and none of them are on the path to two phones talking.
+// M1, the walking skeleton (CDI-1833, CDI-1834): join by invitation, sign in,
+// read the feed, post a text moment, and connect by pasting an invitation. The
+// design system, the radial menu, the timeline clock, the spring physics and the
+// onboarding ritual are all decided and none of them are on the path to two
+// phones talking.
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,22 +41,24 @@ class FeedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ready = context.select((FeedCubit feed) => feed.state is Ready);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Nah?'),
         actions: [
-          IconButton(
-            tooltip: 'Connect',
-            icon: const Icon(Icons.person_add_alt),
-            onPressed: () => showModalBottomSheet<void>(
-              context: context,
-              isScrollControlled: true,
-              builder: (_) => BlocProvider.value(
-                value: context.read<FeedCubit>(),
-                child: const ConnectSheet(),
+          if (ready)
+            IconButton(
+              tooltip: 'Connect',
+              icon: const Icon(Icons.person_add_alt),
+              onPressed: () => showModalBottomSheet<void>(
+                context: context,
+                isScrollControlled: true,
+                builder: (_) => BlocProvider.value(
+                  value: context.read<FeedCubit>(),
+                  child: const ConnectSheet(),
+                ),
               ),
             ),
-          ),
         ],
       ),
       body: BlocBuilder<FeedCubit, FeedState>(
@@ -74,6 +77,7 @@ class FeedScreen extends StatelessWidget {
               ],
             ),
           ),
+          Uninvited() => const JoinScreen(),
           Ready(:final moments) => Column(
             children: [
               const Composer(),
@@ -93,6 +97,71 @@ class FeedScreen extends StatelessWidget {
             ],
           ),
         },
+      ),
+    );
+  }
+}
+
+/// Nah? is by invitation, so a phone that has not joined asks for one. The first
+/// person on a server pastes the one `server invite` printed; everyone after
+/// that pastes one from someone already here.
+class JoinScreen extends StatefulWidget {
+  const JoinScreen({super.key});
+
+  @override
+  State<JoinScreen> createState() => _JoinScreenState();
+}
+
+class _JoinScreenState extends State<JoinScreen> {
+  final _invitation = TextEditingController();
+  String? _problem;
+  bool _busy = false;
+
+  @override
+  void dispose() {
+    _invitation.dispose();
+    super.dispose();
+  }
+
+  Future<void> _join() async {
+    final feed = context.read<FeedCubit>();
+    setState(() {
+      _busy = true;
+      _problem = null;
+    });
+    final problem = await feed.join(_invitation.text);
+    if (!mounted) return;
+    setState(() {
+      _busy = false;
+      _problem = problem;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          const Text('Nah? is by invitation. Paste the one someone sent you.'),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _invitation,
+            decoration: const InputDecoration(hintText: 'Your invitation'),
+          ),
+          const SizedBox(height: 12),
+          FilledButton(
+            onPressed: _busy ? null : _join,
+            child: const Text('Join'),
+          ),
+          if (_problem != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Text(_problem!),
+            ),
+        ],
       ),
     );
   }

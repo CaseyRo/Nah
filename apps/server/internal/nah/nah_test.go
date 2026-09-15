@@ -14,6 +14,7 @@ import (
 	mathrand "math/rand/v2"
 	"net/http"
 	"net/http/httptest"
+	"path/filepath"
 	"sort"
 	"strings"
 	"sync/atomic"
@@ -57,9 +58,15 @@ func newStore(t *testing.T) *Store {
 	return store
 }
 
+// register makes a person with an operator's invite, the way the first person on
+// a server arrives, for tests that are about the store rather than the routes.
 func register(t *testing.T, store *Store) string {
 	t.Helper()
-	id, err := store.Register(newDevice(t).pub)
+	invite, err := store.OperatorInvite()
+	if err != nil {
+		t.Fatal(err)
+	}
+	id, err := store.Register(newDevice(t).pub, "", invite)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -82,6 +89,16 @@ func mustPost(t *testing.T, store *Store, person, blob string) {
 	}
 }
 
+// personFiles counts the person files in the store's directory.
+func personFiles(t *testing.T, store *Store) int {
+	t.Helper()
+	files, err := filepath.Glob(filepath.Join(store.dir, "*.db"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	return len(files)
+}
+
 // ticking is a clock that moves on a second every time it is read, so no two
 // moments in a test share a time and newest first is never decided by a tie.
 func ticking() func() time.Time {
@@ -90,14 +107,14 @@ func ticking() func() time.Time {
 	return func() time.Time { return start.Add(time.Duration(n.Add(1)) * time.Second) }
 }
 
-func newTestServer(t *testing.T) *httptest.Server {
+func newTestServer(t *testing.T) (*httptest.Server, *Store) {
 	t.Helper()
 	store := newStore(t)
 	store.now = ticking()
 	log := slog.New(slog.NewTextHandler(io.Discard, nil))
 	srv := httptest.NewServer(NewServer(store, NewAuth(testKey(t)), log).Handler())
 	t.Cleanup(srv.Close)
-	return srv
+	return srv, store
 }
 
 func call(t *testing.T, srv *httptest.Server, method, path, token string, body any) (int, []byte) {
@@ -129,59 +146,70 @@ func call(t *testing.T, srv *httptest.Server, method, path, token string, body a
 	return res.StatusCode, out
 }
 
-// join is a phone's first minute: register as a person, then sign in the way
-// ADR-0015 describes — ask for a challenge, sign it, trade the signature for a
-// token.
-func join(t *testing.T, srv *httptest.Server) *device {
+// join is a phone's first minute: register with an invitation, then sign in the
+// way ADR-0015 describes. With no inviter the invitation is an operator's, as
+// for the first person on a server; with one it is theirs, which connects the
+// two of them in the same step.
+func join(t *testing.T, srv *httptest.Server, store *Store, inviter *device) *device {
 	t.Helper()
 	d := newDevice(t)
-	status, body := call(t, srv, "POST", "/v1/people", "", map[string]any{"public_key": d.pub})
+	body := map[string]any{"public_key": d.pub}
+	if inviter == nil {
+		token, err := store.OperatorInvite()
+		if err != nil {
+			t.Fatal(err)
+		}
+		body["invite"] = token
+	} else {
+		body["person"], body["invite"] = inviter.person, inviter.invite(t, srv)
+	}
+	status, resp := call(t, srv, "POST", "/v1/people", "", body)
 	if status != http.StatusCreated {
-		t.Fatalf("register: status %d: %s", status, body)
+		t.Fatalf("register: status %d: %s", status, resp)
 	}
 	var reg struct {
 		ID string `json:"id"`
 	}
-	if err := json.Unmarshal(body, &reg); err != nil {
+	if err := json.Unmarshal(resp, &reg); err != nil {
 		t.Fatal(err)
 	}
 	d.person = reg.ID
 
-	status, body = call(t, srv, "POST", "/v1/people/"+d.person+"/challenge", "",
+	status, resp = call(t, srv, "POST", "/v1/people/"+d.person+"/challenge", "",
 		map[string]any{"public_key": d.pub})
 	if status != http.StatusOK {
-		t.Fatalf("challenge: status %d: %s", status, body)
+		t.Fatalf("challenge: status %d: %s", status, resp)
 	}
 	var ch struct {
 		Challenge string `json:"challenge"`
 	}
-	if err := json.Unmarshal(body, &ch); err != nil {
+	if err := json.Unmarshal(resp, &ch); err != nil {
 		t.Fatal(err)
 	}
 
 	sig := ed25519.Sign(d.priv, SignedMessage(d.person, ch.Challenge))
-	status, body = call(t, srv, "POST", "/v1/people/"+d.person+"/session", "", map[string]any{
+	status, resp = call(t, srv, "POST", "/v1/people/"+d.person+"/session", "", map[string]any{
 		"public_key": d.pub,
 		"challenge":  ch.Challenge,
 		"signature":  sig,
 	})
 	if status != http.StatusOK {
-		t.Fatalf("session: status %d: %s", status, body)
+		t.Fatalf("session: status %d: %s", status, resp)
 	}
 	var s struct {
 		Token string `json:"token"`
 	}
-	if err := json.Unmarshal(body, &s); err != nil {
+	if err := json.Unmarshal(resp, &s); err != nil {
 		t.Fatal(err)
 	}
 	d.token = s.Token
 	return d
 }
 
-// connect is what a touch or a link carries: a makes an invite and b redeems it.
-func connect(t *testing.T, srv *httptest.Server, a, b *device) {
+// invite asks the server for an invite from d.
+func (d *device) invite(t *testing.T, srv *httptest.Server) string {
 	t.Helper()
-	status, body := call(t, srv, "POST", "/v1/people/"+a.person+"/invites", a.token, nil)
+	status, body := call(t, srv, "POST", "/v1/people/"+d.person+"/invites", d.token, nil)
 	if status != http.StatusCreated {
 		t.Fatalf("invite: status %d: %s", status, body)
 	}
@@ -191,8 +219,15 @@ func connect(t *testing.T, srv *httptest.Server, a, b *device) {
 	if err := json.Unmarshal(body, &inv); err != nil {
 		t.Fatal(err)
 	}
+	return inv.Invite
+}
+
+// connect is what a touch or a link carries between two people who are both
+// already here: a makes an invite and b redeems it.
+func connect(t *testing.T, srv *httptest.Server, a, b *device) {
+	t.Helper()
 	if status, body := call(t, srv, "POST", "/v1/people/"+b.person+"/connections", b.token,
-		map[string]any{"person": a.person, "invite": inv.Invite}); status != http.StatusNoContent {
+		map[string]any{"person": a.person, "invite": a.invite(t, srv)}); status != http.StatusNoContent {
 		t.Fatalf("connect: status %d: %s", status, body)
 	}
 }
@@ -218,12 +253,12 @@ func (d *device) feed(t *testing.T, srv *httptest.Server) []Moment {
 	return feed
 }
 
-// TestTwoPeopleConnected is CDI-1835 without the phones: two people connect,
-// each posts a moment, and each sees both.
+// TestTwoPeopleConnected is CDI-1835 without the phones: one person joins
+// through the other's invitation, each posts a moment, and each sees both.
 func TestTwoPeopleConnected(t *testing.T) {
-	srv := newTestServer(t)
-	a, b := join(t, srv), join(t, srv)
-	connect(t, srv, a, b)
+	srv, store := newTestServer(t)
+	a := join(t, srv, store, nil)
+	b := join(t, srv, store, a)
 
 	// The server stores ciphertext. These bytes stand in for it; nothing here
 	// ever tries to read them.
@@ -245,9 +280,64 @@ func TestTwoPeopleConnected(t *testing.T) {
 	}
 }
 
+// TestPeopleAlreadyHereConnect covers the other way in: two people who have
+// both joined connect through /connections.
+func TestPeopleAlreadyHereConnect(t *testing.T) {
+	srv, store := newTestServer(t)
+	a, b := join(t, srv, store, nil), join(t, srv, store, nil)
+	a.post(t, srv, "before they met")
+	connect(t, srv, a, b)
+
+	if feed := b.feed(t, srv); len(feed) != 1 || string(feed[0].Blob) != "before they met" {
+		t.Errorf("after connecting, B's feed is %d moments, want A's one", len(feed))
+	}
+}
+
+// TestRegistrationIsByInvitation holds the rule that nobody arrives uninvited,
+// and that a refused registration leaves no person behind.
+func TestRegistrationIsByInvitation(t *testing.T) {
+	srv, store := newTestServer(t)
+	try := func(body map[string]any) int {
+		t.Helper()
+		body["public_key"] = newDevice(t).pub
+		status, _ := call(t, srv, "POST", "/v1/people", "", body)
+		return status
+	}
+
+	if status := try(map[string]any{}); status != http.StatusBadRequest {
+		t.Errorf("no invite: status %d, want 400", status)
+	}
+	if status := try(map[string]any{"invite": "made-up"}); status != http.StatusForbidden {
+		t.Errorf("made-up operator invite: status %d, want 403", status)
+	}
+
+	token, err := store.OperatorInvite()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if status := try(map[string]any{"invite": token}); status != http.StatusCreated {
+		t.Fatalf("operator invite: status %d, want 201", status)
+	}
+	if status := try(map[string]any{"invite": token}); status != http.StatusForbidden {
+		t.Errorf("operator invite used twice: status %d, want 403", status)
+	}
+
+	a := join(t, srv, store, nil)
+	before := personFiles(t, store)
+	if status := try(map[string]any{"person": a.person, "invite": "made-up"}); status != http.StatusForbidden {
+		t.Errorf("made-up invite from a person: status %d, want 403", status)
+	}
+	if status := try(map[string]any{"person": NewID(), "invite": "made-up"}); status != http.StatusForbidden {
+		t.Errorf("invite from nobody: status %d, want 403", status)
+	}
+	if after := personFiles(t, store); after != before {
+		t.Errorf("refused registrations left %d person files behind", after-before)
+	}
+}
+
 func TestStrangerCannotRead(t *testing.T) {
-	srv := newTestServer(t)
-	a, stranger := join(t, srv), join(t, srv)
+	srv, store := newTestServer(t)
+	a, stranger := join(t, srv, store, nil), join(t, srv, store, nil)
 	a.post(t, srv, "only for the people A is connected to")
 
 	feed := "/v1/people/" + a.person + "/feed"
@@ -414,6 +504,15 @@ func TestNetworkCap(t *testing.T) {
 		t.Fatalf("connection %d: got %v, want ErrNetworkFull", NetworkCap+1, err)
 	}
 
+	// Joining through a full network's invite is refused, and leaves no person.
+	before := personFiles(t, store)
+	if _, err := store.Register(newDevice(t).pub, hub, hubInvite); !errors.Is(err, ErrNetworkFull) {
+		t.Fatalf("joining through a full network: got %v, want ErrNetworkFull", err)
+	}
+	if after := personFiles(t, store); after != before {
+		t.Errorf("a refused registration left %d person files behind", after-before)
+	}
+
 	// Full as the one redeeming: the inviter's side is written first and has to
 	// be undone, or the inviter would be reading the hub one-way.
 	inviter := register(t, store)
@@ -444,6 +543,12 @@ func TestBadInvite(t *testing.T) {
 	}
 	if err := store.Connect(a, a, fromA); !errors.Is(err, ErrOwnInvite) {
 		t.Errorf("own invite: got %v, want ErrOwnInvite", err)
+	}
+	if _, err := store.Register(newDevice(t).pub, "", ""); !errors.Is(err, ErrNoInvite) {
+		t.Errorf("registering with no invite: got %v, want ErrNoInvite", err)
+	}
+	if _, err := store.Register(newDevice(t).pub, a, "not-an-invite"); !errors.Is(err, ErrBadInvite) {
+		t.Errorf("registering with a made-up invite: got %v, want ErrBadInvite", err)
 	}
 }
 

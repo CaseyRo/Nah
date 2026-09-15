@@ -10,7 +10,9 @@ package nah
 
 import (
 	"crypto/ed25519"
+	"crypto/sha256"
 	"database/sql"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"os"
@@ -36,9 +38,14 @@ const NetworkCap = 150
 // posted to the old instance reaches the new one's feeds within this long.
 const newestRecheck = 30 * time.Second
 
+// operatorInvites is the directory, inside the data directory, that holds the
+// invites `server invite` makes for a server's first person.
+const operatorInvites = "invites"
+
 var (
 	ErrNoPerson    = errors.New("no such person")
 	ErrBadPersonID = errors.New("malformed person id")
+	ErrNoInvite    = errors.New("registration needs an invite")
 	ErrBadInvite   = errors.New("invite is not valid")
 	ErrOwnInvite   = errors.New("invite belongs to the person redeeming it")
 	ErrNetworkFull = errors.New("network is full")
@@ -124,18 +131,94 @@ type Moment struct {
 	Blob      []byte `json:"blob"`
 }
 
-// Register makes a new person with a file of their own, holding the public key
-// of the device that asked. The key is what signs in (ADR-0015); the id is what
-// the file is called and what other people connect to, so it can outlive a phone.
-func (s *Store) Register(pub ed25519.PublicKey) (string, error) {
+// Register makes a new person, and nobody arrives uninvited. The invite comes
+// either from someone already here, which connects the two of them in the same
+// step (invitation is connection, ADR-0017), or, when no inviter is named, from
+// the operator, which is how the first person on a server arrives.
+//
+// The key is what signs in (ADR-0015). The id is what the file is called and
+// what other people connect to, so it can outlive a phone.
+func (s *Store) Register(pub ed25519.PublicKey, inviterID, invite string) (string, error) {
+	if invite == "" {
+		return "", ErrNoInvite
+	}
+	if inviterID == "" {
+		// Spent before the person exists: a failure after this costs the operator
+		// one more invite, and never leaves a person nobody invited.
+		if err := os.Remove(filepath.Join(s.dir, operatorInvites, tokenHash(invite))); err != nil {
+			return "", ErrBadInvite
+		}
+		return s.newPerson(pub)
+	}
+
+	id, err := s.newPerson(pub)
+	if err != nil {
+		return "", err
+	}
+	if err := s.Connect(id, inviterID, invite); err != nil {
+		// A refused invite or a full network must not leave behind a person who
+		// is connected to nobody.
+		if errors.Is(err, ErrNoPerson) || errors.Is(err, ErrBadPersonID) {
+			err = ErrBadInvite
+		}
+		return "", errors.Join(err, s.remove(id))
+	}
+	return id, nil
+}
+
+// OperatorInvite makes a single-use invite that belongs to nobody, for the first
+// person on a server; everyone after them joins through someone already here.
+// It is kept as an empty file named by the invite's hash, so the invite itself
+// is never written down, and redeeming it is one os.Remove, which only one
+// caller can win.
+func (s *Store) OperatorInvite() (string, error) {
+	dir := filepath.Join(s.dir, operatorInvites)
+	if err := os.MkdirAll(dir, 0o700); err != nil {
+		return "", err
+	}
+	token := NewToken()
+	f, err := os.OpenFile(filepath.Join(dir, tokenHash(token)), os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o600)
+	if err != nil {
+		return "", err
+	}
+	return token, f.Close()
+}
+
+func tokenHash(token string) string {
+	sum := sha256.Sum256([]byte(token))
+	return hex.EncodeToString(sum[:])
+}
+
+func (s *Store) newPerson(pub ed25519.PublicKey) (string, error) {
 	id := NewID()
 	p, err := s.openPerson(id, true)
 	if err != nil {
 		return "", err
 	}
-	_, err = p.write.Exec(`INSERT INTO person (id, created_at, public_key) VALUES (?, ?, ?)`,
-		id, s.now().UnixMilli(), []byte(pub))
-	return id, err
+	if _, err := p.write.Exec(`INSERT INTO person (id, created_at, public_key) VALUES (?, ?, ?)`,
+		id, s.now().UnixMilli(), []byte(pub)); err != nil {
+		return "", errors.Join(err, s.remove(id))
+	}
+	return id, nil
+}
+
+// remove closes a person's file and deletes it. It exists only to undo a
+// registration that did not finish; nothing deletes a real person yet.
+func (s *Store) remove(id string) error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if p, ok := s.open[id]; ok {
+		p.read.Close()
+		p.write.Close()
+		delete(s.open, id)
+	}
+	var errs []error
+	for _, suffix := range []string{"", "-wal", "-shm"} {
+		if err := os.Remove(filepath.Join(s.dir, id+".db"+suffix)); err != nil && !errors.Is(err, os.ErrNotExist) {
+			errs = append(errs, err)
+		}
+	}
+	return errors.Join(errs...)
 }
 
 // Owns reports whether pub is this person's device key.

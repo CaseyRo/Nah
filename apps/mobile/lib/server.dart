@@ -26,8 +26,14 @@ class Refused implements Exception {
   String toString() => message;
 }
 
+/// This device has not joined yet. Nah? is by invitation, so there is nothing to
+/// sign in to until [Server.join] has run with one.
+class NeedsInvitation implements Exception {
+  const NeedsInvitation();
+}
+
 /// Everything the app knows about talking to the server: who this device is,
-/// how it signs in, and the few things a person can do in M1.
+/// how it joins and signs in, and the few things a person can do in M1.
 ///
 /// Still thin on purpose. Sessions per server, the local cache and encrypting on
 /// the way out are CDI-1861, in a package the app owns.
@@ -65,10 +71,11 @@ class Server {
   String? _person;
   String? _token;
 
-  /// This device's person id, once [start] has run.
+  /// This device's person id, once it has joined.
   String get me => _person!;
 
-  /// Loads this device's identity, making one on first run, and signs in.
+  /// Loads this device's identity, making a key on first run, and signs in.
+  /// Throws [NeedsInvitation] when the device has not joined yet.
   Future<void> start() async {
     var seed = await _storage.read(key: _seedKey);
     if (seed == null) {
@@ -80,26 +87,39 @@ class Server {
     _publicKey = (await _keys.extractPublicKey()).bytes;
 
     _person = await _storage.read(key: _personKey);
-    if (_person == null) await _register();
+    if (_person == null) throw const NeedsInvitation();
     try {
       await _signIn();
     } on DioException catch (e) {
       // The server no longer knows this person, which is what a wiped
-      // development server looks like. Become a new person rather than stick.
+      // development server looks like. Joining again takes a new invitation.
       final status = e.response?.statusCode;
       if (status != 403 && status != 404) rethrow;
-      await _register();
-      await _signIn();
+      await _storage.delete(key: _personKey);
+      _person = null;
+      throw const NeedsInvitation();
     }
   }
 
-  Future<void> _register() async {
-    final res = await _dio.post<Map<String, dynamic>>(
-      '/v1/people',
-      data: {'public_key': base64.encode(_publicKey)},
-    );
-    _person = res.data!['id'] as String;
+  /// Joins with the invitation someone sent, which also connects this person to
+  /// them. An operator's invitation names nobody before the `#`; that is how
+  /// the first person on a server arrives. Runs after [start] has thrown
+  /// [NeedsInvitation].
+  Future<void> join(String invitation) async {
+    final (person, invite) = _parse(invitation, personRequired: false);
+    await _refusable(() async {
+      final res = await _dio.post<Map<String, dynamic>>(
+        '/v1/people',
+        data: {
+          'public_key': base64.encode(_publicKey),
+          if (person.isNotEmpty) 'person': person,
+          'invite': invite,
+        },
+      );
+      _person = res.data!['id'] as String;
+    });
     await _storage.write(key: _personKey, value: _person);
+    await _signIn();
   }
 
   Future<void> _signIn() async {
@@ -156,12 +176,10 @@ class Server {
     return '$_person#${res.data!['invite']}';
   }
 
-  /// Redeems someone's invitation. Connection is mutual and immediate.
+  /// Redeems the invitation of someone already here. Connection is mutual and
+  /// immediate.
   Future<void> connect(String invitation) {
-    final (person, invite) = switch (invitation.trim().split('#')) {
-      [final p, final i] when p.isNotEmpty && i.isNotEmpty => (p, i),
-      _ => throw const Refused('That does not look like an invitation.'),
-    };
+    final (person, invite) = _parse(invitation, personRequired: true);
     return _refusable(
       () => _authed<Object?>(
         'POST',
@@ -170,6 +188,16 @@ class Server {
       ),
     );
   }
+
+  /// Splits `person#invite`. Only an operator's invitation leaves the person out.
+  static (String, String) _parse(
+    String invitation, {
+    required bool personRequired,
+  }) => switch (invitation.trim().split('#')) {
+    [final p, final i] when i.isNotEmpty && (p.isNotEmpty || !personRequired) =>
+      (p, i),
+    _ => throw const Refused('That does not look like an invitation.'),
+  };
 
   Future<Response<T>> _authed<T>(
     String method,
@@ -196,7 +224,7 @@ class Server {
   }
 
   /// Turns a refusal the server explained into a [Refused] with its sentence.
-  Future<void> _refusable(Future<Object?> Function() call) async {
+  Future<void> _refusable(Future<void> Function() call) async {
     try {
       await call();
     } on DioException catch (e) {

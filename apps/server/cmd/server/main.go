@@ -1,9 +1,13 @@
 // Command server runs a Nah? server.
 //
+//	server           serve
+//	server invite    print a one-time invitation for the first person here
+//
+// Nah? is by invitation, so the first person on a server needs one from the
+// operator; everyone after them joins through someone already here.
+//
 // Configuration is environment variables read into a struct at start, per
-// ADR-0014. There is no configuration file, no flag parsing and no subcommand:
-// a person registers from the app on first run, so there is nothing for an
-// operator to create.
+// ADR-0014. There is no configuration file and there is no flag parsing.
 package main
 
 import (
@@ -40,10 +44,8 @@ func env(key, fallback string) string {
 }
 
 func main() {
-	// create-circle went with circles (ADR-0017). Refuse rather than quietly
-	// serve, in case something still calls it.
-	if len(os.Args) > 1 {
-		fmt.Fprintln(os.Stderr, "server takes no arguments; configure it with NAH_ADDR and NAH_DATA_DIR")
+	if len(os.Args) > 2 || (len(os.Args) == 2 && os.Args[1] != "invite") {
+		fmt.Fprintln(os.Stderr, "usage: server           serve\n       server invite    print a one-time invitation for the first person here")
 		os.Exit(2)
 	}
 
@@ -56,6 +58,17 @@ func main() {
 		os.Exit(1)
 	}
 	defer store.Close()
+
+	if len(os.Args) == 2 {
+		invite, err := store.OperatorInvite()
+		if err != nil {
+			log.Error("cannot make an invitation", "err", err)
+			os.Exit(1)
+		}
+		// The app reads an invitation as person#invite; an operator's names nobody.
+		fmt.Println("#" + invite)
+		return
+	}
 
 	if err := serve(cfg, store, log); err != nil {
 		log.Error("server stopped", "err", err)

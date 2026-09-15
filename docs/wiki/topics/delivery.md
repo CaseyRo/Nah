@@ -47,7 +47,6 @@ The server's checks and container commands are in the [server README](../../../a
 - **The deploy does not exist yet.** When it does, the webhook secret must be identical on GitHub and in the Komodo stack. An empty secret answers every delivery with a 401 and deploys nothing, silently ([ADR-0014](../../decisions/0014-the-go-setup.md)).
 - **A green push is not a release.** Check that a tag appeared and a deploy fired ([ADR-0014](../../decisions/0014-the-go-setup.md)). No release workflow exists yet to produce either.
 - **The container has no shell and runs as uid 65532.** Health checks must come from outside, against `/healthz`, and a mounted data directory must be writable by that uid.
-- **The root README still lists Docker for a Mastodon backend.** The server replaced Mastodon on 2026-09-13 ([ADR-0010](../../decisions/0010-small-server-not-mastodon.md)).
 - **The server workflow's own comment records a red run** from the push that added it before any Go code existed.
 
 ## Sources
