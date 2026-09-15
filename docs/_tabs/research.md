@@ -1,7 +1,7 @@
 ---
 title: Research
 icon: fas fa-flask
-order: 2
+order: 3
 ---
 
 Long-form research behind Nah?. These are working documents, not marketing. They
