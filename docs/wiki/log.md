@@ -14,3 +14,10 @@
 **New topics:** none
 **Sources scanned:** 28
 **Sources changed:** 5: README.md, apps/server/README.md, apps/mobile/README.md, ADR-0012 and ADR-0016. Registration became invite-only, both decision records were accepted, and the root README was cleaned up.
+
+## 2026-09-15, second compile
+
+**Topics updated:** mobile, server, the opaque-moments concept, and the quickstart
+**New topics:** none
+**Sources scanned:** 29
+**Sources changed:** 5: ADR-0006, ADR-0008, ADR-0016 and ADR-0017 gained dated notes, and ADR-0018 is new. Music became a moment type, reactions came back for the poster only, a poster can delete a moment, and the product calls a person's 150 their circle.

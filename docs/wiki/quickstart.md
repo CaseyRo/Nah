@@ -1,6 +1,6 @@
 # Nah? codebase wiki
 
-Nah? is a private social network in which each person has one network of up to 150 people. Phones run a Flutter app that talks to one small Go server, and the server stores what it does not read. The product is described in the [root README](../../README.md) and the [decision records](../decisions/index.md); this wiki explains how the code fits together and how to run it.
+Nah? is a private social network in which each person has one network of up to 150 people, which the app calls their circle. Phones run a Flutter app that talks to one small Go server, and the server stores what it does not read. The product is described in the [root README](../../README.md) and the [decision records](../decisions/index.md); this wiki explains how the code fits together and how to run it.
 
 ## Run it
 

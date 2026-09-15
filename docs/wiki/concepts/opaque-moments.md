@@ -1,6 +1,6 @@
 ---
 concept: Opaque moments
-last_compiled: 2026-09-14
+last_compiled: 2026-09-15
 topics_connected: [server, mobile, spike]
 status: active
 ---
@@ -13,6 +13,7 @@ The server stores, orders and returns moments without ever reading one. That beg
 
 ## Instances
 
+- **2026-09-15** in [mobile](../topics/mobile.md) and [server](../topics/server.md): every decision added that day keeps the server blind. A reaction's kind is sealed ([ADR-0018](../../decisions/0018-reactions-the-poster-sees.md)), a place travels as words inside the moment, and a song's links and artwork travel sealed, with the song looked up from the phone rather than through the server (the notes on [ADR-0006](../../decisions/0006-three-moment-types.md) and [ADR-0016](../../decisions/0016-the-moment-envelope.md)).
 - **2026-09-14** in [mobile](../topics/mobile.md): moments travel unencrypted until each person has a content key (CDI-1863), yet the app already treats every envelope it reads as hostile input, because nothing upstream can check it ([app README](../../../apps/mobile/README.md)).
 - **2026-09-14** in [server](../topics/server.md): the feed shape was chosen on numbers alone. With opaque blobs the only questions are how many files and how many transactions, never what is inside ([spike results](../../../spike/RESULTS.md)).
 - **2026-09-13** in [spike](../topics/spike.md): the fixture's moments are 400-byte blobs whose content is irrelevant, which is what let one fixture stand for every candidate ([thresholds](../../../spike/THRESHOLDS.md)).

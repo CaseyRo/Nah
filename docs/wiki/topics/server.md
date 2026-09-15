@@ -29,10 +29,11 @@ On disk the data directory holds one `<person id>.db` per person, plus `session.
 
 Streaming backups with Litestream are planned. Nothing in `apps/server` runs them yet, and restoring from a backup has not been measured.
 
-## Key Decisions [coverage: high -- 12 sources]
+## Key Decisions [coverage: high -- 13 sources]
 
 Newest first. Each decision record is the canonical home for its reasoning.
 
+- **2026-09-15:** reactions will be stored sealed, so the server knows who reacted to which moment and when but not how, and returns them only to the poster ([ADR-0018](../../decisions/0018-reactions-the-poster-sees.md)). Not built.
 - **2026-09-14:** registration is by invitation only. An invite from someone already here also connects the two people, and the first person on a server uses a single-use operator invite; the [server README](../../../apps/server/README.md) describes both.
 - **2026-09-14:** the feed reads fan-in from each connection's file, newest poster first, and stops once nobody left can beat the page. Reading every file failed the latency threshold at 150 connections. See the 2026-09-14 amendment to [ADR-0011](../../decisions/0011-plain-go-and-a-database-per-circle.md) and the [spike results](../../../spike/RESULTS.md).
 - **2026-09-13:** one network of up to 150 per person, no circles and one feed ([ADR-0017](../../decisions/0017-one-network-of-a-hundred-and-fifty.md)). It supersedes circles ([ADR-0009](../../decisions/0009-circles-not-one-circle.md)) and rooms ([ADR-0013](../../decisions/0013-no-aggregated-feed.md)), and brings back invitation as connection from [ADR-0003](../../decisions/0003-connection-model.md).
@@ -84,3 +85,4 @@ It serves on `:8080` and keeps its files in `./data`; `NAH_ADDR` and `NAH_DATA_D
 - [docs/decisions/0015-no-passwords-a-key-on-the-device.md](../../decisions/0015-no-passwords-a-key-on-the-device.md)
 - [docs/decisions/0016-the-moment-envelope.md](../../decisions/0016-the-moment-envelope.md)
 - [docs/decisions/0017-one-network-of-a-hundred-and-fifty.md](../../decisions/0017-one-network-of-a-hundred-and-fifty.md)
+- [docs/decisions/0018-reactions-the-poster-sees.md](../../decisions/0018-reactions-the-poster-sees.md)
