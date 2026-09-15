@@ -116,6 +116,20 @@ Nah? SHALL contain no AI features: no recaps, summaries, suggestions or generate
 - **WHEN** a photo moment is prepared on the device
 - **THEN** it is resized and encoded, and Nah? passes it to no model for tagging, captioning or analysis
 
+### Requirement: No record of where anyone is
+
+Nah? SHALL ask a phone for its location only when the person chooses to add a place to a moment, and SHALL keep no coordinates and no location history anywhere. A place SHALL exist only as the words a person attached to a moment, sealed inside it, for that person and their circle and never for the project (ruled 2026-09-15).
+
+#### Scenario: Adding a place
+
+- **WHEN** a person adds a place to a moment from their phone's location
+- **THEN** the moment carries the place as words, and neither the app nor any Nah? server keeps the coordinates
+
+#### Scenario: Not adding a place
+
+- **WHEN** a person posts a moment without a place
+- **THEN** Nah? has not asked the phone where it is
+
 ### Requirement: Nothing is sold, and nothing advertises
 
 Nah? SHALL show no advertising, and SHALL NOT sell, rent or share data about the people in it.

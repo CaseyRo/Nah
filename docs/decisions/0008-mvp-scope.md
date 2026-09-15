@@ -10,6 +10,8 @@ date: 2026-04-26
 
 Accepted (2026-04-26). Amended by [ADR-0009](0009-circles-not-one-circle.html): the scope was cut for a single circle and needs re-cutting for circles.
 
+**Amended 2026-09-15.** *One medium per moment* now allows an optional short line on a photo or voice moment, and an optional place on any moment (see the note on [ADR-0006](0006-three-moment-types.html)). *Immutable after post* still means no edit, but the person who posted a moment can delete it, and it is replaced where it stood by a plain "This moment was deleted".
+
 ## Context
 
 "MVP" is one of the most misused words in product. It often means "everything we could think of, minus the things that broke last sprint." For Nah?, MVP needs to be radically constrained, because:

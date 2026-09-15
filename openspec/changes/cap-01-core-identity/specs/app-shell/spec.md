@@ -114,7 +114,7 @@ The app SHALL show the system notification permission prompt only after saying, 
 
 ### Requirement: Nothing reports on the person
 
-The app SHALL contain no analytics, crash-reporting, advertising, attribution or AI software, directly or through anything it depends on (CDI-1860). Every request the app makes itself SHALL go to the person's Nah? server or to another address Nah? runs, such as the directory or the push relay. The operating system's own push service is outside this rule.
+The app SHALL contain no analytics, crash-reporting, advertising, attribution or AI software, directly or through anything it depends on (CDI-1860). Every request the app makes itself SHALL go to the person's Nah? server or to another address Nah? runs, such as the directory or the push relay. The operating system's own push service is outside this rule, and so is its place lookup, used only when a person chooses to add their location to a moment (cap-03).
 
 #### Scenario: Adding a dependency
 
