@@ -47,3 +47,6 @@ data/
 # Server binaries
 nah-server
 nah-server-*
+
+# Impeccable review captures, regenerated each round
+.impeccable/review/

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-05-19T12:00:00Z",
+  "generatedAt": "2026-09-15T22:00:00Z",
   "title": "Design System: Nah",
   "extensions": {
     "colorMeta": {
@@ -27,8 +27,14 @@
       },
       "pomegranate-light": {
         "role": "primary",
-        "displayName": "Pomegranate Light",
+        "displayName": "Pomegranate Light (avatar fallback, tint)",
         "canonical": "oklch(72% 0.18 30)",
+        "tonalRamp": []
+      },
+      "pomegranate-tint": {
+        "role": "primary",
+        "displayName": "Pomegranate Tint (reaction fills)",
+        "canonical": "oklch(90% 0.05 30)",
         "tonalRamp": []
       },
       "surface-1": {
@@ -48,7 +54,7 @@
       },
       "surface-2": {
         "role": "neutral",
-        "displayName": "Surface 2 (Page Background)",
+        "displayName": "Surface 2 (Ground)",
         "canonical": "oklch(98% 0.005 30)",
         "tonalRamp": []
       },
@@ -60,7 +66,7 @@
       },
       "surface-4": {
         "role": "neutral",
-        "displayName": "Surface 4 (Border / Divider)",
+        "displayName": "Surface 4 (Rail / Border / Hairline)",
         "canonical": "oklch(92% 0.005 30)",
         "tonalRamp": []
       },
@@ -90,8 +96,50 @@
       },
       "text-4": {
         "role": "neutral",
-        "displayName": "Text 4 (Hint)",
+        "displayName": "Text 4 (Hint / Clock ticks)",
         "canonical": "oklch(78% 0.005 30)",
+        "tonalRamp": []
+      },
+      "surface-2-dark": {
+        "role": "neutral",
+        "displayName": "Surface 2 dark (Ground)",
+        "canonical": "oklch(17% 0.006 50)",
+        "tonalRamp": []
+      },
+      "surface-1-dark": {
+        "role": "neutral",
+        "displayName": "Surface 1 dark (Clock face, reaction button, sheets)",
+        "canonical": "oklch(21% 0.006 50)",
+        "tonalRamp": []
+      },
+      "surface-3-dark": {
+        "role": "neutral",
+        "displayName": "Surface 3 dark (Inset, play disc)",
+        "canonical": "oklch(25% 0.006 50)",
+        "tonalRamp": []
+      },
+      "surface-4-dark": {
+        "role": "neutral",
+        "displayName": "Surface 4 dark (Rail / Border / Hairline)",
+        "canonical": "oklch(31% 0.007 50)",
+        "tonalRamp": []
+      },
+      "text-1-dark": {
+        "role": "neutral",
+        "displayName": "Text 1 dark (Primary)",
+        "canonical": "oklch(95% 0.006 50)",
+        "tonalRamp": []
+      },
+      "text-2-dark": {
+        "role": "neutral",
+        "displayName": "Text 2 dark (Secondary, about 7.1:1 on the ground)",
+        "canonical": "oklch(71% 0.008 50)",
+        "tonalRamp": []
+      },
+      "text-4-dark": {
+        "role": "neutral",
+        "displayName": "Text 4 dark (Hint / Clock ticks)",
+        "canonical": "oklch(43% 0.008 50)",
         "tonalRamp": []
       },
       "success": {
@@ -116,23 +164,35 @@
     "typographyMeta": {
       "display": {
         "displayName": "Display (Nunito)",
-        "purpose": "Logo, screen titles, onboarding headings. Brand voice surfaces only."
+        "purpose": "Onboarding card titles, hero moments. Maximum two uses per screen."
       },
       "headline": {
         "displayName": "Headline (Nunito)",
-        "purpose": "Screen titles, profile display names on the profile page only."
+        "purpose": "Screen titles, the wordmark in the feed header, profile display names on the profile page only."
       },
       "title": {
         "displayName": "Title (Nunito)",
         "purpose": "Section headers within a screen."
       },
+      "name": {
+        "displayName": "Name (Platform Sans)",
+        "purpose": "A person's name on a moment, a song title. Never Nunito."
+      },
+      "moment": {
+        "displayName": "Moment (Platform Sans)",
+        "purpose": "The text of a text moment, 17px on a 25px line."
+      },
       "body": {
         "displayName": "Body (Platform Sans)",
-        "purpose": "Moment text, card content, comments, prose. Platform default, never Nunito."
+        "purpose": "Prose, the short line under a photo or voice moment, card content. Platform default, never Nunito."
       },
       "label": {
         "displayName": "Label (Platform Sans)",
-        "purpose": "Button text, tab labels, chip text, navigation."
+        "purpose": "Button text, chip text, navigation, a song's artist."
+      },
+      "caption": {
+        "displayName": "Caption (Platform Sans, tabular)",
+        "purpose": "The time in the feed lane, a voice moment's duration, the place under a moment, names beside reactions. The clock's date drops to 12px."
       }
     },
     "shadows": [
@@ -149,7 +209,12 @@
       {
         "name": "toast",
         "value": "0 4px 16px rgba(0, 0, 0, 0.10)",
-        "purpose": "Brief lift of a toast notification above the tab bar."
+        "purpose": "Brief lift of a toast notification above the feed."
+      },
+      {
+        "name": "clock",
+        "value": "0 4px 12px rgba(0, 0, 0, 0.10)",
+        "purpose": "The timeline clock's lift off the lane in light mode. Dark mode: no shadow, the 1px Surface 4 stroke is the border."
       }
     ],
     "motion": [
@@ -161,7 +226,7 @@
       {
         "name": "duration-normal",
         "value": "250ms",
-        "purpose": "Most transitions (color shifts, state changes, tab swaps)."
+        "purpose": "Most transitions (color shifts, state changes)."
       },
       {
         "name": "duration-slow",
@@ -190,36 +255,34 @@
       }
     ],
     "breakpoints": [
-      {
-        "name": "iphone-se",
-        "value": "375px"
-      },
-      {
-        "name": "iphone-standard",
-        "value": "390px"
-      },
-      {
-        "name": "iphone-pro-max",
-        "value": "428px"
-      },
-      {
-        "name": "android-compact",
-        "value": "360px"
-      },
-      {
-        "name": "android-medium",
-        "value": "412px"
+      { "name": "iphone-se", "value": "375px" },
+      { "name": "iphone-standard", "value": "390px" },
+      { "name": "iphone-pro-max", "value": "428px" },
+      { "name": "android-compact", "value": "360px" },
+      { "name": "android-medium", "value": "412px" }
+    ],
+    "layout": {
+      "feed": {
+        "lane": "64px",
+        "laneTimePadding": "12px",
+        "rail": "1px surface-4",
+        "contentPadding": "16px",
+        "rowPadding": "16px 0 20px",
+        "rowGap": "8px to 10px",
+        "footGap": "12px",
+        "photo": "bleeds to the right screen edge, 4:3 at 206px tall, 8px radius on the left corners only",
+        "fabInset": "24px from the right, 24px above the safe-area bottom (58px from the screen edge on a home-indicator phone)"
       }
-    ]
+    }
   },
   "components": [
     {
       "name": "Primary Button",
       "kind": "button",
       "refersTo": "button-primary",
-      "description": "The pill-shaped Pomegranate primary action button. Used for Post, Sign In, Get Started, Confirm.",
-      "html": "<button class=\"ds-btn-primary\">Post</button>",
-      "css": ".ds-btn-primary { background: #EE3423; color: #FFFFFF; padding: 12px 24px; border-radius: 9999px; border: none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em; cursor: pointer; transition: background 150ms cubic-bezier(0.16, 1, 0.3, 1), transform 150ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-primary:hover { background: #D42D1E; } .ds-btn-primary:active { transform: scale(0.97); } .ds-btn-primary:focus-visible { outline: 2px solid #EE3423; outline-offset: 4px; }"
+      "description": "A 48px Pomegranate circle carrying a white glyph, its label beside it in Label and Text 1. No text is ever set on Pomegranate.",
+      "html": "<button class=\"ds-btn-primary\"><span class=\"ds-btn-primary__disc\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M22 2L11 13\"/><path d=\"M22 2l-7 20-4-9-9-4 20-7z\"/></svg></span><span class=\"ds-btn-primary__label\">Post</span></button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 12px; background: transparent; border: none; padding: 0; cursor: pointer; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .ds-btn-primary__disc { width: 48px; height: 48px; border-radius: 9999px; background: #EE3423; color: #FFFFFF; display: flex; align-items: center; justify-content: center; transition: background 150ms cubic-bezier(0.16, 1, 0.3, 1), transform 150ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-primary__label { font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em; color: #1A1A1A; } .ds-btn-primary:hover .ds-btn-primary__disc { background: #D42D1E; } .ds-btn-primary:active .ds-btn-primary__disc { transform: scale(0.97); } .ds-btn-primary:focus-visible { outline: 2px solid #EE3423; outline-offset: 4px; border-radius: 9999px; }"
     },
     {
       "name": "Ghost Button",
@@ -233,24 +296,48 @@
       "name": "Radial FAB",
       "kind": "button",
       "refersTo": "fab-radial",
-      "description": "The signature Pomegranate floating action button that opens the radial moment-type menu.",
+      "description": "The 56px Pomegranate + that opens the radial moment-type menu. 24px from the right and 24px above the safe-area bottom. The same red in dark mode.",
       "html": "<button class=\"ds-fab\" aria-label=\"Create moment\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\"><line x1=\"12\" y1=\"5\" x2=\"12\" y2=\"19\"/><line x1=\"5\" y1=\"12\" x2=\"19\" y2=\"12\"/></svg></button>",
-      "css": ".ds-fab { background: #EE3423; color: #FFFFFF; width: 56px; height: 56px; border-radius: 9999px; border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(238, 52, 35, 0.15); cursor: pointer; transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 250ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-fab:hover { box-shadow: 0 6px 16px rgba(238, 52, 35, 0.22); } .ds-fab:active { transform: scale(0.95); } .ds-fab[aria-expanded=\"true\"] svg { transform: rotate(45deg); transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1); }"
+      "css": ".ds-fab { background: #EE3423; color: #FFFFFF; width: 56px; height: 56px; border-radius: 9999px; border: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(238, 52, 35, 0.15); cursor: pointer; transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 250ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-fab:hover { box-shadow: 0 6px 16px rgba(238, 52, 35, 0.22); } .ds-fab:active { transform: scale(0.95); } .ds-fab:focus-visible { outline: 2px solid #EE3423; outline-offset: 4px; } .ds-fab[aria-expanded=\"true\"] svg { transform: rotate(45deg); transition: transform 250ms cubic-bezier(0.16, 1, 0.3, 1); }"
     },
     {
-      "name": "Moment Card (Text variant)",
+      "name": "Feed Header",
+      "kind": "nav",
+      "refersTo": "moment-lane",
+      "description": "Three overlapping 24px faces (your circle) left, the wordmark in Nunito 24/700 centred, your 32px avatar right, a 1px Surface 4 hairline below. The only chrome above the feed.",
+      "html": "<header class=\"ds-feed-head\"><button class=\"ds-feed-head__circle\" aria-label=\"Your circle\"><span class=\"ds-face\">M</span><span class=\"ds-face\">S</span><span class=\"ds-face\">A</span></button><span class=\"ds-feed-head__mark\">Nah?</span><button class=\"ds-feed-head__you\" aria-label=\"You\"><span class=\"ds-face ds-face--you\">C</span></button></header>",
+      "css": ".ds-feed-head { display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 16px; background: #FAFAFA; border-bottom: 1px solid #EBEBEB; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .ds-feed-head__circle, .ds-feed-head__you { background: transparent; border: none; padding: 0; display: flex; cursor: pointer; } .ds-face { width: 24px; height: 24px; border-radius: 9999px; background: #FF6B5B; color: #1A1A1A; font-size: 0.6875rem; font-weight: 600; display: flex; align-items: center; justify-content: center; border: 2px solid #FAFAFA; } .ds-face + .ds-face { margin-left: -8px; } .ds-face--you { width: 32px; height: 32px; font-size: 0.8125rem; border: none; } .ds-feed-head__mark { font-family: Nunito, -apple-system, BlinkMacSystemFont, sans-serif; font-size: 1.5rem; font-weight: 700; letter-spacing: -0.01em; color: #1A1A1A; }"
+    },
+    {
+      "name": "Feed Moment (text)",
       "kind": "card",
-      "refersTo": "moment-card",
-      "description": "The base card shell for moments. Text variant shown; photo/music/location/status variants share the header + footer.",
-      "html": "<article class=\"ds-card-moment\"><header class=\"ds-card-moment__head\"><div class=\"ds-avatar\"><span>EM</span></div><div class=\"ds-card-moment__meta\"><span class=\"ds-card-moment__name\">Emma</span><span class=\"ds-card-moment__time\">3h</span></div></header><div class=\"ds-card-moment__body ds-card-moment__body--text\"><p>Coffee in Berlin, finally a quiet morning.</p></div><footer class=\"ds-card-moment__foot\"><button class=\"ds-react-btn\" aria-label=\"React\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z\"/></svg></button><span class=\"ds-card-moment__comments\">4</span></footer></article>",
-      "css": ".ds-card-moment { background: #FFFFFF; border-radius: 8px; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1A1A; } .ds-card-moment__head { display: flex; align-items: center; gap: 12px; padding: 16px 16px 12px; } .ds-avatar { width: 40px; height: 40px; border-radius: 9999px; background: #FF6B5B; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.875rem; } .ds-card-moment__meta { display: flex; align-items: baseline; gap: 8px; flex: 1; } .ds-card-moment__name { font-family: Nunito, -apple-system, BlinkMacSystemFont, sans-serif; font-weight: 600; font-size: 1rem; color: #1A1A1A; } .ds-card-moment__time { font-size: 0.75rem; color: #6B6B6B; } .ds-card-moment__body--text { padding: 4px 24px 16px; font-size: 1.125rem; line-height: 1.5; color: #1A1A1A; } .ds-card-moment__body--text p { margin: 0; } .ds-card-moment__foot { display: flex; align-items: center; gap: 12px; padding: 12px 16px 16px; } .ds-react-btn { width: 32px; height: 32px; border-radius: 9999px; background: transparent; border: none; color: #6B6B6B; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: color 150ms cubic-bezier(0.16, 1, 0.3, 1), background 150ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-react-btn:hover { color: #EE3423; background: #FAFAFA; } .ds-card-moment__comments { font-size: 0.875rem; color: #6B6B6B; }"
+      "refersTo": "moment-row",
+      "description": "A moment on the feed: time in the 64px lane, a 1px rail, then name, body and foot set directly on the ground. No card box.",
+      "html": "<article class=\"ds-moment\"><div class=\"ds-moment__lane\"><time>21:14</time></div><div class=\"ds-moment__content\"><span class=\"ds-moment__name\">Maya</span><p class=\"ds-moment__text\">Made it home. Snow on the Ku'damm, soup on the stove.</p><div class=\"ds-moment__foot\"><button class=\"ds-react-btn\" aria-label=\"React\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z\"/></svg></button><span class=\"ds-moment__place\">Charlottenburg</span></div></div></article>",
+      "css": ".ds-moment { display: flex; background: #FAFAFA; color: #1A1A1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .ds-moment__lane { flex: 0 0 64px; width: 64px; padding: 16px 12px 0 0; text-align: right; border-right: 1px solid #EBEBEB; } .ds-moment__lane time { font-size: 0.8125rem; font-weight: 500; color: #6B6B6B; font-variant-numeric: tabular-nums; } .ds-moment__content { flex: 1; min-width: 0; padding: 16px 16px 20px; display: flex; flex-direction: column; gap: 8px; } .ds-moment__name { font-size: 1rem; font-weight: 600; line-height: 22px; } .ds-moment__text { margin: 0; font-size: 1.0625rem; line-height: 25px; } .ds-moment__foot { display: flex; align-items: center; gap: 12px; margin-top: 2px; } .ds-moment__place { font-size: 0.8125rem; color: #6B6B6B; } .ds-react-btn { width: 32px; height: 32px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #EBEBEB; color: #6B6B6B; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; transition: color 150ms cubic-bezier(0.16, 1, 0.3, 1), border-color 150ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-react-btn:hover { color: #EE3423; border-color: #EE3423; } .ds-react-btn:focus-visible { outline: 2px solid #EE3423; outline-offset: 4px; }"
+    },
+    {
+      "name": "Feed Moment (voice)",
+      "kind": "card",
+      "refersTo": "moment-row",
+      "description": "The voice treatment: a 40px Surface 3 play disc, a waveform of 2px bars in Text 2, the duration in Caption. Then the short line and the foot.",
+      "html": "<article class=\"ds-moment\"><div class=\"ds-moment__lane\"><time>15:12</time></div><div class=\"ds-moment__content\"><span class=\"ds-moment__name\">Ana</span><div class=\"ds-voice\"><button class=\"ds-voice__play\" aria-label=\"Play\"><svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\" fill=\"currentColor\"><path d=\"M8 5v14l11-7z\"/></svg></button><span class=\"ds-voice__wave\" aria-hidden=\"true\"><i style=\"height:8px\"></i><i style=\"height:14px\"></i><i style=\"height:20px\"></i><i style=\"height:12px\"></i><i style=\"height:18px\"></i><i style=\"height:10px\"></i><i style=\"height:16px\"></i><i style=\"height:22px\"></i><i style=\"height:14px\"></i><i style=\"height:8px\"></i><i style=\"height:18px\"></i><i style=\"height:12px\"></i><i style=\"height:20px\"></i><i style=\"height:10px\"></i><i style=\"height:6px\"></i></span><span class=\"ds-voice__dur\">0:41</span></div><p class=\"ds-moment__line\">For whoever is missing the sea today.</p><div class=\"ds-moment__foot\"><button class=\"ds-react-btn\" aria-label=\"React\"><svg viewBox=\"0 0 24 24\" width=\"16\" height=\"16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z\"/></svg></button><span class=\"ds-moment__place\">Kreuzberg</span></div></div></article>",
+      "css": ".ds-moment { display: flex; background: #FAFAFA; color: #1A1A1A; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .ds-moment__lane { flex: 0 0 64px; width: 64px; padding: 16px 12px 0 0; text-align: right; border-right: 1px solid #EBEBEB; } .ds-moment__lane time { font-size: 0.8125rem; font-weight: 500; color: #6B6B6B; font-variant-numeric: tabular-nums; } .ds-moment__content { flex: 1; min-width: 0; padding: 16px 16px 20px; display: flex; flex-direction: column; gap: 10px; } .ds-moment__name { font-size: 1rem; font-weight: 600; line-height: 22px; } .ds-voice { display: flex; align-items: center; gap: 12px; } .ds-voice__play { width: 40px; height: 40px; border-radius: 9999px; background: #F5F5F5; border: none; color: #1A1A1A; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; flex-shrink: 0; } .ds-voice__play:hover { background: #EBEBEB; } .ds-voice__wave { flex: 1; display: flex; align-items: center; gap: 2px; height: 24px; } .ds-voice__wave i { display: block; width: 2px; border-radius: 1px; background: #6B6B6B; } .ds-voice__dur { font-size: 0.8125rem; font-weight: 500; color: #6B6B6B; font-variant-numeric: tabular-nums; } .ds-moment__line { margin: 0; font-size: 1rem; line-height: 22px; } .ds-moment__foot { display: flex; align-items: center; gap: 12px; } .ds-moment__place { font-size: 0.8125rem; color: #6B6B6B; } .ds-react-btn { width: 32px; height: 32px; border-radius: 9999px; background: #FFFFFF; border: 1px solid #EBEBEB; color: #6B6B6B; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; transition: color 150ms cubic-bezier(0.16, 1, 0.3, 1), border-color 150ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-react-btn:hover { color: #EE3423; border-color: #EE3423; }"
+    },
+    {
+      "name": "Timeline Clock",
+      "kind": "custom",
+      "refersTo": "timeline-clock",
+      "description": "The 48px analog clock that rides the feed's time lane over the lane label of the moment nearest the viewport's middle. Surface 1 face, 1px Surface 4 stroke, ticks Text 4, hands Text 1, second hand Pomegranate, date in 12px/500 Text 2 below.",
+      "html": "<div class=\"ds-clock\" role=\"img\" aria-label=\"19:02, Sat 13 Sep\"><svg class=\"ds-clock__face\" viewBox=\"0 0 48 48\" width=\"48\" height=\"48\"><circle cx=\"24\" cy=\"24\" r=\"23.5\" fill=\"#FFFFFF\" stroke=\"#EBEBEB\" stroke-width=\"1\"/><g stroke=\"#BDBDBD\" stroke-width=\"1\" stroke-linecap=\"round\"><line x1=\"24\" y1=\"4\" x2=\"24\" y2=\"7\"/><line x1=\"44\" y1=\"24\" x2=\"41\" y2=\"24\"/><line x1=\"24\" y1=\"44\" x2=\"24\" y2=\"41\"/><line x1=\"4\" y1=\"24\" x2=\"7\" y2=\"24\"/></g><line x1=\"24\" y1=\"24\" x2=\"14\" y2=\"27\" stroke=\"#1A1A1A\" stroke-width=\"2\" stroke-linecap=\"round\"/><line x1=\"24\" y1=\"24\" x2=\"25\" y2=\"10\" stroke=\"#1A1A1A\" stroke-width=\"1.5\" stroke-linecap=\"round\"/><line x1=\"24\" y1=\"24\" x2=\"30\" y2=\"34\" stroke=\"#EE3423\" stroke-width=\"1\" stroke-linecap=\"round\"/><circle cx=\"24\" cy=\"24\" r=\"1.5\" fill=\"#EE3423\"/></svg><span class=\"ds-clock__date\">Sat 13 Sep</span></div>",
+      "css": ".ds-clock { display: inline-flex; flex-direction: column; align-items: center; gap: 6px; width: 64px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .ds-clock__face { border-radius: 9999px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10); } .ds-clock__date { font-size: 0.75rem; font-weight: 500; color: #6B6B6B; }"
     },
     {
       "name": "Chip (Selected)",
       "kind": "chip",
       "refersTo": "chip-selected",
-      "description": "Selected-state filter chip. Used in composer for privacy ('Close Friends'), location, and 'With' active filters.",
-      "html": "<button class=\"ds-chip ds-chip--selected\">Close Friends</button>",
+      "description": "Selected-state filter chip. Used in composer for place and 'With' active filters.",
+      "html": "<button class=\"ds-chip ds-chip--selected\">Kreuzberg</button>",
       "css": ".ds-chip { background: #FAFAFA; color: #6B6B6B; height: 32px; padding: 0 12px; border-radius: 9999px; border: none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em; cursor: pointer; transition: background 200ms cubic-bezier(0.16, 1, 0.3, 1), color 200ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-chip--selected { background: #EE3423; color: #FFFFFF; } .ds-chip:hover:not(.ds-chip--selected) { background: #F5F5F5; }"
     },
     {
@@ -258,70 +345,63 @@
       "kind": "card",
       "refersTo": "bottom-sheet",
       "description": "The composer bottom sheet. Slides up from below with spring entrance, drag-to-dismiss.",
-      "html": "<div class=\"ds-sheet\"><div class=\"ds-sheet__handle\"></div><header class=\"ds-sheet__head\"><button class=\"ds-sheet__cancel\">Cancel</button><span class=\"ds-sheet__type\">Text</span><button class=\"ds-btn-primary\">Post</button></header><div class=\"ds-sheet__body\"><textarea class=\"ds-sheet__input\" placeholder=\"What's happening?\"></textarea></div><footer class=\"ds-sheet__tools\"><button class=\"ds-chip\">🔒 Close Friends</button><button class=\"ds-chip\">📍 Location</button><button class=\"ds-chip\">👥 With</button></footer></div>",
-      "css": ".ds-sheet { background: #FFFFFF; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 0 0 24px; max-height: 90vh; box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1A1A; } .ds-sheet__handle { width: 36px; height: 4px; background: #EBEBEB; border-radius: 9999px; margin: 12px auto 16px; } .ds-sheet__head { display: flex; align-items: center; justify-content: space-between; padding: 0 16px 16px; border-bottom: 1px solid #EBEBEB; } .ds-sheet__cancel { background: transparent; border: none; color: #6B6B6B; font-size: 0.875rem; font-weight: 500; cursor: pointer; padding: 8px 0; } .ds-sheet__type { font-family: Nunito, -apple-system, BlinkMacSystemFont, sans-serif; font-weight: 600; font-size: 1rem; color: #1A1A1A; } .ds-sheet__body { padding: 16px 16px 24px; } .ds-sheet__input { width: 100%; min-height: 120px; border: none; resize: none; font-family: inherit; font-size: 1.125rem; line-height: 1.5; color: #1A1A1A; background: transparent; outline: none; } .ds-sheet__input::placeholder { color: #9E9E9E; } .ds-sheet__tools { display: flex; gap: 8px; padding: 16px; border-top: 1px solid #EBEBEB; overflow-x: auto; }"
-    },
-    {
-      "name": "Reaction Picker",
-      "kind": "custom",
-      "refersTo": "reaction-button",
-      "description": "Horizontal popover showing the five custom Nah reactions. Appears above the heart button on tap.",
-      "html": "<div class=\"ds-react-picker\"><button class=\"ds-react-picker__item\" aria-label=\"Smile\">😊</button><button class=\"ds-react-picker__item\" aria-label=\"Wink\">😉</button><button class=\"ds-react-picker__item\" aria-label=\"Sad\">😢</button><button class=\"ds-react-picker__item\" aria-label=\"Wow\">😮</button><button class=\"ds-react-picker__item\" aria-label=\"Love\">❤️</button></div>",
-      "css": ".ds-react-picker { display: inline-flex; gap: 4px; padding: 8px; background: #FFFFFF; border-radius: 9999px; box-shadow: 0 4px 16px rgba(0, 0, 0, 0.10); border: 1px solid #EBEBEB; } .ds-react-picker__item { width: 36px; height: 36px; border-radius: 9999px; background: transparent; border: none; font-size: 1.25rem; cursor: pointer; transition: transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1), background 150ms cubic-bezier(0.16, 1, 0.3, 1); display: flex; align-items: center; justify-content: center; } .ds-react-picker__item:hover { background: #FAFAFA; transform: scale(1.15); }"
-    },
-    {
-      "name": "Tab Bar",
-      "kind": "nav",
-      "refersTo": "moment-card",
-      "description": "The bottom 3-tab navigation. Feed, Friends, Profile. FAB sits above this bar.",
-      "html": "<nav class=\"ds-tabbar\" role=\"tablist\"><button class=\"ds-tabbar__tab ds-tabbar__tab--active\" role=\"tab\" aria-selected=\"true\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><path d=\"M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\"/></svg><span>Feed</span></button><button class=\"ds-tabbar__tab\" role=\"tab\" aria-selected=\"false\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"9\" cy=\"7\" r=\"4\"/><path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"/></svg><span>Friends</span></button><button class=\"ds-tabbar__tab\" role=\"tab\" aria-selected=\"false\"><svg viewBox=\"0 0 24 24\" width=\"24\" height=\"24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><circle cx=\"12\" cy=\"7\" r=\"4\"/><path d=\"M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2\"/></svg><span>Profile</span></button></nav>",
-      "css": ".ds-tabbar { display: flex; align-items: stretch; height: 56px; background: #FFFFFF; border-top: 1px solid #EBEBEB; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; } .ds-tabbar__tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; background: transparent; border: none; color: #6B6B6B; font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: color 150ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-tabbar__tab--active { color: #EE3423; }"
+      "html": "<div class=\"ds-sheet\"><div class=\"ds-sheet__handle\"></div><header class=\"ds-sheet__head\"><button class=\"ds-sheet__cancel\">Cancel</button><span class=\"ds-sheet__type\">Text</span></header><div class=\"ds-sheet__body\"><textarea class=\"ds-sheet__input\" placeholder=\"What's happening?\"></textarea></div><footer class=\"ds-sheet__tools\"><button class=\"ds-chip\">Place</button><button class=\"ds-chip\">With</button></footer></div>",
+      "css": ".ds-sheet { background: #FFFFFF; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 0 0 24px; max-height: 90vh; box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1A1A; } .ds-sheet__handle { width: 36px; height: 4px; background: #EBEBEB; border-radius: 9999px; margin: 12px auto 16px; } .ds-sheet__head { display: flex; align-items: center; justify-content: space-between; padding: 0 16px 16px; border-bottom: 1px solid #EBEBEB; } .ds-sheet__cancel { background: transparent; border: none; color: #6B6B6B; font-size: 0.875rem; font-weight: 500; cursor: pointer; padding: 8px 0; } .ds-sheet__type { font-size: 1rem; font-weight: 600; color: #1A1A1A; } .ds-sheet__body { padding: 16px 16px 24px; } .ds-sheet__input { width: 100%; min-height: 120px; border: none; resize: none; font-family: inherit; font-size: 1.0625rem; line-height: 25px; color: #1A1A1A; background: transparent; outline: none; } .ds-sheet__input::placeholder { color: #9E9E9E; } .ds-sheet__tools { display: flex; gap: 8px; padding: 16px; border-top: 1px solid #EBEBEB; overflow-x: auto; } .ds-chip { background: #FAFAFA; color: #6B6B6B; height: 32px; padding: 0 12px; border-radius: 9999px; border: none; font-family: inherit; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em; cursor: pointer; }"
     }
   ],
   "narrative": {
     "northStar": "The Private Garden",
-    "overview": "Nah is a walled garden. Mutual-entry only, hard-capped at 150 people, tended slowly over years rather than scrolled through in minutes. Every visual choice answers to that frame. Surfaces are warm and uncluttered, the way a garden is when you've just swept the path. Color is restrained, used the way a single flowering plant draws the eye in a green room. Motion is unhurried but alive, the way leaves move when you walk past. The system rejects the noise of public social media in its bones: no broadcast feeds, no algorithmic interleaving, no engagement-bait notification surfaces, no SaaS hero metrics. The garden is for the people already inside it.\n\nThe components are warm and considered. Soft 8–12px corners across the board, generous internal padding, handmade-adjacent rather than razor-precise. Spring physics on press and entrance, never sharp linear transitions. Every interactive surface should feel touched, not assembled. This is the antidote to dense product UI: nothing is crowded, nothing demands attention, everything earns it.\n\nColor is Restrained: warm whites carry 90% of every screen, pomegranate red carries the remaining 10%. The neutral palette stays cool-warm-balanced (a faint pull toward the pomegranate hue is the long-term direction, currently unrealized as pure greys). Type is split between Nunito for moments of brand voice (logo, screen titles, onboarding) and the platform default sans for everything else (body, labels, data, controls).",
+    "overview": "Nah is a walled garden. Mutual-entry only, hard-capped at 150 people, tended slowly over years rather than scrolled through in minutes. Every visual choice answers to that frame. Surfaces are warm and uncluttered, the way a garden is when you've just swept the path. Color is restrained, used the way a single flowering plant draws the eye in a green room. Motion is unhurried but alive, the way leaves move when you walk past. The system rejects the noise of public social media in its bones: no broadcast feeds, no algorithmic interleaving, no engagement-bait notification surfaces, no SaaS hero metrics. The garden is for the people already inside it.\n\nThe components are warm and considered. Soft 8–12px corners across the board, generous internal padding, handmade-adjacent rather than razor-precise. Spring physics on press and entrance, never sharp linear transitions. Every interactive surface should feel touched, not assembled. This is the antidote to dense product UI: nothing is crowded, nothing demands attention, everything earns it.\n\nColor is Restrained: warm whites carry 90% of every screen, pomegranate red carries the remaining 10%. The light neutrals are still pure greys; the dark palette (set 2026-09-15) is the first to realize the long-standing direction of tinting neutrals toward the pomegranate hue, and never reaches pure black. Type is split between Nunito for moments of brand voice (logo, screen titles, onboarding) and the platform default sans for everything else (body, labels, data, controls). The platform body font matters: Nah should feel native on iOS and native on Android, not translated.\n\nThe feed (designed 2026-09-15) is a day read down a time axis, not a stack of posts. Time runs down a narrow left lane, people and their moments sit on the ground to its right, and the analog clock rides the lane as the cursor. There are no card boxes on the feed.",
     "keyCharacteristics": [
       "Light-primary identity, warm white surfaces, pomegranate accent ≤10% of pixels",
+      "Dark mode is the same world inverted: warm-tinted dark neutrals, borders where light mode has shadows, the same red",
       "Soft corners (8–12px), generous padding, handmade-adjacent geometry",
       "Spring physics on motion, never bounce or elastic",
       "One display font (Nunito) for brand voice, platform default for everything else",
-      "Glassmorphism scoped to exactly two surfaces (profile header compression, radial menu backdrop), forbidden elsewhere",
-      "Five distinct moment card layouts under one card shell",
-      "48px floating analog timeline clock as a signature element"
+      "Glassmorphism scoped to one surface, the radial menu backdrop, and forbidden elsewhere",
+      "Two-lane feed: a 64pt time lane with a 1pt rail, and four moment treatments set directly on the ground",
+      "48px analog timeline clock riding the time lane as a signature element"
     ],
     "rules": [
-      { "name": "The One Voice Rule", "body": "Pomegranate appears on ≤10% of any rendered surface. Its rarity is the point. When two pomegranate elements are visible at once (e.g., FAB + active tab), neither is decorative; both are doing work.", "section": "colors" },
+      { "name": "The One Voice Rule", "body": "Pomegranate appears on ≤10% of any rendered surface. Its rarity is the point. When two pomegranate elements are visible at once (e.g., the FAB and a primary button), neither is decorative — both are doing work.", "section": "colors" },
       { "name": "The No-Black Rule", "body": "Pure black (#000000) is forbidden. Text uses #1A1A1A. Future palette refinements should tint neutrals toward the pomegranate hue (chroma 0.005–0.01 in OKLCH) rather than expanding the grey scale.", "section": "colors" },
-      { "name": "The Display-Off Rule", "body": "Nunito never appears on functional UI elements. Buttons use Label. Form labels use Label. Data uses Body or smaller.", "section": "typography" },
+      { "name": "The Same Red Rule", "body": "Pomegranate #EE3423 is the one red in both modes. Dark mode does not lighten it; it would fail the glyph's 3:1 and the light-mode red already passes on the dark ground.", "section": "colors" },
+      { "name": "The No-Counts Rule", "body": "No numeric counts appear anywhere in the rendered UI. No like count, no view count, no follower count, no read count, no reaction count, no comment count. Where we need to communicate \"someone did this,\" we render names and avatars: Maya, never 3 people. The limit of 150 is communicated in words, never as a meter or progress bar. This rule is universal across surfaces; there is no exception screen.", "section": "colors" },
+      { "name": "The Display-Off Rule", "body": "Nunito never appears on functional UI elements. Buttons use Label. Form labels use Label. Data uses Body or smaller. Display fonts on buttons read as marketing copy, which Nah is not.", "section": "typography" },
       { "name": "The System-Body Rule", "body": "Body text always uses the platform default sans, never Nunito. The trade is intentional: a small loss of cross-platform pixel-identity, a large gain in feeling-like-the-OS.", "section": "typography" },
-      { "name": "The Flat-By-Default Rule", "body": "Surfaces are flat at rest. Shadows appear only on active or transient elements (FAB, bottom sheet, toast, modal). A card never has a shadow. A button never has a shadow. A tab bar never has a shadow.", "section": "elevation" },
+      { "name": "The Wordmark-Only Rule", "body": "On the feed, Nunito appears once: the wordmark. Names, times, places and moment text are the platform sans.", "section": "typography" },
+      { "name": "The Two-Lane Rule", "body": "Time on the left, people on the right. The lane, the rail and the clock are what make it the feed; every moment treatment fits inside the content column and never draws a box around itself.", "section": "layout" },
+      { "name": "The Flat-By-Default Rule", "body": "Surfaces are flat at rest. Shadows appear only on active or transient elements (FAB, bottom sheet, toast, modal, the clock while it rides). A card never has a shadow. A button never has a shadow.", "section": "elevation" },
       { "name": "The Border-Replaces-Shadow Rule", "body": "In dark mode, every place that uses a shadow in light mode uses a 1px border instead. The rule cascades automatically; widgets check the theme brightness and swap.", "section": "elevation" }
     ],
     "dos": [
       "Do keep Pomegranate at ≤10% of any rendered screen. It is a focal point, not a fill.",
-      "Do use Nunito for the logo, screen titles, and onboarding headings. Use the platform default sans everywhere else.",
-      "Do use 8px corner radius on cards, 12px on bottom sheets, full-radius pills on buttons and chips. Never sharp 90° corners on touchable surfaces.",
+      "Do keep Pomegranate #EE3423 as the one red in both modes. Dark mode changes the neutrals, never the red.",
+      "Do use Nunito for the logo, screen titles, and onboarding headings. Use the platform default sans everywhere else, names included.",
+      "Do set feed moments directly on the ground in the two-lane structure: 64pt time lane, 1pt rail, content column padded 16pt. No box around a moment on the feed.",
+      "Do use 8px corner radius on cards and on the left corners of feed photos, 6px on album artwork, 12px on bottom sheets, full-radius pills on buttons and chips. Never sharp 90° corners on touchable surfaces.",
       "Do ship spring physics on every entrance, press, and dismiss. 400ms with overshoot for entrances, 250ms ease-out for exits.",
-      "Do use the 48px floating timeline clock as the signature scroll companion. It is the single most recognizable Nah element.",
-      "Do treat the 150-friend limit as a designed boundary, never a limitation. Visualize it as a ring or constellation when surfaced.",
-      "Do keep the Feed chronological, full stop. The visual hierarchy must never imply algorithmic ranking, suggestions, or 'you might like.'",
+      "Do use the 48px timeline clock riding the time lane as the signature scroll companion. It is the single most recognizable Nah element.",
+      "Do treat the limit of 150 as a designed boundary, never a limitation. If it is ever drawn, draw faces, never something that fills towards a number.",
+      "Do keep the Feed chronological, full stop. The visual hierarchy must never imply algorithmic ranking, suggestions, or \"you might like.\"",
       "Do use Pomegranate Light as a soft text-moment background tint, sparingly, opt-in.",
-      "Do show empty states with warm illustrations, never blank screens. 'Welcome home' framing on first run, 'You're all caught up' framing at end of feed."
+      "Do show empty states with warm illustrations, never blank screens. \"Welcome home\" framing on first run, \"You're all caught up\" framing at end of feed, in Marker type outside the lane."
     ],
     "donts": [
       "Don't look like Instagram, TikTok, or X. No Stories rail at the top. No suggested-content interleaving. No infinite-scroll engagement bait. No algorithmic feed under any circumstance.",
-      "Don't look like LinkedIn or Threads. No follower counts. No public profiles. No professional-self-curation chrome.",
-      "Don't look like Discord or Slack. No aggressive unread counts as the primary navigation signal. No multi-server sidebars. Reactions surface as badges only, never as push.",
-      "Don't look like a VC-SaaS landing page. No gradient hero text. No three-feature card grids on any product surface. No hero-metric templates. No glassmorphism dashboards.",
+      "Don't look like LinkedIn or Threads. No follower counts. No public profiles. No professional-self-curation chrome. No mutual-connection paths shown publicly.",
+      "Don't display numeric counts of anything, anywhere. No like count, no view count, no follower count, no read count, no reaction count, no comment count. Names and avatars instead. The No-Counts Rule is universal; there is no exception screen.",
+      "Don't look like Discord or Slack. No aggressive unread counts as the primary navigation signal. No multi-server sidebars. No \"typing\" indicators in v1.",
+      "Don't look like a VC-SaaS landing page. No gradient hero text. No three-feature card grids on any product surface. No hero-metric templates. No \"X is faster than Y\" comparison tables. No glassmorphism dashboards.",
       "Don't use side-stripe borders (colored border-left or border-right greater than 1px). Never. On any card, list item, callout, or alert.",
       "Don't use gradient text (background-clip: text with a gradient background). Solid colors only. Emphasis through weight or size.",
-      "Don't use glassmorphism outside the two approved surfaces: profile header compression overlay and radial menu backdrop. Forbidden everywhere else.",
-      "Don't use display fonts (Nunito) on buttons, form labels, data, timestamps, or any other functional UI element.",
-      "Don't use pure black (#000000) or pure white (#FFFFFF) for text. Text uses #1A1A1A.",
+      "Don't use glassmorphism anywhere but the radial menu backdrop. Forbidden everywhere else, including a person's page, modals, sheets, and notification toasts.",
+      "Don't use display fonts (Nunito) on buttons, form labels, data, timestamps, names, or any other functional UI element. Display fonts on buttons read as marketing copy.",
+      "Don't use pure black (#000000) or pure white (#FFFFFF) for text, in either mode. Text uses #1A1A1A in light and #F2EEEB in dark; the dark ground is #171514, never black.",
+      "Don't put a reaction button on your own moment. It shows the reactions it received, by face and name.",
       "Don't use bounce or elastic easing curves. Spring physics are warm; bounce and elastic are loud.",
-      "Don't add card grids of identical-size feature blocks. Each moment card variant has its own treatment; the Feed is varied by design.",
-      "Don't introduce a modal as a first-thought solution. Exhaust inline, progressive, and bottom-sheet alternatives first."
+      "Don't add card grids of identical-size feature blocks. Each moment type has its own treatment; the Feed is varied by design.",
+      "Don't introduce a modal as a first-thought solution. Exhaust inline, progressive, and bottom-sheet alternatives first. Bottom sheets are the Nah default for any \"secondary surface\" need."
     ]
   }
 }
