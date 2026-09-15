@@ -31,19 +31,19 @@
     "docs/decisions/0002-mastodon-backend.md": "f7577a0b7e07d6a19b0cc7311e63f3b34a569671",
     "docs/decisions/0003-connection-model.md": "64d49b411ecde669384dc6103dcc63a70650b8de",
     "docs/decisions/0004-no-counts-anywhere.md": "8aaaf53744ca185bdf27c405af08bf99c1bc640d",
-    "docs/decisions/0005-ritual-onboarding.md": "7863a2a83dde91678783ec8b723c119024544f9c",
-    "docs/decisions/0006-three-moment-types.md": "66bcdd59aece7e82a1ff4fb33a4a56e18fdc4418",
+    "docs/decisions/0005-ritual-onboarding.md": "ad55cf04b44ea9079ee34bd860d287420cb5768f",
+    "docs/decisions/0006-three-moment-types.md": "ee554cd118bd83dcd1166b55f960ca0b02567b2e",
     "docs/decisions/0007-respectful-notifications.md": "82ec8f73c10c848b5b87cc2bdfc3e20416b8822a",
     "docs/decisions/0008-mvp-scope.md": "2383b3806d2e95c0b0aade251b8a387b32bfc128",
     "docs/decisions/0009-circles-not-one-circle.md": "72f2d0d22ddcfe96269c8dcb12f1f61f178ef883",
     "docs/decisions/0010-small-server-not-mastodon.md": "2c80abddcc2492409bec9641b868b4d28636d738",
     "docs/decisions/0011-plain-go-and-a-database-per-circle.md": "8418ec0e5808171d758daabcca1de970207040d2",
-    "docs/decisions/0012-encrypted-on-device.md": "fb78b41127c9714fbd05dffba995151ced016551",
+    "docs/decisions/0012-encrypted-on-device.md": "c6ee2c99913a1584ef39179f83fd44d05d677c0d",
     "docs/decisions/0013-no-aggregated-feed.md": "f030d58d16477722308cb6ed63598623314da786",
     "docs/decisions/0014-the-go-setup.md": "dcf9615780332e5e835fa83468cfde8aa78dea04",
-    "docs/decisions/0015-no-passwords-a-key-on-the-device.md": "f44dd6269b34f1cb5a0632307a6bf6f72e5c8454",
+    "docs/decisions/0015-no-passwords-a-key-on-the-device.md": "586dc09837e849dbde9c2221cb4e71e221d6ff89",
     "docs/decisions/0016-the-moment-envelope.md": "97bc4788b66586577acdd6d9770c7c2201890cd7",
     "docs/decisions/0017-one-network-of-a-hundred-and-fifty.md": "874b3a3260e2159029adbcc09e86b27771a7dcfe",
-    "docs/decisions/0018-reactions-the-poster-sees.md": "819b58de9345b495596db6853e4e12c1ac50b85a"
+    "docs/decisions/0018-reactions-the-poster-sees.md": "2aba0d83c26ebac908bcca958f10037154235dee"
   }
 }

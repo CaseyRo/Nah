@@ -21,3 +21,10 @@
 **New topics:** none
 **Sources scanned:** 29
 **Sources changed:** 5: ADR-0006, ADR-0008, ADR-0016 and ADR-0017 gained dated notes, and ADR-0018 is new. Music became a moment type, reactions came back for the poster only, a poster can delete a moment, and the product calls a person's 150 their circle.
+
+## 2026-09-15, third compile
+
+**Topics updated:** mobile, server
+**New topics:** none
+**Sources scanned:** 29
+**Sources changed:** 5: ADR-0005, ADR-0012 and ADR-0015 gained dated notes, and ADR-0006 and ADR-0018 now name the renamed OpenSpec changes. One device per person, recovery through two people vouching, an invite secret instead of the content key, and the first-run question.

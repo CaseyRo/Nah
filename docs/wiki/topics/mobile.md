@@ -30,6 +30,7 @@ The Flutter version is pinned in [`mise.toml`](../../../mise.toml) at the reposi
 
 Newest first. Each decision record is the canonical home for its reasoning.
 
+- **2026-09-15:** one device per person, and a new phone arrives only through recovery that two people in the circle vouch for. An invite carries a one-time secret instead of the content key, which rotates when a connection ends. The first run asks "What do you want to share with the ones closest to you right now?" and offers an avatar photo. See the notes on [ADR-0005](../../decisions/0005-ritual-onboarding.md), [ADR-0012](../../decisions/0012-encrypted-on-device.md) and [ADR-0015](../../decisions/0015-no-passwords-a-key-on-the-device.md). Not built.
 - **2026-09-15:** reactions return as five illustrations that only the poster sees, sealed and never counted ([ADR-0018](../../decisions/0018-reactions-the-poster-sees.md)). Not built.
 - **2026-09-15:** music is a fourth moment type, shared from any music app and looked up on the phone. Photo and voice may carry a short line, any moment may carry a place kept only as words, and the poster can delete a moment, which leaves a marker. See the notes on [ADR-0006](../../decisions/0006-three-moment-types.md), [ADR-0008](../../decisions/0008-mvp-scope.md) and [ADR-0016](../../decisions/0016-the-moment-envelope.md). Not built.
 - **2026-09-15:** the app calls a person's 150 their circle (the note on [ADR-0017](../../decisions/0017-one-network-of-a-hundred-and-fifty.md)). The M1 screens still say "your people".

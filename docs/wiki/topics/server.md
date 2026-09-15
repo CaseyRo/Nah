@@ -33,6 +33,7 @@ Streaming backups with Litestream are planned. Nothing in `apps/server` runs the
 
 Newest first. Each decision record is the canonical home for its reasoning.
 
+- **2026-09-15:** a person has exactly one device key, replaced only by a recovery that two people from their circle vouch for, and the server will hold content keys sealed to device keys it cannot open (the notes on [ADR-0012](../../decisions/0012-encrypted-on-device.md) and [ADR-0015](../../decisions/0015-no-passwords-a-key-on-the-device.md)). Not built.
 - **2026-09-15:** reactions will be stored sealed, so the server knows who reacted to which moment and when but not how, and returns them only to the poster ([ADR-0018](../../decisions/0018-reactions-the-poster-sees.md)). Not built.
 - **2026-09-14:** registration is by invitation only. An invite from someone already here also connects the two people, and the first person on a server uses a single-use operator invite; the [server README](../../../apps/server/README.md) describes both.
 - **2026-09-14:** the feed reads fan-in from each connection's file, newest poster first, and stops once nobody left can beat the page. Reading every file failed the latency threshold at 150 connections. See the 2026-09-14 amendment to [ADR-0011](../../decisions/0011-plain-go-and-a-database-per-circle.md) and the [spike results](../../../spike/RESULTS.md).
