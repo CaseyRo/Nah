@@ -4,19 +4,19 @@ The guarantees Nah? makes to the people in it. Every other capability keeps them
 
 ## ADDED Requirements
 
-### Requirement: One network of up to 150 per person
+### Requirement: One circle of up to 150 per person
 
-Each person SHALL have one network of at most 150 people, enforced by the server (ADR-0017). There SHALL be no circles, groups or rooms, and nothing SHALL let a person choose part of their network as the audience for a moment.
+Each person SHALL have one circle of at most 150 people, enforced by the server. A person's circle is the single network ADR-0017 describes: drawn around that person alone, and never a group or a room that others share or enter. There SHALL be no groups or rooms, and nothing SHALL let a person choose part of their circle as the audience for a moment.
 
-#### Scenario: A network that is full
+#### Scenario: A circle that is full
 
-- **WHEN** two people try to connect and either of them already has 150 people in their network
-- **THEN** the server refuses the connection, and neither network changes
+- **WHEN** two people try to connect and either of them already has 150 people in their circle
+- **THEN** the server refuses the connection, and neither circle changes
 
 #### Scenario: Posting
 
 - **WHEN** a person posts a moment
-- **THEN** it goes to their whole network, and no step offers to narrow who sees it
+- **THEN** it goes to their whole circle, and no step offers to narrow who sees it
 
 ### Requirement: Connection is mutual, and physical first
 
@@ -25,7 +25,7 @@ A connection SHALL exist for both people or for neither; there SHALL be no one-w
 #### Scenario: Two people connect
 
 - **WHEN** two people complete a connection
-- **THEN** each is in the other's network, and neither can see the other's moments without the other being able to see theirs
+- **THEN** each is in the other's circle, and neither can see the other's moments without the other being able to see theirs
 
 #### Scenario: Someone far away
 
@@ -53,12 +53,12 @@ A person SHALL join Nah? only with an invitation: from someone already in it, or
 
 ### Requirement: A chronological, unranked feed
 
-The feed SHALL show moments from the person and their network newest first, ordered by time alone, with no ranking, no inserted content and no infinite scroll (ADR-0008, ADR-0017).
+The feed SHALL show moments from the person and their circle newest first, ordered by time alone, with no ranking, no inserted content and no infinite scroll (ADR-0008, ADR-0017).
 
 #### Scenario: Order
 
 - **WHEN** the feed is shown
-- **THEN** its moments appear in the order they were posted, and nothing appears that the person or their network did not post
+- **THEN** its moments appear in the order they were posted, and nothing appears that the person or their circle did not post
 
 #### Scenario: Attention changes nothing
 
@@ -71,12 +71,12 @@ No screen, notification or message SHALL show a count of people or of what peopl
 
 #### Scenario: Close to the limit
 
-- **WHEN** a person has 149 people in their network
-- **THEN** nothing anywhere shows 149, 150 or a proportion of either, and a full network is said in words
+- **WHEN** a person has 149 people in their circle
+- **THEN** nothing anywhere shows 149, 150 or a proportion of either, and a full circle is said in words
 
 #### Scenario: A notification
 
-- **WHEN** a notification tells a person that their network posted
+- **WHEN** a notification tells a person that their circle posted
 - **THEN** it gives no number of people or of moments
 
 ### Requirement: The server keeps moments it cannot read
@@ -93,14 +93,14 @@ A moment's content SHALL reach the server only as an opaque blob whose first byt
 - **WHEN** a moment is posted from an app that holds content keys
 - **THEN** its seal byte is not 0, and nothing on the server can turn it back into text or media
 
-### Requirement: Moments stay in the network they were posted to
+### Requirement: Moments stay in the circle they were posted to
 
-Nothing in Nah? SHALL move a moment outside the network of the person who posted it: no share, forward or repost, and no public link to a moment (CDI-1859).
+Nothing in Nah? SHALL move a moment outside the circle of the person who posted it: no share, forward or repost, and no public link to a moment (CDI-1859).
 
 #### Scenario: Passing a moment on
 
 - **WHEN** a person views a moment someone else posted
-- **THEN** Nah? offers no way to pass it on, including to people in the viewer's own network
+- **THEN** Nah? offers no way to pass it on, including to people in the viewer's own circle
 
 ### Requirement: No AI in the product
 
@@ -108,7 +108,7 @@ Nah? SHALL contain no AI features: no recaps, summaries, suggestions or generate
 
 #### Scenario: A quiet week
 
-- **WHEN** a person's network has posted little this week
+- **WHEN** a person's circle has posted little this week
 - **THEN** nothing generates a recap, a prompt or a suggestion to fill the gap
 
 #### Scenario: Preparing a photo
@@ -127,16 +127,16 @@ Nah? SHALL show no advertising, and SHALL NOT sell, rent or share data about the
 
 ### Requirement: Notifications default to the most respectful option
 
-A person who has changed nothing SHALL be notified about new moments at most once a day, in a digest, and not at all on a day their network posted nothing. Anything more frequent SHALL be something the person turned on (ADR-0007).
+A person who has changed nothing SHALL be notified about new moments at most once a day, in a digest, and not at all on a day their circle posted nothing. Anything more frequent SHALL be something the person turned on (ADR-0007).
 
 #### Scenario: A day with moments
 
-- **WHEN** a person has not changed their notification settings and their network posted today
+- **WHEN** a person has not changed their notification settings and their circle posted today
 - **THEN** they receive one digest about it that day, and no other notification about moments
 
 #### Scenario: A quiet day
 
-- **WHEN** nobody in a person's network posted today
+- **WHEN** nobody in a person's circle posted today
 - **THEN** that person receives no notification about moments
 
 ### Requirement: Open code that stays traceable

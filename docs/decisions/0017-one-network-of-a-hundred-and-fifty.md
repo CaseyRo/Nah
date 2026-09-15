@@ -10,6 +10,8 @@ date: 2026-09-13
 
 Accepted (2026-09-13). Supersedes [ADR-0009](0009-circles-not-one-circle.html) and [ADR-0013](0013-no-aggregated-feed.html), both accepted earlier the same day. Amends [ADR-0012](0012-encrypted-on-device.html), where "a circle has a content key" becomes "a person has one". Restores the framing [ADR-0003](0003-connection-model.html) had before ADR-0009 replaced it.
 
+**A note on naming, 2026-09-15.** The product calls this one network *your circle*. That is not the circles this record rejects: a person's circle is drawn around them alone, nobody shares it or enters it, and each person has exactly one. The title keeps "not circles" because it records what was decided on 2026-09-13.
+
 ## Context
 
 ADR-0009 made circles the core object: a family circle, a close-friends circle, a neighbourhood circle, each capped at Dunbar's number. Everything decided since has been built on it, including the server that now exists.

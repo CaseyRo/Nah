@@ -2,7 +2,7 @@
 
 ## Why
 
-The M1 walking skeleton runs on Flutter's defaults on purpose (CDI-1832): nothing about how Nah? looks was on the path to two phones talking. The January version of this change was written for a different product, with Mastodon underneath, email and password, reactions, comment counts, five moment types, a Close Friends picker and a tab bar, so nothing could be built from it as it stood. This restatement describes the look, the shell and the brand for Nah? as it stands now (ADR-0017: one network of up to 150, no circles, by invitation only, moments the server cannot read), so the screens M2 and M3 add are built once.
+The M1 walking skeleton runs on Flutter's defaults on purpose (CDI-1832): nothing about how Nah? looks was on the path to two phones talking. The January version of this change was written for a different product, with Mastodon underneath, email and password, reactions, comment counts, five moment types, a Close Friends picker and a tab bar, so nothing could be built from it as it stood. This restatement describes the look, the shell and the brand for Nah? as it stands now (ADR-0017: one circle of up to 150 per person and never a group, by invitation only, moments the server cannot read), so the screens M2 and M3 add are built once.
 
 ## What Changes
 
@@ -22,7 +22,7 @@ The M1 walking skeleton runs on Flutter's defaults on purpose (CDI-1832): nothin
   - Firebase and a streaming socket (ADR-0010)
   - a separate `nah_ui` package
 - **Moved to other changes**:
-  - onboarding and the full-network message go to cap-02, where joining is connecting
+  - onboarding and the full-circle message go to cap-02, where joining is connecting
   - moment card variants, the timeline clock, the offline queue and the media cache go to cap-03
 
 ## Capabilities

@@ -21,7 +21,7 @@ Specification only this round. The principles are checked here against what exis
 ## 3. Capability changes, restated one at a time
 
 - [x] 3.1 `cap-01-core-identity`
-- [ ] 3.2 `cap-02-friend-circles`
+- [ ] 3.2 `cap-02-your-circle`
 - [ ] 3.3 `cap-03-moments`
 - [ ] 3.4 `cap-04-reactions`
 - [ ] 3.5 `cap-05-messaging`

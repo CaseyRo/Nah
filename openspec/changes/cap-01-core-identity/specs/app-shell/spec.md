@@ -34,11 +34,11 @@ On launch the app SHALL show the feed if this device has joined, signing in with
 
 ### Requirement: The feed is the whole screen
 
-The app SHALL have no tab bar and no side menu. The feed SHALL fill the screen, the person's people and the person's own page SHALL open from the feed's header, and the timeline clock and the + SHALL be the only other chrome over the feed (ADR-0008). Nothing in the app and nothing on its icon SHALL carry a badge (ADR-0007).
+The app SHALL have no tab bar and no side menu. The feed SHALL fill the screen, the person's circle and their own page SHALL open from the feed's header, and the timeline clock and the + SHALL be the only other chrome over the feed (ADR-0008). Nothing in the app and nothing on its icon SHALL carry a badge (ADR-0007).
 
-#### Scenario: Seeing your people
+#### Scenario: Seeing your circle
 
-- **WHEN** the person opens their people from the feed header and then closes that screen
+- **WHEN** the person opens their circle from the feed header and then closes that screen
 - **THEN** they are back on the feed where they left it
 
 #### Scenario: New moments have arrived
@@ -72,7 +72,7 @@ The app SHALL keep the last feed it loaded on the device and show it at launch, 
 #### Scenario: No connection
 
 - **WHEN** the app opens with no connectivity, after it has loaded a feed before
-- **THEN** the last loaded feed is shown, with a sentence saying it cannot reach the person's people right now
+- **THEN** the last loaded feed is shown, with a sentence saying it cannot reach their circle right now
 
 #### Scenario: Cold start
 

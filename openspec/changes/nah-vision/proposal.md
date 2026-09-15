@@ -9,13 +9,13 @@ Nah? is a private social network for the people one person is actually close to:
 ## What Changes
 
 - **product-principles**: the rules every capability keeps:
-  - one network of up to 150 per person, with no circles and no audience picker
+  - one circle of up to 150 per person, drawn around that person alone, with no groups and no audience picker
   - connection is mutual, and physical first
   - joining is by invitation, and nothing is public or discoverable
   - the feed is chronological and unranked
   - no numbers about people
   - the server keeps moments it cannot read
-  - moments never leave the network they were posted to
+  - moments never leave the circle they were posted to
   - no AI in the product
   - nothing is sold and nothing advertises
   - notifications default to the most respectful option

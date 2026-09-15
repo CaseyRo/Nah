@@ -11,7 +11,7 @@ In January this document designed a Mastodon fork, and none of it was built. Sin
 | The app | Flutter, for iOS and Android | ADR-0001 | `docs/wiki/topics/mobile.md` |
 | The server | One small Go server of our own, not Mastodon | ADR-0010, ADR-0014 | `docs/wiki/topics/server.md` |
 | Storage | SQLite, one database file per person | ADR-0011, amended 2026-09-14 | `docs/wiki/topics/spike.md` |
-| The network | One network of up to 150 per person, read as a fan-in feed | ADR-0017 | `docs/wiki/topics/server.md` |
+| Your circle | One network of up to 150 per person, called your circle, read as a fan-in feed | ADR-0017 | `docs/wiki/topics/server.md` |
 | Sign-in | An Ed25519 key on the device, and stateless session tokens | ADR-0015 | `docs/wiki/topics/mobile.md` |
 | Moments | Sealed on the device in a versioned envelope; the server stores bytes | ADR-0012, ADR-0016 | `docs/wiki/concepts/opaque-moments.md` |
 | Run centrally | A push relay, the invite-link domain with its directory, and a demo for App Review | ADR-0010 | `docs/wiki/topics/delivery.md` |
@@ -23,7 +23,7 @@ In January this document designed a Mastodon fork, and none of it was built. Sin
 | Vanilla Mastodon fork on Rails, PostgreSQL and Redis | Plain Go and SQLite | ADR-0010, ADR-0011 |
 | ActivityPub, with federation off for now | No federation | ADR-0008, ADR-0010 |
 | Followers-only posts, enforced by the API | Moments the server cannot read | ADR-0012 |
-| Friend requests and an inner circle | One mutual network, with no subsets | ADR-0017 |
+| Friend requests and an inner circle | One mutual circle per person, with no subsets | ADR-0017 |
 | Email and password accounts | A key on the device | ADR-0015 |
 | Mastodon's streaming API | Load on launch, on foreground and on pull | cap-01 `app-shell` |
 | Hive or Drift for offline use | The stored feed is specified in cap-01, the offline queue in cap-03 | cap-01, cap-03 |
@@ -39,6 +39,6 @@ The January open questions, answered or moved:
 
 - **Music integration and location precision:** out, with those moment types (ADR-0006).
 - **Finding first friends without discovery:** invitation, and the touch (ADR-0017).
-- **Moderation in a network of 150:** CDI-1867, reporting and blocking when the server cannot read anything.
+- **Moderation in a circle of 150:** CDI-1867, reporting and blocking when the server cannot read anything.
 - **Media storage costs:** CDI-1824.
 - **A widget gallery:** not needed until the design system exists (cap-01).

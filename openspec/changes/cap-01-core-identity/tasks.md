@@ -18,7 +18,7 @@ Specification only this round. Nothing below is started.
 
 ## 3. App shell
 
-- [ ] 3.1 Replace the app bar with a feed header that opens your people and you; no tab bar, no badge
+- [ ] 3.1 Replace the app bar with a feed header that opens your circle and you; no tab bar, no badge; the app's words say "your circle" where they say "your people" today
 - [ ] 3.2 Load on launch, foreground and pull to refresh; keep the last feed on the device and show it offline
 - [ ] 3.3 Display name "Nah?" on both platforms; native splash on the brand background; system bars follow the theme
 - [ ] 3.4 Explain before asking for notification permission; a tapped notification opens the feed

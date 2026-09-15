@@ -270,11 +270,11 @@ This is the single most distinctive Nah component. It is not optional.
 
 ### No Tab Bar
 
-There is no tab bar. The feed is the whole screen, and your people and you open from its header. The timeline clock and the radial FAB are the only chrome over the feed, and nothing carries a badge.
+There is no tab bar. The feed is the whole screen, and your circle and you open from its header. The timeline clock and the radial FAB are the only chrome over the feed, and nothing carries a badge.
 
 ### Avatar
 
-- **Sizes:** xs 24px, sm 32px, md 40px (card headers, your people), lg 56px (compressed profile header), xl 80px (expanded profile header).
+- **Sizes:** xs 24px, sm 32px, md 40px (card headers, your circle), lg 56px (compressed profile header), xl 80px (expanded profile header).
 - **Shape:** circular.
 - **Fallback:** initials on Pomegranate Light background, white text.
 

@@ -11,7 +11,7 @@ This document records only the decisions that shape cap-01. Values live in `DESI
 **Goals**
 
 - One home for every design value, so a spec and the app cannot disagree with it.
-- A shell and a + menu that fit one network with one audience.
+- A shell and a + menu that fit one circle with one audience.
 - An app that makes requests only to Nah?'s own addresses.
 
 **Non-Goals**
@@ -29,7 +29,7 @@ Rejected: keeping values in both and syncing them by hand, which is how they dri
 
 ### No tab bar
 
-Ruled 2026-09-15, following ADR-0008 ("floating timeline clock as the only navigation chrome"). With one network and one audience there are three places: the feed, your people, and you. The feed is the app, and the other two open from its header. A tab bar would be the only thing on screen that is not the feed, and its badges were already ruled out by ADR-0007.
+Ruled 2026-09-15, following ADR-0008 ("floating timeline clock as the only navigation chrome"). With one circle and one audience there are three places: the feed, your circle, and you. The feed is the app, and the other two open from its header. A tab bar would be the only thing on screen that is not the feed, and its badges were already ruled out by ADR-0007.
 
 Rejected: Feed / People / You tabs as `DESIGN.md` had them. That costs a permanent strip of chrome for two destinations people rarely visit.
 
@@ -66,7 +66,7 @@ Notifications arrive through Nah?'s own relay, which holds the Apple and Google 
 | `pwa-shell` spec | Removed. Superseded by `app-shell` (ADR-0001); in git history at 655cfb7. |
 | Email and password sign-up, verification, forgotten password | Removed. A key on the device (ADR-0015) and joining by invitation. |
 | Four-step onboarding and the "150 friends max" explainer | cap-02, as joining, following ADR-0005's ritual. |
-| Friend-limit dialog and inactive-friend suggestions | cap-02. A full network is said in words (ADR-0004), with no suggestions. |
+| Friend-limit dialog and inactive-friend suggestions | cap-02. A full circle is said in words, naming whose it is (ADR-0004), with no suggestions. |
 | Reaction icons and the heart button | cap-04, waiting on CDI-1856. |
 | Comment count, notification count, pending-request dot | Removed (ADR-0004, ADR-0007). |
 | Close Friends / All Friends chip | Removed (ADR-0017). |
@@ -78,7 +78,7 @@ Notifications arrive through Nah?'s own relay, which holds the Apple and Google 
 
 ## Risks / Trade-offs
 
-- **Your people sit one tap deeper without a tab bar.** ADR-0017 makes connecting mostly physical, so the list should be visited rarely. If people keep looking for it, revisit.
+- **Your circle sits one tap deeper without a tab bar.** ADR-0017 makes connecting mostly physical, so the list should be visited rarely. If people keep looking for it, revisit.
 - **Android push may need Google's messaging client in the app.** The no-reporting requirement covers requests the app makes itself; M4 has to check what that client sends before it is added.
 - **`DESIGN.md` loses the sections that described a richer product.** They stay in git history, and the decision records say why they went.
 

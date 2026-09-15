@@ -20,7 +20,7 @@ The feed SHALL show a round + button fixed in a bottom corner, which stays in pl
 
 ### Requirement: Three moment types, and no audience step
 
-Opening the + SHALL show exactly three items, text, voice and photo (ADR-0006), each with an icon and a label. Choosing one SHALL open that type's composer directly. No step SHALL ask who the moment is for, because every moment goes to the person's whole network (ADR-0017).
+Opening the + SHALL show exactly three items, text, voice and photo (ADR-0006), each with an icon and a label. Choosing one SHALL open that type's composer directly. No step SHALL ask who the moment is for, because every moment goes to the person's whole circle (ADR-0017).
 
 #### Scenario: Opening the menu
 
