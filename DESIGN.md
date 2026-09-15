@@ -107,6 +107,11 @@ components:
     rounded: "{rounded.full}"
     padding: "6px 12px"
     height: "32px"
+  reaction-button:
+    backgroundColor: "{colors.surface-1}"
+    textColor: "{colors.text-2}"
+    rounded: "{rounded.full}"
+    size: "32px"
   bottom-sheet:
     backgroundColor: "{colors.surface-1}"
     textColor: "{colors.text-1}"
@@ -253,6 +258,14 @@ Three moment variants share this card shell ([ADR-0006](docs/decisions/0006-thre
 - **Default state:** Surface 2 background, Text 2 text.
 - **Selected state:** Pomegranate background, white text. Smooth 200ms transition between states.
 - **Disabled state:** Surface 5 background, Text 3 text.
+
+### Reaction Button
+
+- **Size:** 32px circle, inside a 44px tap area.
+- **At rest:** Surface 1 background, Text 2 outline-heart icon.
+- **Reacted:** the reaction the person gave replaces the outline heart, in full colour. Only the poster sees other people's reactions, by name and face, never as a count ([ADR-0018](docs/decisions/0018-reactions-the-poster-sees.md)).
+- **Tap:** a picker slides in above the button with the five reactions, Smile, Wink, Sad, Wow and Love, in a horizontal row, with a 250ms spring entrance.
+- **Illustrations:** Nah?'s own, not system emoji. Simple and rounded, legible at 24px, with Pomegranate as an accent where it helps.
 
 ### Bottom Sheet (Composer)
 

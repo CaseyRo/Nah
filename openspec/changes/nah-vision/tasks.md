@@ -23,7 +23,7 @@ Specification only this round. The principles are checked here against what exis
 - [x] 3.1 `cap-01-core-identity`
 - [x] 3.2 `cap-02-your-circle`
 - [x] 3.3 `cap-03-moments`
-- [ ] 3.4 `cap-04-reactions`
+- [x] 3.4 `cap-04-reactions`
 - [ ] 3.5 `cap-05-messaging`
 - [ ] 3.6 `cap-06-ambient-presence`
 - [ ] 3.7 `cap-07-user-ownership`

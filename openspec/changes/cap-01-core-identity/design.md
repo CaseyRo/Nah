@@ -67,7 +67,7 @@ Notifications arrive through Nah?'s own relay, which holds the Apple and Google 
 | Email and password sign-up, verification, forgotten password | Removed. A key on the device (ADR-0015) and joining by invitation. |
 | Four-step onboarding and the "150 friends max" explainer | cap-02, as joining, following ADR-0005's ritual. |
 | Friend-limit dialog and inactive-friend suggestions | cap-02. A full circle is said in words, naming whose it is (ADR-0004), with no suggestions. |
-| Reaction icons and the heart button | cap-04, waiting on CDI-1856. |
+| Reaction icons and the heart button | cap-04, decided by ADR-0018. |
 | Comment count, notification count, pending-request dot | Removed (ADR-0004, ADR-0007). |
 | Close Friends / All Friends chip | Removed (ADR-0017). |
 | Presence dots and status colours | cap-06. |
