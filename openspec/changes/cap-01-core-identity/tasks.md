@@ -12,7 +12,7 @@ Specification only this round. Nothing below is started.
 ## 2. Radial menu
 
 - [ ] 2.1 The + fixed bottom-right on the feed, mirrored by a left-hand setting
-- [ ] 2.2 Bloom of text, voice and photo; each opens its composer with no step in between
+- [ ] 2.2 Bloom of text, voice, photo and music; each opens its composer with no step in between
 - [ ] 2.3 Close by the close mark, a tap outside, or system back
 - [ ] 2.4 Screen-reader names, expanded state, focus into and back out of the menu; 44 point targets
 

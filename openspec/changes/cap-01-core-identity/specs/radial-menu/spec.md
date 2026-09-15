@@ -1,6 +1,6 @@
 ## Purpose
 
-The + that starts a moment. It blooms into the three moment types and hands straight over to the chosen composer, with nothing in between.
+The + that starts a moment. It blooms into the four moment types and hands straight over to the chosen composer, with nothing in between.
 
 ## ADDED Requirements
 
@@ -18,14 +18,14 @@ The feed SHALL show a round + button fixed in a bottom corner, which stays in pl
 - **WHEN** the person turns on the left-hand setting
 - **THEN** the + moves to the bottom-left corner and the menu blooms towards the right
 
-### Requirement: Three moment types, and no audience step
+### Requirement: Four moment types, and no audience step
 
-Opening the + SHALL show exactly three items, text, voice and photo (ADR-0006), each with an icon and a label. Choosing one SHALL open that type's composer directly. No step SHALL ask who the moment is for, because every moment goes to the person's whole circle (ADR-0017).
+Opening the + SHALL show exactly four items, text, voice, photo and music (ADR-0006, amended 2026-09-15), each with an icon and a label. Choosing one SHALL open that type's composer directly. No step SHALL ask who the moment is for, because every moment goes to the person's whole circle (ADR-0017).
 
 #### Scenario: Opening the menu
 
 - **WHEN** the person taps the +
-- **THEN** text, voice and photo appear, and nothing else
+- **THEN** text, voice, photo and music appear, and nothing else
 
 #### Scenario: Choosing an item
 

@@ -1,12 +1,12 @@
 ## Purpose
 
-What a moment is: one of three types, with an optional short line and place, prepared and sealed on the phone, never edited, and deletable by the person who posted it.
+What a moment is: one of four types, with an optional short line and place, prepared and sealed on the phone, never edited, and deletable by the person who posted it.
 
 ## ADDED Requirements
 
-### Requirement: Three types of moment
+### Requirement: Four types of moment
 
-A moment SHALL be exactly one of text, voice or photo (ADR-0006). A text moment SHALL be words, limited in length with no visible counter (ADR-0004). A voice moment SHALL be one recording of up to sixty seconds. A photo moment SHALL be one photo. There SHALL be no drafts: a moment is either posted or discarded (ADR-0008).
+A moment SHALL be exactly one of text, voice, photo or music (ADR-0006, amended 2026-09-15). A text moment SHALL be words, limited in length with no visible counter (ADR-0004). A voice moment SHALL be one recording of up to sixty seconds. A photo moment SHALL be one photo. A music moment SHALL be one song. There SHALL be no drafts: a moment is either posted or discarded (ADR-0008).
 
 #### Scenario: Recording a voice moment
 
@@ -22,6 +22,30 @@ A moment SHALL be exactly one of text, voice or photo (ADR-0006). A text moment 
 
 - **WHEN** a person leaves a composer without posting
 - **THEN** nothing they composed is kept for later
+
+### Requirement: A song comes from the music apps people already use
+
+A person SHALL be able to start a music moment from any music app's own share action, or by pasting a link to a song. The phone SHALL look the song up through a song-link lookup service, which returns its title, artist, artwork and its links on other music services. The lookup SHALL run from the phone and never through a Nah? server, and SHALL send the service nothing but the song's link. The artwork SHALL be fetched once on the posting phone and sealed with the moment, and the title, artist and links SHALL travel sealed inside it (ADR-0012, ADR-0016). When the lookup cannot be reached, the person SHALL be able to type the title and artist and post with the link they shared (ruled 2026-09-15).
+
+#### Scenario: Sharing from a music app
+
+- **WHEN** a person taps Share on a song in their music app and chooses Nah?
+- **THEN** the music composer opens with the song's title, artist and artwork filled in
+
+#### Scenario: Pasting a link
+
+- **WHEN** a person pastes a link to a song into the music composer
+- **THEN** the song's title, artist and artwork are filled in the same way
+
+#### Scenario: The lookup is unavailable
+
+- **WHEN** the song-link lookup cannot be reached
+- **THEN** the person can type the title and artist, and post the song with the link they shared
+
+#### Scenario: What the lookup learns
+
+- **WHEN** a song is looked up
+- **THEN** the service receives the song's link and no name, identifier or circle of the person, and no Nah? server receives anything about the song
 
 ### Requirement: An optional short line on photo and voice
 
@@ -58,7 +82,7 @@ Every composer SHALL offer an optional place. When the person chooses to use the
 
 ### Requirement: Media is prepared and sealed on the phone
 
-A photo SHALL be resized and re-encoded, and its thumbnail made, on the phone (CDI-1843). A voice recording SHALL be encoded on the phone (CDI-1845). Every moment and every piece of media SHALL be sealed on the phone before it is uploaded (ADR-0012), and SHALL travel in the versioned envelope with a plain-text fallback written by the posting app (ADR-0016).
+A photo SHALL be resized and re-encoded, and its thumbnail made, on the phone (CDI-1843). A voice recording SHALL be encoded on the phone (CDI-1845). Every moment and every piece of media, including a song's artwork, SHALL be sealed on the phone before it is uploaded (ADR-0012), and SHALL travel in the versioned envelope with a plain-text fallback written by the posting app (ADR-0016).
 
 #### Scenario: Posting a photo
 

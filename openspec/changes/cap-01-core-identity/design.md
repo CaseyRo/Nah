@@ -33,9 +33,9 @@ Ruled 2026-09-15, following ADR-0008 ("floating timeline clock as the only navig
 
 Rejected: Feed / People / You tabs as `DESIGN.md` had them. That costs a permanent strip of chrome for two destinations people rarely visit.
 
-### Three items in the + menu, and no audience step
+### Four items in the + menu, and no audience step
 
-ADR-0006 sets text, voice and photo. ADR-0017 removed the audience picker, so choosing an item opens its composer and nothing sits between them. The radial bloom stays for three items because it is the product's signature gesture, not because three items need a menu.
+ADR-0006 sets text, voice and photo, and its 2026-09-15 note adds music. ADR-0017 removed the audience picker, so choosing an item opens its composer and nothing sits between them. The radial bloom is the product's signature gesture, and four items fit it.
 
 ### The display font ships in the app
 
@@ -72,7 +72,7 @@ Notifications arrive through Nah?'s own relay, which holds the Apple and Google 
 | Close Friends / All Friends chip | Removed (ADR-0017). |
 | Presence dots and status colours | cap-06. |
 | View-receipt threshold | Removed (ADR-0004, ADR-0008). |
-| Music, location and status moments | Out for now (ADR-0006). cap-03 owns moment types. |
+| Music, location and status moments | Music is a moment type again (ADR-0006, amended 2026-09-15); location and status stay out. cap-03 owns moment types. |
 | Moment card variants, timeline clock, end of feed | cap-03. |
 | Offline queue and media cache | cap-03 (CDI-1847, M3). |
 

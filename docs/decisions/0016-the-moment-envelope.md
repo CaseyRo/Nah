@@ -10,6 +10,8 @@ date: 2026-09-13
 
 Accepted (2026-09-14), after being proposed on 2026-09-13. Follows [ADR-0012](0012-encrypted-on-device.html), which made a moment opaque to the server, and [ADR-0006](0006-three-moment-types.html), which says a moment is one thing said in one medium.
 
+**Amended 2026-09-15.** A music moment is the one exception to the rule against URLs outside the author's server. It carries the song's links on music services, which Nah? never fetches or previews, and which open only when a reader taps one. Its artwork is fetched once on the posting phone and travels sealed as an attachment, like any image.
+
 It landed before the app wrote its first moment, which was the point. The app has written version 1 envelopes since 2026-09-14, unencrypted until CDI-1863, with the first byte of every blob saying how it is sealed. Where this record first said circle, [ADR-0017](0017-one-network-of-a-hundred-and-fifty.html) now means the people a moment's author is connected to.
 
 ## Context

@@ -136,7 +136,7 @@ Color is Restrained: warm whites carry 90% of every screen, pomegranate red carr
 - Spring physics on motion, never bounce or elastic
 - One display font (Nunito) for brand voice, platform default for everything else
 - Glassmorphism scoped to exactly two surfaces (profile header compression, radial menu backdrop), forbidden elsewhere
-- Three distinct moment card layouts under one card shell
+- Four distinct moment card layouts under one card shell
 - 48px floating analog timeline clock as a signature element
 
 ## 2. Colors
@@ -243,14 +243,15 @@ Warm and considered. Soft corners, generous padding, handmade-adjacent geometry.
 - **Background:** Surface 1 default. Text moments may opt into a soft Pomegranate Light tint (≤8% saturation) as a background-color choice in the composer.
 - **Shadow Strategy:** none at rest (flat-by-default rule).
 - **Border:** none in light mode. 1px Surface 4 in dark mode.
-- **Internal Padding:** zero for photo moments (edge-to-edge media). 24px for text moments.
+- **Internal Padding:** zero for photo moments (edge-to-edge media). 24px for text moments. Custom for voice and music.
 - **Header:** 40px avatar + display name (Title) + timestamp (Caption) in a horizontal row at top of card.
 
-Three moment variants share this card shell ([ADR-0006](docs/decisions/0006-three-moment-types.md)):
+Four moment variants share this card shell ([ADR-0006](docs/decisions/0006-three-moment-types.md), amended 2026-09-15):
 
 1. **Photo:** edge-to-edge media, no internal padding around the media block. Aspect-ratio-preserving. One photo per moment.
 2. **Text:** padded 24px content area, Body typography sized up to 18px, optional warm Pomegranate Light tint background.
 3. **Voice:** a recording of up to about sixty seconds with a waveform, played inline with a tap. Its visual treatment is not designed yet.
+4. **Music:** two-column content area. 64px album-art square on the left, song title and artist in stacked Body and Caption on the right. Tapping opens the song in a music app the reader chooses.
 
 ### Chips
 

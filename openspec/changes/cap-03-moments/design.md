@@ -2,24 +2,33 @@
 
 ## Context
 
-M1 sends text moments as a version 1 envelope behind a seal byte of 0, and reads every envelope as hostile input: bounded sizes, and a fallback sentence for anything it does not know (`apps/mobile/lib/moment.dart`). The server orders moments by when it received them and knows nothing about what they contain. Photo, voice, the queue and media uploads are M3.
+M1 sends text moments as a version 1 envelope behind a seal byte of 0, and reads every envelope as hostile input: bounded sizes, and a fallback sentence for anything it does not know (`apps/mobile/lib/moment.dart`). The server orders moments by when it received them and knows nothing about what they contain. Photo, voice, music, the queue and media uploads are all still to come.
 
 ## Goals / Non-Goals
 
 **Goals**
 
-- Three types that each feel finished.
-- A place and a line that belong to the person who added them, and to nobody else.
+- Four types that each feel finished.
+- A place, a line and a song that belong to the person who added them, and to nobody else.
 - Deletion that is honest about itself.
 
 **Non-Goals**
 
-- Video, music, location as a type of its own, and status (ADR-0006).
+- Video, location as a type of its own, and status (ADR-0006).
+- Live presence of any kind, including what someone is playing right now. cap-06 is removed.
 - Reactions and comments (cap-04, cap-09).
 - The archive and resurfacing (CDI-1857, M6).
 - Building anything. This round is specification only.
 
 ## Decisions
+
+### Music, shared from any music app and looked up on the phone
+
+Ruled 2026-09-15. Music is the part of ambient presence worth keeping, as a deliberate share rather than a live status, so it is a moment. A song arrives through the music app's own share action or a pasted link, which works for every service on both platforms without an SDK or a special permission.
+
+The phone sends that link to Odesli (song.link), `GET https://api.song.link/v1-alpha.1/links`, which returns the title, artist, artwork and the song's links on other services. The moment keeps the title, artist and per-service links, sealed. It does not keep the song.link page, which would send every reader through a third party. The artwork is fetched once by the posting phone and sealed as an attachment, so no reader contacts a music service until they tap. ADR-0016 carries a note for the links.
+
+Rejected: the music services' own SDKs, which are flaky and different for every service; reading what is playing on the phone, which needs notification access on Android and sees only Apple Music on iOS; and routing the lookup through a Nah? server, which would let the server learn what a moment is about.
 
 ### A short line on photo and voice, a place on anything
 
@@ -47,11 +56,15 @@ A moment of a type the app does not know shows the fallback sentence its author'
 
 ### Media is prepared, and sealed, on the phone
 
-A photo is resized and re-encoded on the phone, and its thumbnail is made there too, about 550 KB for the pair (CDI-1843). A voice clip is recorded for up to a minute and encoded to Opus on the phone, about 150 KB (CDI-1845). Both are sealed before they leave (ADR-0012), which keeps the server free of media tooling.
+A photo is resized and re-encoded on the phone, and its thumbnail is made there too, about 550 KB for the pair (CDI-1843). A voice clip is recorded for up to a minute and encoded to Opus on the phone, about 150 KB (CDI-1845). A song's artwork is fetched and sealed on the phone. All of it is sealed before it leaves (ADR-0012), which keeps the server free of media tooling.
 
 ## Risks / Trade-offs
 
-- **The operating system's place lookup is a request outside Nah?.** Apple or Google see a coordinate when a person asks for their location. cap-01's no-reporting requirement names it as an exception, and typing is always offered instead.
+- **The song-link lookup belongs to Linktree,** which bought Songlink/Odesli in 2021. It learns which song a phone asked about, from that phone's address, though never who the person is or who the moment is for. cap-01 names it as an exception, alongside the operating system's place lookup.
+- **The lookup's API is still `v1-alpha.1`.** It allows 10 requests a minute per caller without a key, and 60 with one. Calls come from phones, so each phone has its own allowance; a key shipped inside the app would be shared by everyone, and anyone could extract it.
+- **Fetching a song's artwork contacts whoever hosts it,** once, from the posting phone.
+- **If the lookup disappears,** a person can still post a song by typing its title and artist, with the link they shared.
+- **The operating system's place lookup is a request outside Nah?.** Apple or Google see a coordinate when a person asks for their location, and typing is always offered instead.
 - **A deleted moment's marker keeps metadata.** The server keeps that someone posted at a given time, which it already knew (ADR-0012's stated exception).
 - **A person page is a surface people can tend.** It is limited to the circle and shows no counts. If people start curating it, ADR-0017's warning about performing applies.
 - **Voice is the most expensive composer** (ADR-0006). CDI-1845 names the hard parts: recording without jank on iOS, and a call interrupting a recording.
@@ -59,6 +72,7 @@ A photo is resized and re-encoded on the phone, and its thumbnail is made there 
 
 ## Open Questions
 
+- Whether a music moment can carry the short line too.
 - The short line's length limit.
 - How far back a person page goes, and how older moments load without becoming an infinite scroll.
 - Whether a deleted moment's media is cleared from phones that cached it, beyond their next load.

@@ -6,7 +6,7 @@ How the feed shows moments: a card for each type, the timeline clock while scrol
 
 ### Requirement: A card for each type
 
-Each moment SHALL be shown as a card that names who posted it and when, with the treatment `DESIGN.md` gives its type. A text moment SHALL be shown as padded words. A photo SHALL be shown edge to edge at its own aspect ratio. A voice moment SHALL play in place with a tap and show its waveform. A short line and a place SHALL appear on the card as words when the moment has them, and no map SHALL be drawn.
+Each moment SHALL be shown as a card that names who posted it and when, with the treatment `DESIGN.md` gives its type. A text moment SHALL be shown as padded words. A photo SHALL be shown edge to edge at its own aspect ratio. A voice moment SHALL play in place with a tap and show its waveform. A music moment SHALL show its sealed artwork, title and artist. A short line and a place SHALL appear on the card as words when the moment has them, and no map SHALL be drawn.
 
 #### Scenario: A photo
 
@@ -22,6 +22,20 @@ Each moment SHALL be shown as a card that names who posted it and when, with the
 
 - **WHEN** a voice moment carries a short line and a place
 - **THEN** both appear on its card as words
+
+### Requirement: A song opens where the reader listens
+
+Tapping a music moment SHALL let the reader choose among the music services the song's links cover, and SHALL open the song there. Before that tap, the app SHALL fetch, preview or contact nothing at any music service (ADR-0016, amended 2026-09-15).
+
+#### Scenario: Opening a song
+
+- **WHEN** a reader taps a music moment
+- **THEN** they choose one of the music services the song is on, and it opens in that service
+
+#### Scenario: Scrolling past a song
+
+- **WHEN** a music moment is shown in the feed and nobody taps it
+- **THEN** no request goes to any music service, and its artwork comes from the moment itself
 
 ### Requirement: The timeline clock
 

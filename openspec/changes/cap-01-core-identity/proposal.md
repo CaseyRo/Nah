@@ -7,7 +7,7 @@ The M1 walking skeleton runs on Flutter's defaults on purpose (CDI-1832): nothin
 ## What Changes
 
 - **design-system**: how the app looks and moves. `DESIGN.md` is the one home for every value (colour, type, spacing, radius, shadow, motion). The spec states only behaviour that can be checked: light and dark follow the system, the display font ships inside the app, reduced motion is honoured, text is readable and operable by everyone, and no text is ever set on Pomegranate.
-- **radial-menu**: the + that blooms into three moment types, text, voice and photo (ADR-0006). Choosing one opens its composer directly, with no audience step (ADR-0017).
+- **radial-menu**: the + that blooms into four moment types, text, voice, photo and music (ADR-0006, amended 2026-09-15). Choosing one opens its composer directly, with no audience step (ADR-0017).
 - **app-shell**: a native iOS and Android app called "Nah?". The feed is the whole screen: no tab bar, and the timeline clock and the + are its only chrome (ADR-0008, ruled again 2026-09-15). It opens on the feed or asks for an invitation, shows the last feed offline, asks for notification permission only with a reason, and contains nothing that reports on the person.
 - **brand-assets**: logo, app icons, and the site's favicon and link preview. A link preview never shows a person.
 - **Removed from the January version**:
