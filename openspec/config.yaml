@@ -1,20 +1,18 @@
 schema: spec-driven
 
-# Project context (optional)
-# This is shown to AI when creating artifacts.
-# Add your tech stack, conventions, style guides, domain knowledge, etc.
-# Example:
-#   context: |
-#     Tech stack: TypeScript, React, Node.js
-#     We use conventional commits
-#     Domain: e-commerce platform
+context: |
+  Nah? is a private social network: one circle of up to 150 people
+  per person. Every change keeps the product-principles spec.
+  Reasons live in docs/decisions; the wiki starts at
+  docs/wiki/quickstart.md.
+  Every change is named cdi-<number>-<slug> after its one Linear
+  issue in the Nah? project, as CLAUDE.md sets out.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always include a "Non-goals" section
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+rules:
+  proposal:
+    - >-
+      Name the change cdi-<number>-<slug>, lowercase, matching its
+      Linear issue's git branch. Create or find the issue first.
+    - >-
+      Under the title, link the issue as
+      "Linear: [CDI-<number>](https://linear.app/cdit/issue/CDI-<number>)".

@@ -8,7 +8,7 @@ date: 2026-09-15
 
 ## Status
 
-Accepted (2026-09-15). Amends [ADR-0008](0008-mvp-scope.html), which shipped no reactions. Resolves CDI-1856. Specified in the `cap-04-reactions` OpenSpec change.
+Accepted (2026-09-15). Amends [ADR-0008](0008-mvp-scope.html), which shipped no reactions. Resolves CDI-1856. Specified in the `cdi-1885-reactions` OpenSpec change.
 
 ## Context
 

@@ -10,6 +10,8 @@ date: 2026-09-13
 
 Accepted (2026-09-14), after being proposed on 2026-09-13. Extends [ADR-0010](0010-small-server-not-mastodon.html), and moves self-hosting out of the first release.
 
+**Amended 2026-09-15.** The content key no longer travels in the invite. An invite carries a one-time secret after the `#`; the key, with its history, reaches the new connection only after the connection completes, sealed to that person's device key and checked against the secret, so a screenshot of a used invite unlocks nothing. A person's key rotates whenever one of their connections ends or they block someone, and the new key is sealed to the device keys their phone received from each remaining connection, never to keys the server supplies. Earlier moments stay readable to those who could read them. Recovery and one device per person are in the `cdi-1865-recovery-and-key-rotation` OpenSpec change.
+
 Restated for [ADR-0017](0017-one-network-of-a-hundred-and-fifty.html), which replaced circles with one network of up to 150 per person. The guarantee is unchanged; the noun is not. Where this record first said a circle has a content key, a person now has one, handed over when two people connect.
 
 The M1 walking skeleton sends moments unencrypted until each person has a content key (CDI-1863). The first byte of every blob already says how it is sealed, so nothing posted before encryption arrives needs migrating.

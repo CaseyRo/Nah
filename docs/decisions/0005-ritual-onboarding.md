@@ -10,6 +10,8 @@ date: 2026-04-26
 
 Accepted (2026-04-26).
 
+**Amended 2026-09-15.** The one real question is "What do you want to share with the ones closest to you right now?", and it now has a home: its answer sits under the person's name on their page, and reaches their circle as their first moment. After the question, the first run offers a photo for the person's avatar, which they can skip, keeping their initials, and add or change later from their own page. Moments shown on arrival are only real ones: nothing mocked appears in anyone's feed. The detail is in the `cdi-1883-your-circle` OpenSpec change.
+
 ## Context
 
 The MVP wow lands in the first 30 seconds (ADR-0008). The hard part is that the headline ("no counts anywhere") is a negative feature: nothing visible communicates it on a first-open empty screen. The user just sees... a quiet space. Maybe their inviter's name. Maybe nothing. Without intentional design, "no counts" reads as "broken Instagram."

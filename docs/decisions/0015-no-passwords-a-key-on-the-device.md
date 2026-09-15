@@ -10,6 +10,8 @@ date: 2026-09-13
 
 Accepted (2026-09-13). Follows [ADR-0011](0011-plain-go-and-a-database-per-circle.html), which removed PocketBase and with it the sign-in that came free. Sits alongside [ADR-0012](0012-encrypted-on-device.html), which already puts a key on the device.
 
+**Amended 2026-09-15.** One device per person, deliberately: there is no second device. A new phone takes over only through recovery, even when the old one still works: two people from the person's circle vouch for it in person, and after 48 hours in which the old phone and the circle can object, the old device key stops working. Someone with fewer than two connections cannot recover, and joins again. The detail is in the `cdi-1865-recovery-and-key-rotation` OpenSpec change.
+
 Revised the same day, before anything was built on it. The first version kept sessions in memory and accepted that a deploy would log everyone out. That was the wrong default for a product that intends to deploy constantly, and the revision is recorded in the decision below rather than left in the history.
 
 ## Context

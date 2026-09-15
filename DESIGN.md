@@ -135,7 +135,7 @@ Color is Restrained: warm whites carry 90% of every screen, pomegranate red carr
 - Soft corners (8–12px), generous padding, handmade-adjacent geometry
 - Spring physics on motion, never bounce or elastic
 - One display font (Nunito) for brand voice, platform default for everything else
-- Glassmorphism scoped to exactly two surfaces (profile header compression, radial menu backdrop), forbidden elsewhere
+- Glassmorphism scoped to one surface, the radial menu backdrop, and forbidden elsewhere
 - Four distinct moment card layouts under one card shell
 - 48px floating analog timeline clock as a signature element
 
@@ -288,9 +288,9 @@ There is no tab bar. The feed is the whole screen, and your circle and you open 
 
 ### Avatar
 
-- **Sizes:** xs 24px, sm 32px, md 40px (card headers, your circle), lg 56px (compressed profile header), xl 80px (expanded profile header).
+- **Sizes:** xs 24px, sm 32px, md 40px (card headers, your circle), lg 56px, xl 80px (the top of a person's page, which has no cover photo).
 - **Shape:** circular.
-- **Fallback:** initials on Pomegranate Light background, white text.
+- **Fallback:** initials in Text 1 on a Pomegranate Light background. White measures about 2.8:1 there, under WCAG AA; Text 1 measures about 6.2:1.
 
 ## 6. Do's and Don'ts
 
@@ -315,7 +315,7 @@ There is no tab bar. The feed is the whole screen, and your circle and you open 
 - **Don't** look like a VC-SaaS landing page. No gradient hero text. No three-feature card grids on any product surface. No hero-metric templates. No "X is faster than Y" comparison tables. No glassmorphism dashboards.
 - **Don't** use side-stripe borders (colored `border-left` or `border-right` greater than 1px). Never. On any card, list item, callout, or alert.
 - **Don't** use gradient text (`background-clip: text` with a gradient background). Solid colors only. Emphasis through weight or size.
-- **Don't** use glassmorphism outside the two approved surfaces: profile header compression overlay and radial menu backdrop. Forbidden everywhere else, including modals, sheets, and notification toasts.
+- **Don't** use glassmorphism anywhere but the radial menu backdrop. Forbidden everywhere else, including a person's page, modals, sheets, and notification toasts.
 - **Don't** use display fonts (Nunito) on buttons, form labels, data, timestamps, or any other functional UI element. Display fonts on buttons read as marketing copy.
 - **Don't** use pure black (`#000000`) or pure white (`#FFFFFF`) for text. Text uses `#1A1A1A`. Future iterations should tint neutrals toward the pomegranate hue.
 - **Don't** use bounce or elastic easing curves. Spring physics are warm; bounce and elastic are loud.
