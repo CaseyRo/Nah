@@ -24,7 +24,7 @@ Specification only this round. The principles are checked here against what exis
 - [x] 3.2 `cap-02-your-circle`
 - [x] 3.3 `cap-03-moments`
 - [x] 3.4 `cap-04-reactions`
-- [ ] 3.5 `cap-05-messaging`
+- [x] 3.5 `cap-05-messaging`, removed: Nah? has no chat
 - [ ] 3.6 `cap-06-ambient-presence`
 - [ ] 3.7 `cap-07-user-ownership`
 - [ ] 3.8 `cap-08-community-funding`

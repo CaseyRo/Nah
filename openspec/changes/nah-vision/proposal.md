@@ -16,6 +16,7 @@ Nah? is a private social network for the people one person is actually close to:
   - no numbers about people
   - the server keeps moments it cannot read
   - moments never leave the circle they were posted to
+  - no chat, one-to-one or in groups
   - no AI in the product
   - nothing is sold and nothing advertises
   - notifications default to the most respectful option

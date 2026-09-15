@@ -102,6 +102,15 @@ Nothing in Nah? SHALL move a moment outside the circle of the person who posted 
 - **WHEN** a person views a moment someone else posted
 - **THEN** Nah? offers no way to pass it on, including to people in the viewer's own circle
 
+### Requirement: No chat
+
+Nah? SHALL have no private messages or chats between people, one-to-one or in groups. People already have a place for that, and Nah? fills the gap next to it (ADR-0017, ruled 2026-09-15).
+
+#### Scenario: Wanting to say something to one person
+
+- **WHEN** a person wants to say something about a moment to just one person
+- **THEN** Nah? offers no way to message them
+
 ### Requirement: No AI in the product
 
 Nah? SHALL contain no AI features: no recaps, summaries, suggestions or generated content. No model, on the device or anywhere else, SHALL receive a person's moment (CDI-1859). Using AI tools to write Nah?'s code is separate, and allowed.

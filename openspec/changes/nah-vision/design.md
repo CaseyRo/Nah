@@ -31,7 +31,7 @@ In January this document designed a Mastodon fork, and none of it was built. Sin
 | S3-compatible storage with a CDN | Not decided; the media path is still to be measured | CDI-1824 |
 | `/packages/nah_ui` and `/packages/nah_api` | `apps/mobile` and `apps/server` only | cap-01 design.md |
 | Push, badges and a notification for every event | A daily digest by default, and no badges | ADR-0007 |
-| Messaging deferred to v1.5 | Still deferred | cap-05 |
+| Messaging deferred to v1.5 | No chat in Nah? | `product-principles` |
 
 ## Open Questions
 
