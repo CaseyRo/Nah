@@ -1,136 +1,76 @@
-# Radial Menu Spec
+## Purpose
 
-The signature Path-inspired "+" content creation menu with bloom animation.
+The + that starts a moment. It blooms into the three moment types and hands straight over to the chosen composer, with nothing in between.
 
 ## ADDED Requirements
 
-### Requirement: Floating action button position
+### Requirement: The + stays within reach on the feed
 
-The radial menu trigger SHALL be a 56px circular button fixed to the bottom-right corner of the viewport with 24px inset, positioned above the bottom tab bar. A user setting SHALL allow moving the FAB to bottom-left for left-hand accessibility.
+The feed SHALL show a round + button fixed in a bottom corner, which stays in place while the feed scrolls. It SHALL sit bottom-right by default, and a left-hand setting SHALL move it to bottom-left.
 
-#### Scenario: Button visibility on timeline
+#### Scenario: Scrolling
 
-- **WHEN** user views the home timeline
-- **THEN** the red "+" FAB is visible in the bottom-right corner, above the tab bar
+- **WHEN** the person scrolls the feed
+- **THEN** the + stays where it is
 
-#### Scenario: Button visibility during scroll
+#### Scenario: Left-hand setting
 
-- **WHEN** user scrolls the timeline
-- **THEN** the FAB remains fixed in position (does not scroll away)
+- **WHEN** the person turns on the left-hand setting
+- **THEN** the + moves to the bottom-left corner and the menu blooms towards the right
 
-#### Scenario: Left-hand preference
+### Requirement: Three moment types, and no audience step
 
-- **WHEN** user enables "Left-hand mode" in Settings → Accessibility
-- **THEN** the FAB moves to bottom-left corner
+Opening the + SHALL show exactly three items, text, voice and photo (ADR-0006), each with an icon and a label. Choosing one SHALL open that type's composer directly. No step SHALL ask who the moment is for, because every moment goes to the person's whole network (ADR-0017).
 
-### Requirement: Five menu items in radial fan
+#### Scenario: Opening the menu
 
-The menu SHALL contain exactly 5 items arranged in a radial fan pattern: Photo, Text, Music, Location, Status.
+- **WHEN** the person taps the +
+- **THEN** text, voice and photo appear, and nothing else
 
-#### Scenario: Menu fully expanded
+#### Scenario: Choosing an item
 
-- **WHEN** user opens the radial menu
-- **THEN** 5 icons are visible in a fan arrangement around the trigger button
+- **WHEN** the person taps voice
+- **THEN** the menu closes and the voice composer opens
+- **AND** no audience, visibility or recipient choice appears on the way
 
-#### Scenario: Icon identification
+### Requirement: The bloom
 
-- **WHEN** menu is open
-- **THEN** each icon is visually distinct and recognizable (camera, quote/note, music note, pin, moon/sun)
+When the menu opens, the + SHALL turn into a close mark, the items SHALL fan out from it one after another with the spring timings in `DESIGN.md`, and the feed behind SHALL dim. With reduce motion on, the items SHALL appear together, with no stagger, rotation or overshoot.
 
-#### Scenario: Removed items rationale
+#### Scenario: Opening with motion
 
-- "With" (friend tagging) is a composer toolbar option available on any moment type, not a standalone content type
-- "Video" is combined with Photo — the camera icon opens a media picker for both photo and video
-- Sleep/Wake is combined into "Status" — a single entry point with sleep/wake picker inside the composer
+- **WHEN** reduce motion is off and the person taps the +
+- **THEN** the + rotates into a close mark, the items fan out in turn, and the feed dims
 
-### Requirement: Spring animation on open
+#### Scenario: Opening with reduce motion
 
-The menu SHALL animate open with spring physics — items fan out with staggered timing and slight rotation.
+- **WHEN** reduce motion is on and the person taps the +
+- **THEN** the items appear at once and the feed dims without animating
 
-#### Scenario: Opening animation
+### Requirement: Closing without starting a moment
 
-- **WHEN** user taps the "+" button
-- **THEN** the "+" rotates 45deg to become "x"
-- **AND** menu items fan out with 30ms staggered delay
-- **AND** each item scales from 0 with spring easing
-- **AND** total animation completes in ~400ms
+The menu SHALL close, without starting a moment, when the person taps the close mark, taps outside the items, or uses the system back gesture or button.
 
-#### Scenario: Animation smoothness
+#### Scenario: Tapping outside
 
-- **WHEN** menu opens
-- **THEN** animation runs at 60fps with no jank
+- **WHEN** the menu is open and the person taps the dimmed feed
+- **THEN** the menu closes and the feed is where it was
 
-### Requirement: Backdrop overlay
+#### Scenario: Back on Android
 
-When the radial menu is open, a frosted glass backdrop overlay SHALL dim the content behind it. This is one of exactly 2 approved glassmorphism contexts in the app (the other being profile header compression).
+- **WHEN** the menu is open and the person presses back on Android
+- **THEN** the menu closes and the app stays open
 
-#### Scenario: Backdrop appearance
+### Requirement: An accessible menu
 
-- **WHEN** radial menu opens
-- **THEN** a semi-transparent backdrop with blur appears behind the menu items
-- **AND** Flutter `BackdropFilter` with `ImageFilter.blur(sigmaX: 12, sigmaY: 12)` and a saturated tint overlay
-- **AND** Fallback: semi-transparent dark overlay when `BackdropFilter` cannot render at 60fps (older Android devices)
+The + and every item SHALL have a touch target of at least 44 by 44 points. A screen reader SHALL announce the + as a button with its open or closed state, and each item by its moment type. When the menu opens, focus SHALL move to the first item and stay within the menu. When the menu closes without a choice, focus SHALL return to the +.
 
-### Requirement: Dismissal on close
+#### Scenario: Opening with VoiceOver
 
-The menu SHALL close when user taps the "x" button, taps outside the menu, or selects an item.
+- **WHEN** VoiceOver focus is on the + and the person activates it
+- **THEN** the + is announced as expanded and focus moves to text
 
-#### Scenario: Dismiss via X button
+#### Scenario: Closing returns focus
 
-- **WHEN** user taps the "x" button
-- **THEN** menu items collapse back with fade
-- **AND** "x" rotates back to "+"
-
-#### Scenario: Dismiss via outside tap
-
-- **WHEN** user taps anywhere outside the menu
-- **THEN** menu closes with same animation as X tap
-
-#### Scenario: Dismiss via item selection
-
-- **WHEN** user taps a menu item
-- **THEN** menu closes and corresponding composer opens
-
-### Requirement: Touch target size
-
-Each menu item SHALL have a touch target of at least 44x44px for accessibility.
-
-#### Scenario: Tapping menu item
-
-- **WHEN** user attempts to tap a menu item
-- **THEN** the touch target is large enough to tap without precision
-
-### Requirement: Visual feedback on item hover/press
-
-Menu items SHALL provide visual feedback when pressed (scale down slightly, brightness change).
-
-#### Scenario: Pressing menu item
-
-- **WHEN** user presses down on a menu item
-- **THEN** item scales to 90% and dims slightly
-- **WHEN** user releases
-- **THEN** item returns to normal and action triggers
-
-### Requirement: Accessibility
-
-The radial menu SHALL be fully accessible via keyboard and screen readers.
-
-#### Scenario: Keyboard navigation
-
-- **WHEN** FAB receives keyboard focus and user presses Enter/Space
-- **THEN** menu opens and focus moves to first menu item
-- **AND** Arrow keys navigate between items
-- **AND** Escape closes the menu and returns focus to FAB
-
-#### Scenario: ARIA roles
-
-- **WHEN** menu is rendered
-- **THEN** FAB has `role="button"` and `aria-expanded` state
-- **AND** menu container has `role="menu"`
-- **AND** each item has `role="menuitem"` with descriptive label
-
-#### Scenario: Focus order
-
-- **WHEN** menu is open
-- **THEN** focus is trapped within the menu (Tab cycles through items)
-- **AND** focus order matches visual order (Photo → Text → Music → Location → Status)
+- **WHEN** a screen-reader user closes the menu without choosing
+- **THEN** focus returns to the +

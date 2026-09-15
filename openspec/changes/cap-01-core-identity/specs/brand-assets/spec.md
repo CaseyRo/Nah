@@ -1,146 +1,65 @@
-# Brand Assets Spec
+## Purpose
 
-Logo files, app icons, splash screens, and favicon.
+The marks that say Nah?: the logo, the app icons, and the site's favicon and link previews. Colours come from `DESIGN.md`.
 
 ## ADDED Requirements
 
-### Requirement: Logo in multiple formats
+### Requirement: The name is written Nah?
 
-The brand SHALL have a logo available in SVG (scalable), PNG (raster at multiple sizes), and optionally as icon font or sprite.
+Every asset that spells the product's name SHALL write it "Nah?", with the question mark.
 
-#### Scenario: Logo for web display
+#### Scenario: A wordmark
 
-- **WHEN** logo is needed for web header or about page
-- **THEN** SVG version is used for crisp rendering at any size
+- **WHEN** the logo, an icon or a preview image includes the name
+- **THEN** it reads "Nah?"
 
-#### Scenario: Logo for social sharing
+### Requirement: One logo master
 
-- **WHEN** logo is needed for Open Graph image
-- **THEN** PNG at appropriate resolution is available
+The logo SHALL exist as an SVG master, and every raster version (icons, launch screen, favicon, preview image) SHALL be exported from it.
 
-### Requirement: App icons at required sizes
+#### Scenario: A new size is needed
 
-The brand SHALL provide:
+- **WHEN** an asset needs the logo at a size that has not been exported
+- **THEN** it is exported from the SVG master, not redrawn or scaled up from a smaller raster
 
-- **iOS app icon master:** 1024x1024 PNG (App Store), with auto-generated variants per Xcode asset catalog requirements
-- **Android adaptive icon:** foreground + background layers (108dp), generated at all required densities
-- **Marketing site favicon:** 32x32, 16x16, ICO format for the `/docs` Jekyll site
+### Requirement: App icons that survive every mask
 
-#### Scenario: iOS install
+The app SHALL have an iOS icon set made from a 1024 by 1024 master and an Android adaptive icon with separate foreground and background layers. Both SHALL put a white mark on the brand primary colour from `DESIGN.md`, and neither SHALL place any part of the mark where a platform mask can cut it off.
 
-- **WHEN** the user installs Nah from the App Store
-- **THEN** the home-screen icon uses the appropriate auto-generated variant of the 1024px master
-- **AND** iOS automatic corner masking does not crop important content
+#### Scenario: iOS corners
 
-#### Scenario: Android install
+- **WHEN** iOS rounds the icon's corners
+- **THEN** no part of the mark is cut off
 
-- **WHEN** the user installs Nah from Google Play
-- **THEN** the launcher uses the Android adaptive icon (foreground + background)
-- **AND** the icon renders correctly across launcher shape masks (circle, squircle, rounded square)
+#### Scenario: Android launcher shapes
 
-#### Scenario: Marketing site favicon
+- **WHEN** a launcher masks the adaptive icon as a circle, a squircle or a rounded square
+- **THEN** the whole mark stays visible
 
-- **WHEN** a user views the Nah marketing/docs site in a browser
-- **THEN** the favicon (32x32 or 16x16) displays in the tab
+#### Scenario: Light and dark home screens
 
-### Requirement: Icon design matches brand identity
+- **WHEN** the icon is shown on a light or a dark home screen
+- **THEN** it stays recognisable
 
-App icons SHALL use the pomegranate red (#EE3423) background with white or contrasting logo mark.
+### Requirement: The site's favicon and default link preview
 
-#### Scenario: Icon recognition
+The published site SHALL serve a favicon and one default link-preview image of 1200 by 630 pixels.
 
-- **WHEN** user sees Nah icon among other apps
-- **THEN** it is immediately recognizable by the red color and "nah" wordmark or symbol
+#### Scenario: A browser tab
 
-#### Scenario: Icon corners
+- **WHEN** the site is opened in a browser
+- **THEN** the tab shows the Nah? favicon
 
-- **WHEN** icon is displayed on iOS
-- **THEN** it works with iOS's automatic corner masking (no important content in corners)
+#### Scenario: Sharing the site
 
-### Requirement: Open Graph images for social sharing
+- **WHEN** a link to the site is pasted into a chat app
+- **THEN** the preview shows the default image
 
-The brand SHALL provide Open Graph images (og:image) for link previews on social platforms.
+### Requirement: A link preview never shows a person
 
-#### Scenario: Sharing Nah link on social media
+No link preview SHALL show a person's name, photo or moments. That includes the preview of an invite link, because Nah? has no public profiles (ADR-0008) and an invitation is private.
 
-- **WHEN** someone shares a Nah URL on Twitter/Facebook/LinkedIn
-- **THEN** a branded preview image appears (1200x630 recommended)
+#### Scenario: Pasting an invite link
 
-#### Scenario: Default vs custom OG images
-
-- **WHEN** sharing the homepage
-- **THEN** default branded OG image is used
-- **WHEN** sharing a user profile (future)
-- **THEN** custom OG image with user info could be generated
-
-### Requirement: Favicon for marketing site
-
-The marketing/docs site SHALL provide favicon in ICO format (legacy browsers) and PNG format (modern browsers). Note: the Flutter mobile app does not use favicons — these are for the Jekyll site only.
-
-#### Scenario: Favicon loading
-
-- **WHEN** a browser loads the Nah marketing/docs site
-- **THEN** the appropriate favicon format is served based on browser support
-
-### Requirement: Splash screen assets for mobile
-
-The brand SHALL provide splash screen assets for iOS LaunchScreen and Android splash drawable.
-
-#### Scenario: iOS launch screen
-
-- **WHEN** Nah is launched on iOS
-- **THEN** the iOS LaunchScreen displays the Nah logo on the brand background, sized appropriately for each device class
-
-#### Scenario: Android splash screen
-
-- **WHEN** Nah is launched on Android
-- **THEN** the Android splash drawable (or Android 12+ splash API) displays the Nah logo on the brand background
-
-### Requirement: Brand color consistency
-
-All brand assets SHALL use the defined primary color (#EE3423) consistently.
-
-#### Scenario: Color accuracy
-
-- **WHEN** brand assets are viewed across different contexts
-- **THEN** the pomegranate red is consistent (accounting for color space differences)
-
-### Requirement: Accessibility contrast
-
-Logo and icons SHALL maintain sufficient contrast for visibility against common backgrounds.
-
-#### Scenario: Icon on dark background
-
-- **WHEN** icon is shown on dark OS theme
-- **THEN** it remains visible and recognizable
-
-#### Scenario: Icon on light background
-
-- **WHEN** icon is shown on light OS theme
-- **THEN** it remains visible and recognizable
-
-### Requirement: Custom reaction icons
-
-The brand SHALL provide custom illustrated reaction icons (not system emoji) that match the app's visual language.
-
-#### Scenario: Reaction icon set
-
-- **WHEN** user views or selects reactions
-- **THEN** custom SVG icons are displayed for: Smile, Wink, Sad, Wow, Love
-
-#### Scenario: Icon style consistency
-
-- **WHEN** reaction icons are designed
-- **THEN** they use simple, rounded, friendly illustration style
-- **AND** consistent stroke weight with app's icon language
-- **AND** pomegranate red (#EE3423) as accent color where appropriate
-
-#### Scenario: Icon size requirements
-
-- **WHEN** reaction icons are displayed at small sizes (24px)
-- **THEN** they remain clear and recognizable without losing detail
-
-#### Scenario: Cross-platform consistency
-
-- **WHEN** reactions are shown on iOS and Android
-- **THEN** they appear identical (unlike system emoji which vary by platform)
+- **WHEN** an invite link is pasted into WhatsApp, Signal or iMessage
+- **THEN** the preview shows the default Nah? image and nothing about who sent it

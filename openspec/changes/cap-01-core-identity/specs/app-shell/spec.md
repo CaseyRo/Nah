@@ -1,149 +1,127 @@
-# App Shell Spec
+## Purpose
 
-Flutter app entry point: launch, navigation scaffold, offline cache, lifecycle, platform integration. Replaces the earlier `pwa-shell` capability as part of the Flutter pivot ([decision blog post](../../../../docs/_posts/2026-05-19-the-flutter-decision.md)).
+The installed app: what it is called, what it opens on, what surrounds the feed, how it stays current, how it asks for notifications, and what it never talks to.
 
 ## ADDED Requirements
 
-### Requirement: App identity in native bundles
+### Requirement: A native app called Nah?
 
-Nah SHALL ship as a native iOS app and Android app with consistent identity (display name, bundle ID, icon, theme color) configured in platform manifests.
+Nah? SHALL ship as a native app for iOS and Android, installed publicly from the App Store and Google Play, with TestFlight and Play internal testing used before public release. The name under its icon SHALL be "Nah?".
 
-#### Scenario: iOS bundle configuration
+#### Scenario: On the home screen
 
-- **WHEN** the iOS app is built
-- **THEN** `Info.plist` declares `CFBundleDisplayName = "Nah"`, `CFBundleIdentifier` per environment, and `UIStatusBarStyle` consistent with the active theme
+- **WHEN** Nah? is installed on an iPhone or an Android phone
+- **THEN** its icon appears labelled "Nah?"
 
-#### Scenario: Android manifest configuration
+#### Scenario: First store submission
 
-- **WHEN** the Android app is built
-- **THEN** `AndroidManifest.xml` declares `android:label="Nah"`, `applicationId` per environment, and a theme using pomegranate red (#EE3423) as the primary color
+- **WHEN** the app is submitted to either store for the first time
+- **THEN** it carries its final bundle identifier and application id, because neither store allows changing them afterwards
 
-### Requirement: App install via official stores
+### Requirement: Opens on the feed, or asks for an invitation
 
-Nah SHALL be installable via the App Store (iOS) and Google Play (Android). Sideloading and TestFlight/internal testing tracks are acceptable during alpha but the public install path SHALL be the official stores.
+On launch the app SHALL show the feed if this device has joined, signing in with the device's key without asking the person anything (ADR-0015). If the device has not joined, the app SHALL ask for an invitation, because Nah? is by invitation only. The app SHALL NOT show a sign-up form, an email field or a password field.
 
-#### Scenario: iOS installation
+#### Scenario: A device that has joined
 
-- **WHEN** a user installs Nah from the App Store
-- **THEN** the app appears on the home screen with the configured icon and launches as a native iOS app
+- **WHEN** the app launches on a device that has joined
+- **THEN** the feed appears with no sign-in step
 
-#### Scenario: Android installation
+#### Scenario: A device that has not joined
 
-- **WHEN** a user installs Nah from Google Play
-- **THEN** the app appears in the app drawer with the configured adaptive icon and launches as a native Android app
+- **WHEN** the app launches on a device that has never joined
+- **THEN** it asks for an invitation and offers no other way in
 
-### Requirement: Cold-start performance
+### Requirement: The feed is the whole screen
 
-The app SHALL reach interactive state within 2 seconds on mid-tier devices (iPhone 13, Pixel 6) under normal cold-start conditions.
+The app SHALL have no tab bar and no side menu. The feed SHALL fill the screen, the person's people and the person's own page SHALL open from the feed's header, and the timeline clock and the + SHALL be the only other chrome over the feed (ADR-0008). Nothing in the app and nothing on its icon SHALL carry a badge (ADR-0007).
 
-#### Scenario: Cold start measurement
+#### Scenario: Seeing your people
 
-- **WHEN** the app is launched from a fully terminated state
-- **THEN** time-to-first-frame is < 1 second
-- **AND** time-to-interactive (feed visible, scrollable) is < 2 seconds
+- **WHEN** the person opens their people from the feed header and then closes that screen
+- **THEN** they are back on the feed where they left it
 
-### Requirement: Offline cache initialization
+#### Scenario: New moments have arrived
 
-The app SHALL initialize a local persistence layer (Hive or Drift) on first launch and use it for offline timeline reading and queued moments.
+- **WHEN** moments have arrived since the person last looked
+- **THEN** no dot, badge or number appears in the header, on the app icon or anywhere else
 
-#### Scenario: First launch cache bootstrap
+### Requirement: Staying current without a connection held open
 
-- **WHEN** the app launches for the first time
-- **THEN** the local persistence layer is initialized and ready before the feed renders
+The app SHALL load the newest page of the feed on launch, when it returns to the foreground, and when the person pulls down to refresh. It SHALL show that one page and never load a second (CDI-1833). It SHALL NOT hold a streaming connection, and SHALL NOT poll for new moments while in the background.
 
-#### Scenario: Offline feed rendering
+#### Scenario: Back from the background
 
-- **WHEN** a user opens the app without network connectivity
-- **THEN** the previously cached timeline is displayed
-- **AND** the app shell renders normally (navigation, profile, settings all accessible)
+- **WHEN** the app returns to the foreground
+- **THEN** it loads the newest page and shows the moments posted meanwhile
 
-#### Scenario: Queued moments on offline post
+#### Scenario: The end of the page
 
-- **WHEN** a user creates a moment while offline
-- **THEN** the moment is persisted locally with a pending indicator
-- **WHEN** connectivity returns
-- **THEN** queued moments sync automatically and the pending indicator clears
+- **WHEN** the person scrolls to the end of the page
+- **THEN** the feed ends there and nothing more loads
 
-### Requirement: Splash screen
+#### Scenario: In the background
 
-The app SHALL display a native splash screen during launch on both platforms.
+- **WHEN** the app is in the background
+- **THEN** it does not ask the server for new moments
 
-#### Scenario: iOS launch
+### Requirement: The last feed is there offline
 
-- **WHEN** the user launches Nah on iOS
-- **THEN** the iOS LaunchScreen displays the Nah logo on a pomegranate red (#EE3423) background until the first Flutter frame renders
+The app SHALL keep the last feed it loaded on the device and show it at launch, before any network response arrives and when none arrives. When the server cannot be reached, the app SHALL say so in a sentence and keep showing what it has.
 
-#### Scenario: Android launch
+#### Scenario: No connection
 
-- **WHEN** the user launches Nah on Android
-- **THEN** the Android 12+ splash API (or pre-12 splash drawable) displays the Nah logo on a pomegranate red (#EE3423) background until the first Flutter frame renders
+- **WHEN** the app opens with no connectivity, after it has loaded a feed before
+- **THEN** the last loaded feed is shown, with a sentence saying it cannot reach the person's people right now
 
-### Requirement: Status bar theming
+#### Scenario: Cold start
 
-The app SHALL configure mobile status bar color and content style to match the active theme.
+- **WHEN** the app launches from a terminated state on an iPhone 13 or Pixel 6 class device
+- **THEN** the stored feed is visible and scrollable within 2 seconds
 
-#### Scenario: Light theme status bar
+### Requirement: Launch screen and system bars match the brand and the theme
 
-- **WHEN** the app is in light mode and the user is on a screen with a white surface
-- **THEN** the status bar uses dark content style with a transparent or matching surface background
+The app SHALL show a native launch screen with the Nah? logo on the brand background until its first frame is drawn, on both platforms. The status bar and navigation bar content SHALL suit the current light or dark theme.
 
-#### Scenario: Dark theme status bar
+#### Scenario: Launching
 
-- **WHEN** the app is in dark mode
-- **THEN** the status bar uses light content style with a transparent or matching dark surface background
+- **WHEN** the app is launched on either platform
+- **THEN** the logo on the brand background shows until the first frame, with no blank flash in between
 
-### Requirement: Push notification support (opt-in)
+#### Scenario: Dark theme
 
-The app SHALL support push notifications on both platforms when the user grants permission.
+- **WHEN** the theme is dark
+- **THEN** the status bar content is light
 
-#### Scenario: Permission request
+### Requirement: Notification permission comes with a reason
 
-- **WHEN** an appropriate trigger occurs (e.g., first friend request received)
-- **THEN** the app requests notification permission with a clear, friendly explanation rationale shown before the system prompt
+The app SHALL show the system notification permission prompt only after saying, in one sentence in the app, what the person will receive. Notifications SHALL arrive through Nah?'s push relay (ADR-0010), and tapping one SHALL open the feed. What a notification says and when it is sent is decided by ADR-0007, not here.
 
-#### Scenario: Notification delivery
+#### Scenario: Asking
 
-- **WHEN** a push notification is received and permission has been granted
-- **THEN** the notification appears in the system notification center even when the app is in the background or terminated
+- **WHEN** the app needs notification permission
+- **THEN** it first says in one sentence what the person will receive, and only then shows the system prompt
 
-#### Scenario: Deep-link from notification
+#### Scenario: Declined
 
-- **WHEN** a user taps a notification
-- **THEN** the app opens directly to the relevant content (e.g., moment, friend profile, comment thread) per the deep-link destination defined in nah-vision
+- **WHEN** the person declines notification permission
+- **THEN** everything else in the app works as before, and the app does not ask again unless the person asks for notifications
 
-### Requirement: App lifecycle awareness
+#### Scenario: Tapping a notification
 
-The app SHALL respond appropriately to lifecycle events (foreground, background, terminated).
+- **WHEN** the person taps a Nah? notification
+- **THEN** the app opens on the feed
 
-#### Scenario: Returning from background
+### Requirement: Nothing reports on the person
 
-- **WHEN** the app returns to the foreground after being backgrounded
-- **THEN** the feed checks for new content via the streaming connection
-- **AND** any pending queued moments attempt to sync
+The app SHALL contain no analytics, crash-reporting, advertising, attribution or AI software, directly or through anything it depends on (CDI-1860). Every request the app makes itself SHALL go to the person's Nah? server or to another address Nah? runs, such as the directory or the push relay. The operating system's own push service is outside this rule.
 
-#### Scenario: Backgrounding
+#### Scenario: Adding a dependency
 
-- **WHEN** the app is backgrounded
-- **THEN** in-flight network requests are allowed to complete or are persisted for retry
-- **AND** the streaming connection is gracefully closed (and re-established on resume)
+- **WHEN** a package is added to the app
+- **THEN** neither it nor anything it pulls in collects analytics, reports crashes, serves advertising, attributes installs or runs AI
 
-### Requirement: Cache strategy
+#### Scenario: A whole session's traffic
 
-The app SHALL apply a defined cache strategy per resource type.
-
-#### Scenario: Static assets bundled with the app
-
-- **WHEN** the app needs fonts, illustrations, or icon assets
-- **THEN** these are loaded from the app bundle (no network round-trip)
-
-#### Scenario: Timeline data
-
-- **WHEN** the app needs timeline data
-- **THEN** local cache is read first for instant render
-- **AND** a background fetch updates the cache with fresh data
-- **AND** the UI updates when fresh data arrives
-
-#### Scenario: Media (photos, videos)
-
-- **WHEN** the app loads media for the timeline
-- **THEN** media is cached on disk with a size cap (e.g., 200MB) and LRU eviction
+- **WHEN** the app's traffic is captured through joining, reading the feed and posting
+- **THEN** every request goes to an address Nah? runs

@@ -1,75 +1,39 @@
-# Core Identity Tasks
+# Core identity tasks
 
-## 1. Project Setup
+Specification only this round. Nothing below is started.
 
-- [ ] 1.1 Create `/packages/nah_ui` Dart package (pubspec, lib/ scaffolding)
-- [ ] 1.2 Initialize Flutter app in `/apps/mobile` (Flutter 3.41+, Dart 3.11+)
-- [ ] 1.3 Add core deps: `flutter_bloc`, `dio`, `web_socket_channel`, `hive` (or `drift`)
-- [ ] 1.4 Add animation + UI deps: `flutter_animate`, `google_fonts`, icon package
-- [ ] 1.5 Configure iOS + Android build targets (bundle IDs, signing placeholders, min OS versions)
+## 1. Design system
 
-## 2. Design System Foundation
+- [ ] 1.1 Light and dark themes in `apps/mobile` from the values in `DESIGN.md`, following the system appearance
+- [ ] 1.2 Bundle Nunito as an asset; platform sans for everything that is not brand voice
+- [ ] 1.3 Spring timings from `DESIGN.md`, with an instant or fade path when reduce motion is on
+- [ ] 1.4 One glyph-button component for primary actions (Pomegranate circle, white glyph, label beside it), used by the +, send and join; check both palettes against WCAG AA
 
-- [ ] 2.1 Define color tokens as Dart `const Color` values in `nah_ui/lib/tokens/colors.dart`
-- [ ] 2.2 Build `nahLightTheme` and `nahDarkTheme` as Flutter `ThemeData` instances
-- [ ] 2.3 Define typography scale via `TextTheme` (xs/sm/base/lg/xl/2xl/3xl)
-- [ ] 2.4 Add custom Theme extension for app-specific tokens (motion curves, radii, status colors)
-- [ ] 2.5 Define spring curves as Dart constants (`Curves.elasticOut`-style configs)
-- [ ] 2.6 Build reusable spring animation helpers (`SpringIn`, `BounceIn` widget wrappers)
-- [ ] 2.7 Document token usage in `nah_ui/README.md` with code samples
+## 2. Radial menu
 
-## 3. Radial Menu Component
+- [ ] 2.1 The + fixed bottom-right on the feed, mirrored by a left-hand setting
+- [ ] 2.2 Bloom of text, voice and photo; each opens its composer with no step in between
+- [ ] 2.3 Close by the close mark, a tap outside, or system back
+- [ ] 2.4 Screen-reader names, expanded state, focus into and back out of the menu; 44 point targets
 
-- [ ] 3.1 Create `RadialMenu` widget shell in `nah_ui/lib/widgets/radial_menu/`
-- [ ] 3.2 Implement FAB trigger button (56px, fixed bottom-right via `Positioned`)
-- [ ] 3.3 Create `RadialMenuItem` widget with icon + label
-- [ ] 3.4 Implement fan layout positioning (polar coordinates math in build())
-- [ ] 3.5 Add spring `AnimationController` on open (staggered item entry via `Interval`)
-- [ ] 3.6 Animate trigger glyph ("+" to "×") with rotation
-- [ ] 3.7 Implement close behaviors (X tap, barrier tap, item select)
-- [ ] 3.8 Add press feedback on menu items (scale, opacity via `AnimatedScale`)
-- [ ] 3.9 Ensure 44px minimum touch targets (`InkWell` / `GestureDetector` size)
-- [ ] 3.10 Test on iOS Simulator, Android emulator, and physical devices
+## 3. App shell
 
-## 4. App Shell Configuration
+- [ ] 3.1 Replace the app bar with a feed header that opens your people and you; no tab bar, no badge
+- [ ] 3.2 Load on launch, foreground and pull to refresh; keep the last feed on the device and show it offline
+- [ ] 3.3 Display name "Nah?" on both platforms; native splash on the brand background; system bars follow the theme
+- [ ] 3.4 Explain before asking for notification permission; a tapped notification opens the feed
+- [ ] 3.5 A CI check that fails if an analytics, crash-reporting, advertising, attribution or AI package enters the app's dependency tree (CDI-1860)
+- [ ] 3.6 Decide the final bundle identifier before the first store submission
 
-- [ ] 4.1 Configure iOS `Info.plist` (display name, status bar style, splash screen)
-- [ ] 4.2 Configure Android `AndroidManifest.xml` (label, theme, launch mode)
-- [ ] 4.3 Set up iOS app icon set (1024px master + auto-generated variants via `flutter_launcher_icons`)
-- [ ] 4.4 Set up Android adaptive icon (foreground + background layers)
-- [ ] 4.5 Configure iOS LaunchScreen.storyboard with brand colors
-- [ ] 4.6 Configure Android `splash_screen.xml` with brand colors
-- [ ] 4.7 Initialize offline cache (Hive box or Drift database) in app bootstrap
-- [ ] 4.8 Wire up `Bloc`/`Cubit` providers at app root
-- [ ] 4.9 Set up app lifecycle observer (`WidgetsBindingObserver`) for foreground/background
-- [ ] 4.10 Add deep-link handling scaffold (`go_router` or platform `MethodChannel`)
-- [ ] 4.11 Verify cold-start and warm-start performance targets (< 2s cold)
+## 4. Brand assets
 
-## 5. Brand Assets
+- [ ] 4.1 Logo, as an SVG master (Casey)
+- [ ] 4.2 iOS icon set and Android adaptive icon from the master
+- [ ] 4.3 Site favicon and one default link-preview image
+- [ ] 4.4 Check that an invite link's preview shows no person
 
-- [ ] 5.1 Finalize logo design (wordmark "nah" or symbol)
-- [ ] 5.2 Export logo as SVG
-- [ ] 5.3 Generate PNG versions at required sizes
-- [ ] 5.4 Create iOS app icon master (1024x1024)
-- [ ] 5.5 Create Android adaptive icon layers (foreground + background SVG/PNG)
-- [ ] 5.6 Generate iOS icon variants via `flutter_launcher_icons` (or Xcode asset catalog)
-- [ ] 5.7 Create marketing site favicon (32x32, 16x16, ICO) and Open Graph image (1200x630)
-- [ ] 5.8 Create iOS launch image set + Android splash drawable
-- [ ] 5.9 Verify color consistency across all assets
-- [ ] 5.10 Add app-bundled assets to `/apps/mobile/assets/` and configure `pubspec.yaml`
+## 5. Verification
 
-## 6. Integration & Testing
-
-- [ ] 6.1 Wire up radial menu to placeholder composer routes
-- [ ] 6.2 Test design tokens in light mode (`Brightness.light`)
-- [ ] 6.3 Test design tokens in dark mode (`Brightness.dark`)
-- [ ] 6.4 Verify all animations run at 60-120fps (Flutter DevTools performance overlay)
-- [ ] 6.5 Test on low-end Android device (target API 24+)
-- [ ] 6.6 Build release IPA/AAB and confirm bundle sizes within budget (< 50MB iOS, < 25MB Android base)
-- [ ] 6.7 Verify accessibility (TalkBack on Android, VoiceOver on iOS, semantic widgets)
-
-## 7. Documentation
-
-- [ ] 7.1 Document design token usage in README
-- [ ] 7.2 Create component usage examples
-- [ ] 7.3 Update project README with setup instructions
+- [ ] 5.1 VoiceOver and TalkBack pass over the feed, the + menu and a composer
+- [ ] 5.2 Cold start to a scrollable stored feed within 2 seconds on iPhone 13 and Pixel 6 class devices
+- [ ] 5.3 Capture a full session's traffic and confirm every request goes to a Nah? address

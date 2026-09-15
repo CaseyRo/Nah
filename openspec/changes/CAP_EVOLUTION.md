@@ -1,32 +1,30 @@
-# Capability Evolution
+# Capability evolution
 
-State of the eight capability scaffolds, and how they've evolved since the original 2026-01 framing.
+How the capability changes have moved since they were first written on 2026-01-28, and where each stands now.
 
-This document exists because **scope evolved 2026-04-26** ([ADR-0008](../../docs/decisions/0008-mvp-scope.md)) but the original cap-XX directories were not touched. The scaffolds are preserved so the original ambition is visible, not erased.
+Scope moved twice: on 2026-04-26 with the MVP cut ([ADR-0008](../../docs/decisions/0008-mvp-scope.md)), and on 2026-09-13 with a server of our own ([ADR-0010](../../docs/decisions/0010-small-server-not-mastodon.md)) and one network of 150 with no circles ([ADR-0017](../../docs/decisions/0017-one-network-of-a-hundred-and-fifty.md)). From 2026-09-15 the changes are restated one at a time against where Nah? stands, detailing specs and building nothing. A restated change passes `openspec validate --strict`. A change not yet restated keeps its January scope beside it as `from-nah-vision.md`, outside `specs/`.
 
-## Status per cap
+## Status
 
-| Cap | Original scope (2026-01) | Current state | Evolution |
+| Change | January scope | Now | Validates |
 |---|---|---|---|
-| **cap-01-core-identity** | App identity, design system, radial menu, ~~PWA shell~~ → app shell, brand assets | **Active.** Pivoted client stack 2026-05-19 ([ADR-0001](../../docs/decisions/0001-flutter-over-pwa.md)). `pwa-shell` superseded by `app-shell`. | Stack changed, scope unchanged. |
-| **cap-02-friend-circles** | 150-friend cap, mutual friendship, inner circle for selective sharing | **Scope absorbed into MVP** as the `circle` sub-capability of cap-mvp (drafted in conversation 2026-04-26, not yet committed). The slot-economy mechanic was rejected; invitation IS connection ([ADR-0003](../../docs/decisions/0003-connection-model.md)). Inner-circle / selective-sharing is post-MVP. | Empty scaffold. Scope re-cut, not deleted. |
-| **cap-03-moments** | Timeline of life moments: photo, text, music, location, sleep/wake | **Scope reduced to MVP** ([ADR-0006](../../docs/decisions/0006-three-moment-types.md)). MVP cut is three types: text, voice, photo. Music share, location, status are post-MVP. Video deferred. | Empty scaffold. Scope reduced for MVP. |
-| **cap-04-reactions** | Custom illustrated reaction icons (Smile, Wink, Sad, Wow, Love) | **Cut from MVP** ([ADR-0008](../../docs/decisions/0008-mvp-scope.md)). No reactions in MVP at all. Will return in a later change. | Empty scaffold. Deferred. |
-| **cap-05-messaging** | Private 1:1 and small group chat (Path Talk inspired) | **Cut from MVP** (already flagged as v1.5 in nah-vision; the April decision keeps it cut). | Empty scaffold. Deferred. |
-| **cap-06-ambient-presence** | Opt-in status sharing (what you're listening to, battery, transit) | **Cut from MVP.** The "what's playing" idea is also off the table technically (no platform exposes other apps' Now Playing to third parties). Phase 2+. | Empty scaffold. Deferred, partly platform-blocked. |
-| **cap-07-user-ownership** | Data export, account portability, transparent privacy controls | **Partially absorbed into MVP** as a baseline (data export from day one). Full account-portability features deferred. | Empty scaffold. Reduced scope absorbed. |
-| **cap-08-community-funding** | Donation model, supporter perks, crowdfunded roadmap | **Cut from MVP.** No monetization layer in MVP at all. The conversation flagged "potential monetary interesting avenues" but explicitly post-MVP. | Empty scaffold. Deferred. |
+| **nah-vision** | A Path successor on a Mastodon fork, with nine capability specs | **Restated 2026-09-15.** Principles only: one spec, `product-principles`, which every capability keeps. The January specs moved to their caps, and design.md is now a map to the decision records and the wiki. | Yes |
+| **cap-01-core-identity** | App identity, design system, radial menu, PWA shell, brand assets | **Restated 2026-09-15.** `DESIGN.md` holds every value. No tab bar. The + offers text, voice and photo. No text is set on Pomegranate. Fonts ship in the app, and no reporting SDK is allowed. `pwa-shell` was deleted and is in git history at 655cfb7. Onboarding moved to cap-02; cards, the clock and the offline queue to cap-03; reaction icons to cap-04; "no numbers about people" to nah-vision. | Yes |
+| **cap-02-friend-circles** | 150-friend cap, friend requests, an inner circle | Not restated yet. ADR-0017 replaces circles with one network per person, so the inner circle goes and the name will change. | No |
+| **cap-03-moments** | Photo and video, text, music, location, sleep and wake | Not restated yet. Three types, text, voice and photo ([ADR-0006](../../docs/decisions/0006-three-moment-types.md)). It also takes moment cards, the timeline clock and the offline queue from cap-01. | No |
+| **cap-04-reactions** | Five illustrated reactions, view receipts, who viewed | Not restated yet. Cut from the MVP (ADR-0008); the acknowledgement question is CDI-1856. View receipts contradict [ADR-0004](../../docs/decisions/0004-no-counts-anywhere.md). | No |
+| **cap-05-messaging** | One-to-one and group chat, ephemeral messages | Not restated yet. Deferred. | No |
+| **cap-06-ambient-presence** | Now playing, battery, transit | Not restated yet. Deferred, and now playing is blocked by the platforms. | No |
+| **cap-07-user-ownership** | Export, deletion, a plain privacy policy | Not restated yet. Export stays a baseline. The January spec's "admins can read the database" contradicts [ADR-0012](../../docs/decisions/0012-encrypted-on-device.md). | No |
+| **cap-08-community-funding** | Donations, supporter perks, a crowdfunded roadmap | Not restated yet. No monetisation in the MVP. | No |
+| **cap-09-comments** | Single-level replies (a nah-vision spec in January) | **Created 2026-09-15** as its own future change, split out of nah-vision. Cut from the MVP (ADR-0008). | No |
 
-## Why this isn't a clean "archive these and start fresh"
+## Why the January scope is kept
 
-Per the project's principle (~~things are never perfect from the start~~ — they aren't, that's the point): decisions evolve, and the evolution is part of the artifact. Deleting the cap-02..08 scaffolds would erase the original ambition. Keeping them with this evolution note preserves it.
-
-When implementation begins on any of these post-MVP scopes, the relevant cap-XX directory will be populated with a proper proposal/design/tasks set, and this row in the table will get updated. The ADR layer documents the *why*.
+Decisions evolve, and the evolution is part of the record. Until a capability is restated, its January spec stays beside it as source material, so the original ambition is visible until it is deliberately kept, changed or cut. Once a change is restated, the January text lives in git history, and the decision records say why it changed.
 
 ## Pointers
 
-- [ADR-0001 — Flutter over PWA](../../docs/decisions/0001-flutter-over-pwa.md)
-- [ADR-0003 — Invitation is connection](../../docs/decisions/0003-connection-model.md)
-- [ADR-0006 — Three moment types](../../docs/decisions/0006-three-moment-types.md)
-- [ADR-0008 — MVP scope](../../docs/decisions/0008-mvp-scope.md)
-- [SiYuan: Nah? — April Decisions (2026-04-25 to 27)](siyuan://blocks/20260520000446-8bsmo59) — the full session context
+- [Decision records](../../docs/decisions/index.md)
+- [Codebase wiki](../../docs/wiki/quickstart.md)
+- [SiYuan: Nah? — April Decisions (2026-04-25 to 27)](siyuan://blocks/20260520000446-8bsmo59), the April session context
