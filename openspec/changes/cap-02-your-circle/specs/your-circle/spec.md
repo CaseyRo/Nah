@@ -20,12 +20,12 @@ A person SHALL be able to open their circle from the feed's header and see every
 
 ### Requirement: Ending a connection
 
-Either person SHALL be able to end a connection at any time, and the other person SHALL NOT be notified. From then on, neither SHALL receive the other's new moments, and each SHALL be removed from the other's circle, which frees a place in both. Ending a connection SHALL NOT stop the two from connecting again later in the ordinary way.
+Either person SHALL be able to end a connection at any time, and the other person SHALL NOT be notified. Each person's moments, past and future, SHALL leave the other's feed and page, and each SHALL be removed from the other's circle, which frees a place in both (ruled 2026-09-15). Ending a connection SHALL NOT stop the two from connecting again later in the ordinary way, unless one of them has blocked the other (cap-07).
 
 #### Scenario: Ending it
 
 - **WHEN** Sam ends his connection with Maya
-- **THEN** Maya receives no notification, and from then on neither sees the other's new moments
+- **THEN** Maya receives no notification, and from their next load neither sees any of the other's moments, earlier ones included
 
 #### Scenario: A place opens
 

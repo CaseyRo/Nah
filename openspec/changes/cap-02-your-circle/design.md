@@ -35,7 +35,7 @@ Ruled 2026-09-15. When the other person's circle is full, the refusal says it is
 
 ### Ending a connection is silent and on both sides
 
-Either person can end a connection, and the other is not told. Both stop receiving each other's new moments, and a place opens in both circles.
+Either person can end a connection, and the other is not told. Each person's moments, earlier ones included, leave the other's feed and page, and a place opens in both circles. Ruled 2026-09-15: a connection that ends takes what it shared with it.
 
 ### The touch and the scanned code are one exchange
 
@@ -59,5 +59,4 @@ The invitation's secret lives after the `#`, so an install from the store has to
 ## Open Questions
 
 - The first run's one real question: its wording, and whether the answer goes to the circle, to the person's own page, or nowhere (ADR-0005).
-- What happens to moments already delivered to a phone when a connection ends.
 - Whether the maker of an invitation is told when it is refused because their circle is full.

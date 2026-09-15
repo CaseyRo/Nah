@@ -95,7 +95,7 @@ A moment's content SHALL reach the server only as an opaque blob whose first byt
 
 ### Requirement: Moments stay in the circle they were posted to
 
-Nothing in Nah? SHALL move a moment outside the circle of the person who posted it: no share, forward or repost, and no public link to a moment (CDI-1859).
+Nothing in Nah? SHALL move a moment outside the circle of the person who posted it: no share, forward or repost, and no public link to a moment (CDI-1859). The one exception is a report, which carries the reporter's own copy to Nah?'s abuse contact only when the reporter confirms it (cap-07).
 
 #### Scenario: Passing a moment on
 

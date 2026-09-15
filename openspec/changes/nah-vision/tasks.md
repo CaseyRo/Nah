@@ -26,6 +26,7 @@ Specification only this round. The principles are checked here against what exis
 - [x] 3.4 `cap-04-reactions`
 - [x] 3.5 `cap-05-messaging`, removed: Nah? has no chat
 - [x] 3.6 `cap-06-ambient-presence`, removed: music moved into cap-03
-- [ ] 3.7 `cap-07-user-ownership`
+- [x] 3.7 `cap-07-user-ownership`
 - [ ] 3.8 `cap-08-community-funding`
 - [ ] 3.9 `cap-09-comments`
+- [ ] 3.10 `cap-10-archive`, when M6 comes up
