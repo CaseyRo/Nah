@@ -288,7 +288,7 @@
         "refreshGap": "72px, the clock rides to the top of the lane inside it during pull to refresh"
       },
       "focus": {
-        "ground": "surface-2 in light, surface-2-dark in dark; no chrome, no button, no handle, no sheet",
+        "ground": "surface-2 in light, surface-2-dark in dark; no chrome, no handle, no sheet",
         "photo": "full screen width, centred, no name, line or control; pinch to zoom; tap or drag down to leave",
         "voiceWaveform": "3px bars on a 292px line",
         "pauseDisc": "56px surface-3",
