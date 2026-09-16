@@ -333,16 +333,25 @@ Every moment is name, body, foot inside the content column. The four types diffe
 
 1. **Text:** the text in Moment type (17px/25px), Text 1. Foot: reaction button, place.
 2. **Photo:** the photo bleeds from the content column's left edge to the right screen edge, 4:3 shown at 206pt tall, with an 8px radius on the left corners only and square corners at the screen edge. A short line in Body (16px/22px) below, then the foot with the place.
-3. **Voice:** a 40pt Surface 3 disc carrying a Text 1 play glyph on the left, a waveform of 2pt bars in Text 2 across the middle, the duration in Caption on the right. A short line in Body and the foot below. *(Designed 2026-09-15; it was unresolved before.)*
-4. **Music:** 64pt artwork with a 6px radius on the left; song title in Name and artist in 14px Text 2 stacked on the right. Tapping opens the song in a music app the reader chooses.
+3. **Voice:** a 40pt Surface 3 disc carrying a Text 1 play glyph on the left, a waveform of 2pt bars in Text 2 across the middle, the duration in Caption on the right. A short line in Body and the foot below. Nothing plays on the feed: the disc opens the moment in focus and starts it there (see Focus). *(Designed 2026-09-15; playback moved to focus 2026-09-16.)*
+4. **Music:** 64pt artwork with a 6px radius on the left; song title in Name and artist in 14px Text 2 stacked on the right. Tapping opens the moment in focus, where a sample plays and the one action opens the song in the reader's own service.
 
 **Your own moment** shows no reaction button. Its foot is the reactions it received: each as a 24pt face, the 22pt reaction illustration, and the name in Caption, in a row.
 
 **Deleted marker:** "Maya deleted this moment." in Marker type, in the lane structure, with its time kept in the lane.
 
+### Focus (a moment on its own)
+
+*(Ruled 2026-09-16.)* Where other feeds lean into the next thing, Nah? spends time on this one. Tapping a photo, a voice moment or a music moment opens it in focus: the bare ground (Surface 2 in light, the dark ground in dark) with nothing else on the screen, no name, no chrome, no button. A text moment does not focus; it is already read in full on the feed.
+
+- **Photo:** grows from its row to the full width of the screen in 350ms on the standard push curve while the feed fades behind it, and sits centred on the ground like one work on a gallery wall. Pinch to look closer. Tap or drag down to leave, 250ms; the feed is where it was.
+- **Voice:** the person's face at 80pt, their name, the short line, and a waveform of 3pt bars on a 292pt line that fills left to right in Pomegranate as the clip plays, the rest in Text 3; the elapsed time in Caption Text 1 and the length in Text 2; a 56pt Surface 3 pause disc; the place. Playback starts on entering and stops on leaving.
+- **Music:** the artwork at 200pt with an 8px radius, the title in 20px/600 and the artist in 15px Text 2, a 30 second sample under the same Pomegranate waveform, fetched from the song's link only after the tap, and below it the one action, a primary button reading "Listen in <service>", the reader's own service chosen once and remembered.
+- **Pomegranate on a waveform only while it plays in focus.** On the feed a waveform is Text 2 and never plays.
+
 ### Moment Cards (outside the feed)
 
-The card shell is kept for surfaces that still box a moment (a single moment opened on its own, a person's page). It is not used on the feed.
+The card shell is kept for a person's page, which still boxes moments. It is not used on the feed, and a moment opened on its own is Focus, not a card.
 
 - **Corner Style:** 8px radius (`md`). Soft, considered, not razor-sharp.
 - **Background:** Surface 1 default. Text moments may opt into a soft Pomegranate Light tint (≤8% saturation) as a background-color choice in the composer.
@@ -376,7 +385,7 @@ The card shell is kept for surfaces that still box a moment (a single moment ope
 
 ### Timeline Clock (signature component)
 
-*(Rewritten 2026-09-15.)* A 48px analog clock face that rides the feed's time lane. It is laid over the lane label of the moment nearest the viewport's vertical centre, so the lane's time and the clock's hands say the same thing; it never floats over content. The face is Surface 1 with a 1px Surface 4 stroke, four ticks in Text 4, hour and minute hands in Text 1, the second hand and centre dot in Pomegranate. The date ("Sat 13 Sep") sits centred below the face in 12px/500 Text 2. In light mode the face carries the Clock shadow; in dark mode there is no shadow and the stroke is the border. Hour and minute hands animate smoothly as the nearest moment changes. Appears on scroll-start, fades after 2 seconds of scroll inactivity. Under `prefers-reduced-motion`, falls back to a static digital time display.
+*(Rewritten 2026-09-16.)* A 48px analog clock face fixed in the feed's time lane at the vertical middle of the screen, so it runs with you as you scroll and the lane's labels pass underneath it; it never floats over content, only over the lane. Its hands read the time at that middle line, interpolated between the moment just above and the moment just below, so scrolling through the space between two moments turns the hands through the time between them; on a label they read that moment exactly. The face is Surface 1 with a 1px Surface 4 stroke, four ticks in Text 4, the hour hand 3px and 11px long and the minute hand 1.5px and 16px long in Text 1 (the weight difference is what tells them apart at this size), the second hand 1.25px with a 4px tail and the centre dot in Pomegranate. The second hand sweeps at most one full turn between one moment and the next, however far apart they are, and runs in real time while the clock holds for a pull to refresh. The date ("Sat 13 Sep") sits centred below the face in 12px/500 Text 2 and crossfades in 150ms across midnight. In light mode the face carries the Clock shadow; in dark mode there is no shadow and the stroke is the border. Fades in over 150ms on scroll-start, fades out over 250ms after 2 seconds of scroll inactivity, and is never shown on a still feed. Under `prefers-reduced-motion`, the lane shows the time as digits with the date under it, by opacity alone.
 
 This is the single most distinctive Nah component. It is not optional.
 
@@ -400,7 +409,8 @@ There is no tab bar. The feed is the whole screen, and your circle and you open 
 - **Do** set feed moments directly on the ground in the two-lane structure: 64pt time lane, 1pt rail, content column padded 16pt. No box around a moment on the feed.
 - **Do** use 8px corner radius on cards and on the left corners of feed photos, 6px on album artwork, 12px on bottom sheets, full-radius pills on buttons and chips. Never sharp 90° corners on touchable surfaces.
 - **Do** ship spring physics on every entrance, press, and dismiss. 400ms with overshoot for entrances, 250ms ease-out for exits.
-- **Do** use the 48px timeline clock riding the time lane as the signature scroll companion. It is the single most recognizable Nah element.
+- **Do** use the 48px timeline clock fixed at the middle of the time lane as the signature scroll companion, its hands turning through the time between moments as the feed moves under it. It is the single most recognizable Nah element.
+- **Do** put Pomegranate on a waveform only while it plays in focus. On the feed nothing plays and no waveform is red.
 - **Do** treat the limit of 150 as a designed boundary, never a limitation. If it is ever drawn, draw faces, never something that fills towards a number.
 - **Do** keep the Feed chronological, full stop. The visual hierarchy must never imply algorithmic ranking, suggestions, or "you might like."
 - **Do** use Pomegranate Light as a soft text-moment background tint, sparingly, opt-in.
