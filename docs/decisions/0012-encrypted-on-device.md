@@ -16,7 +16,7 @@ Restated for [ADR-0017](0017-one-network-of-a-hundred-and-fifty.html), which rep
 
 The M1 walking skeleton sends moments unencrypted until each person has a content key (CDI-1863). The first byte of every blob already says how it is sealed, so nothing posted before encryption arrives needs migrating.
 
-**Amended 2026-09-23.** A person's profile is sealed exactly like a moment: their name, avatar, and the gender and sexual orientation they chose to give, as one blob the server stores and cannot read. Orientation is special-category data under GDPR Art. 9, so the app asks for it only once profiles are sealed, and only as an explicit answer beside "rather not tell". Because an invite carries no content key, an invite link names nobody; names appear once the two are connected. The detail is in the `cdi-1895-your-name-and-how-you-show-yourself` OpenSpec change.
+**Amended 2026-09-23.** A person's profile is sealed exactly like a moment: their name, avatar, and the gender, pronouns and sexual orientation they chose to give, as one blob the server stores and cannot read. Orientation is special-category data under GDPR Art. 9, so the app asks for it only once profiles are sealed, and only as an explicit answer beside "rather not tell". Because an invite carries no content key, an invite link names nobody; names appear once the two are connected. The detail is in the `cdi-1895-your-name-and-how-you-show-yourself` OpenSpec change.
 
 ## Context
 

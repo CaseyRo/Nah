@@ -1,12 +1,12 @@
 ## Purpose
 
-What a person tells their circle about themselves: the name everyone recognises them by, and, if they choose, their gender and sexual orientation. Only their circle sees any of it.
+What a person tells their circle about themselves: the name everyone recognises them by, and, if they choose, their gender, pronouns and sexual orientation. Only their circle sees any of it.
 
 ## ADDED Requirements
 
 ### Requirement: A name, asked first
 
-The first step after joining SHALL ask the person for the name the people close to them recognise them by, before anything else in the first run (ruled 2026-09-23). A name SHALL be required, need not be unique, and SHALL be limited to 50 characters with no counter (ADR-0004). The person SHALL be able to change it from their own page.
+The first step after joining SHALL ask the person for the name the people close to them recognise them by, before anything else in the first run, with the question "What do the people closest to you call you?" (ruled 2026-09-23). A name SHALL be required, need not be unique, and SHALL be limited to 50 characters with no counter (ADR-0004). The person SHALL be able to change it from their own page.
 
 #### Scenario: Joining
 
@@ -32,14 +32,19 @@ The feed, a person's page and every sentence the app says about a person SHALL n
 - **WHEN** Maya deletes a moment
 - **THEN** her circle reads "Maya deleted this moment.", with no pronoun
 
-### Requirement: Gender and orientation, each with "rather not tell"
+### Requirement: Gender, pronouns and orientation, each with "rather not tell"
 
-Once profiles are sealed (CDI-1863), the first run SHALL ask the person's gender and their sexual orientation, after the name (ruled 2026-09-23). Each question SHALL offer "rather not tell", which SHALL NOT be preselected and SHALL be as prominent and as easy to choose as every other answer. The orientation question SHALL say, in one sentence, who will see the answer and that it can be changed or removed at any time. The person SHALL be able to change or withdraw either answer from their own page. Neither question SHALL be asked while profiles travel unsealed.
+Once profiles are sealed (CDI-1863), the first run SHALL ask, after the name and in this order, the person's gender, their pronouns and their sexual orientation (ruled 2026-09-23). The pronoun question SHALL arrive with a suggestion drawn from the gender answer (woman: she/her, man: he/him, non-binary: they/them), which the person can change, and with nothing suggested after "in my own words" or "rather not tell". "In my own words" SHALL open one line of up to 40 characters, with no counter. Each question SHALL offer "rather not tell", which SHALL NOT be preselected and SHALL be as prominent and as easy to choose as every other answer. The orientation question SHALL say, in one sentence, who will see the answer and that it can be changed or removed at any time. The person SHALL be able to change or withdraw any answer from their own page. None of the three questions SHALL be asked while profiles travel unsealed.
 
 #### Scenario: Rather not tell
 
-- **WHEN** a person chooses "rather not tell" for either question
+- **WHEN** a person chooses "rather not tell" for any of the three questions
 - **THEN** the first run continues exactly as it would with any other answer, and nothing about that question appears on their page
+
+#### Scenario: A suggested pronoun
+
+- **WHEN** a person answers "woman" to the gender question
+- **THEN** the pronoun question arrives with she/her chosen, and the person can choose another answer before continuing
 
 #### Scenario: Before profiles are sealed
 
@@ -53,7 +58,7 @@ Once profiles are sealed (CDI-1863), the first run SHALL ask the person's gender
 
 ### Requirement: Only the circle sees it, and only after connecting
 
-A person's name, gender, orientation and avatar SHALL travel together as one profile, sealed on their phone like a moment (ADR-0012, ADR-0016), and SHALL be shown only to that person and the people in their circle. Gender and orientation SHALL appear only on the person's page, never on the feed, and SHALL be used for nothing else: no search, filter, suggestion, ranking or count. An invitation, the page for a phone without Nah?, and a refusal before a connection completes SHALL name nobody (ruled 2026-09-23).
+A person's name, gender, pronouns, orientation and avatar SHALL travel together as one profile, sealed on their phone like a moment (ADR-0012, ADR-0016), and SHALL be shown only to that person and the people in their circle. Gender, pronouns and orientation SHALL appear only on the person's page, never on the feed, and SHALL be used for nothing else: no search, filter, suggestion, ranking or count, and not the app's own sentences, which use names. An invitation, the page for a phone without Nah?, and a refusal before a connection completes SHALL name nobody (ruled 2026-09-23).
 
 #### Scenario: Opening an invite link
 
@@ -77,7 +82,7 @@ A person's export SHALL include their own profile. Leaving Nah? SHALL hide it at
 #### Scenario: Exporting
 
 - **WHEN** a person exports their moments
-- **THEN** the export also holds their name, and the gender and orientation they gave, if any
+- **THEN** the export also holds their name, and the gender, pronouns and orientation they gave, if any
 
 #### Scenario: After a connection ends
 

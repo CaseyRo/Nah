@@ -6,7 +6,7 @@ What Nah? can and cannot see, said plainly in the app and on the site, together 
 
 ### Requirement: A plain statement of what a server sees
 
-Nah? SHALL publish a privacy statement in plain language, in the app and on its site. It SHALL say what a Nah? server can see: who is connected to whom, when each person posted or reacted, and the network addresses phones connect from. It SHALL say what a server cannot see: what a moment says or shows, its place and song, which reaction someone gave, and a person's name, gender and orientation (ADR-0012, CDI-1895). It SHALL name every outside service a phone contacts on a person's behalf, and who runs each: the platforms' push services, the operating system's place lookup, the song-link lookup, and the music service a song's sample comes from. It SHALL say that nothing is sold, advertised or given to AI. While moments still travel unsealed (until CDI-1863), it SHALL say so.
+Nah? SHALL publish a privacy statement in plain language, in the app and on its site. It SHALL say what a Nah? server can see: who is connected to whom, when each person posted or reacted, and the network addresses phones connect from. It SHALL say what a server cannot see: what a moment says or shows, its place and song, which reaction someone gave, and a person's name, gender, pronouns and orientation (ADR-0012, CDI-1895). It SHALL name every outside service a phone contacts on a person's behalf, and who runs each: the platforms' push services, the operating system's place lookup, the song-link lookup, and the music service a song's sample comes from. It SHALL say that nothing is sold, advertised or given to AI. While moments still travel unsealed (until CDI-1863), it SHALL say so.
 
 #### Scenario: Reading the statement
 

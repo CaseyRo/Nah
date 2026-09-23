@@ -6,12 +6,12 @@ One person's moments on a page of their own, open to that person and the people 
 
 ### Requirement: A page of one person's moments
 
-Tapping a person's name SHALL open a page of their moments, newest first, and "you" SHALL open the person's own page (ruled 2026-09-15). The top of the page SHALL show the person's avatar and name, with no cover photo, and the gender and orientation they chose to show, if any (CDI-1895), followed by their first moment, the answer they gave on arriving (CDI-1883). Below it SHALL come their moments in the treatment `DESIGN.md` gives a person's page, including deleted markers, one page at a time: older moments SHALL load only when the reader asks for them, never by scrolling alone. The page SHALL show no count of anything (ADR-0004, ruled 2026-09-15).
+Tapping a person's name SHALL open a page of their moments, newest first, and "you" SHALL open the person's own page (ruled 2026-09-15). The top of the page SHALL show the person's avatar and name, with no cover photo, the gender, pronouns and orientation they chose to show, if any (CDI-1895), and, quoted beneath them, their first moment, the answer they gave on arriving (CDI-1883). Below it SHALL come their moments in the same two lanes and treatments as the feed, with no card boxes, including deleted markers and their first moment again at its date (ruled 2026-09-23), one page at a time: older moments SHALL load only when the reader asks for them, never by scrolling alone. The page SHALL show no count of anything (ADR-0004, ruled 2026-09-15).
 
 #### Scenario: Opening someone's page
 
 - **WHEN** a person taps Maya's name on one of her moments
-- **THEN** a page opens with Maya's avatar and name, her first moment, and her other moments newest first, and no number of moments, connections or anything else
+- **THEN** a page opens with Maya's avatar and name, her first moment quoted beneath them, and her moments newest first in the feed's two lanes, and no number of moments, connections or anything else
 
 #### Scenario: Your own page
 

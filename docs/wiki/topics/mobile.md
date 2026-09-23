@@ -30,7 +30,7 @@ The Flutter version is pinned in [`mise.toml`](../../../mise.toml) at the reposi
 
 Newest first. Each decision record is the canonical home for its reasoning.
 
-- **2026-09-23:** a person gives their name as the first step after joining, and, once profiles are sealed, may give their gender and sexual orientation or rather not tell. All of it travels as one sealed profile shown only to their circle, and an invite link names nobody. The app's sentences use a person's name, never a pronoun. See the notes on [ADR-0005](../../decisions/0005-ritual-onboarding.md) and [ADR-0012](../../decisions/0012-encrypted-on-device.md). Not built (CDI-1896, CDI-1897).
+- **2026-09-23:** a person gives their name as the first step after joining, and, once profiles are sealed, may give their gender, pronouns and sexual orientation or rather not tell; the slow beat greets them by name. All of it travels as one sealed profile shown only to their circle, and an invite link names nobody. The app's sentences use a person's name, never a pronoun. See the notes on [ADR-0005](../../decisions/0005-ritual-onboarding.md) and [ADR-0012](../../decisions/0012-encrypted-on-device.md). Not built (CDI-1896, CDI-1897).
 - **2026-09-23:** a text moment can be a full written post of up to 10,000 characters with an optional title, still one type in the + (the note on [ADR-0006](../../decisions/0006-three-moment-types.md)). Not built.
 - **2026-09-16:** photo, voice, music and long text open on their own in focus, and nothing plays on the feed ([`DESIGN.md`](../../../DESIGN.md), Focus). Not built.
 - **2026-09-15:** the feed is two lanes, time on the left and people on the right, with no card boxes and the timeline clock riding the lane ([`DESIGN.md`](../../../DESIGN.md), Layout). Not built.

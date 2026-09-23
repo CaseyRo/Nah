@@ -9,10 +9,10 @@ Specification only this round. Nothing below is started.
 - [ ] 1.3 App: ask the name first after joining; show it on every moment
 - [ ] 1.4 App: change the name from your own page
 
-## 2. Gender and orientation (CDI-1897, after CDI-1863)
+## 2. Gender, pronouns and orientation (CDI-1897, after CDI-1863)
 
 - [x] 2.1 Confirm the answer lists in design.md (ruled 2026-09-23)
-- [ ] 2.2 Ask both in the first run, sealed, with "rather not tell" as prominent as every other answer
+- [ ] 2.2 Ask all three in the first run, pronouns suggested from gender, sealed, with "rather not tell" as prominent as every other answer
 - [ ] 2.3 Show them on the person's page to their circle only; change or withdraw from your own page
 
 ## 3. Elsewhere

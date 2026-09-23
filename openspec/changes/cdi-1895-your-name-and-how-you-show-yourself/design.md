@@ -22,7 +22,7 @@ The server keeps a person's device key, connections, invitations and moments, an
 
 ### The name comes first
 
-Ruled 2026-09-23. It is the first step after joining, before ADR-0005's slow beat, so the calm sentence that follows can greet the person by name. It is required, because a circle has to know who posted. It is the name people recognise the person by, not a legal name or a handle: it need not be unique, is limited to 50 characters with no counter (ADR-0004), and can be changed from the person's own page.
+Ruled 2026-09-23. It is the first step after joining, asked as "What do the people closest to you call you?", before ADR-0005's slow beat, so the slow beat can greet the person by name: "Hey Maya, great to have you here." It is required, because a circle has to know who posted. It is the name people recognise the person by, not a legal name or a handle: it need not be unique, is limited to 50 characters with no counter (ADR-0004), and can be changed from the person's own page.
 
 ### One profile, sealed like a moment
 
@@ -30,22 +30,25 @@ The name, gender, orientation and avatar photo travel together as one profile: a
 
 The server returns the profiles of the authors on a feed page in the same pass that reads their moments, and never reads one per connection. The app keeps the profiles it has seen with the stored feed.
 
-### Gender and orientation, each with "rather not tell"
+### Gender, pronouns and orientation, each with "rather not tell"
 
-Ruled 2026-09-23. After the name, the first run asks both, with the answers below (lists ruled the same day); "rather not tell" is never preselected and is never smaller, lower or harder to reach than the others. Either answer can be changed or withdrawn later from the person's own page.
+Ruled 2026-09-23. After the name, the first run asks all three, gender first, then pronouns, then orientation, with the answers below (lists ruled the same day); "rather not tell" is never preselected and is never smaller, lower or harder to reach than the others. Either answer can be changed or withdrawn later from the person's own page.
 
 - Gender: woman, man, non-binary, in my own words, rather not tell.
+- Pronouns: she/her, he/him, they/them, in my own words, rather not tell, suggested from the gender answer.
 - Orientation: straight, gay, lesbian, bisexual, pansexual, asexual, queer, in my own words, rather not tell.
 
-They appear only on the person's page, to the person and their circle, under their name. "Rather not tell" shows nothing, not a label saying so. Neither answer appears on the feed.
+The questions read "How would you describe your gender?", "Which pronouns should people use for you?" and "And your sexuality?", each over the sentence "Only your circle sees this, on your page. You can change or remove it at any time." Answers are 36pt chips, and "in my own words" opens one line of 40 characters (board 10 in the Nah? Paper file). Pronouns are the person's own choice: the app suggests one from the gender answer and never decides it (ruled 2026-09-23).
+
+They appear only on the person's page, to the person and their circle, under their name, as one Caption line: gender, pronouns, orientation. "Rather not tell" shows nothing, not a label saying so. Neither answer appears on the feed.
 
 ### Orientation waits for sealing, and needs explicit consent
 
-Sexual orientation is special-category data under GDPR Art. 9, which allows processing it on the person's explicit consent (Art. 9(2)(a)). So the question says in one sentence who will see the answer and that it can be changed or removed at any time, and choosing an answer is the consent. It is never asked while profiles travel unsealed, so the project never holds it in a form it can read. Gender is asked at the same step, after CDI-1863, which keeps the first run in one shape (CDI-1897). Until then the first run asks the name only.
+Sexual orientation is special-category data under GDPR Art. 9, which allows processing it on the person's explicit consent (Art. 9(2)(a)). So the question says in one sentence who will see the answer and that it can be changed or removed at any time, and choosing an answer is the consent. It is never asked while profiles travel unsealed, so the project never holds it in a form it can read. Gender and pronouns are asked at the same step, after CDI-1863, which keeps the first run in one shape (CDI-1897). Until then the first run asks the name only.
 
-### The app never guesses a pronoun
+### The app's sentences use names
 
-The app's own sentences use a person's name: "Maya deleted this moment", never "she deleted". Gender is how a person shows themselves, not a switch for grammar, and a name works in every language the app will speak.
+The app's own sentences use a person's name: "Maya deleted this moment", never "she deleted". A person's pronouns are for the people reading their page, not a switch for the app's grammar, and a name works in every language the app will speak.
 
 ### Nobody is named before a connection completes
 

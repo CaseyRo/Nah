@@ -44,12 +44,12 @@ When an invite link is opened on a phone without Nah?, the person SHALL land on 
 
 ### Requirement: The first run is a ritual
 
-After joining, the app SHALL first ask the person's name, and once profiles are sealed their gender and orientation, as CDI-1895 specifies. It SHALL then show a single sentence alone on a calm screen, fading in over a few seconds, with no way to skip it. It SHALL then ask one real question, "What do you want to share with the ones closest to you right now?" (ADR-0005, wording ruled 2026-09-15), and the answer SHALL appear under the person's name on their page and SHALL reach their circle as their first moment (ruled 2026-09-15). After the question, it SHALL offer a photo for the person's avatar, kept in their sealed profile (CDI-1895); the person SHALL be able to skip it and keep their initials, and to add or change the photo later from their own page (ruled 2026-09-15). The person SHALL arrive with a single soft haptic tap and nothing celebratory, and SHALL land on their feed. That feed SHALL show only moments that people in their circle really posted.
+After joining, the app SHALL first ask the person's name, and once profiles are sealed their gender, pronouns and orientation, as CDI-1895 specifies. It SHALL then show a single sentence alone on a calm screen that greets the person by the name they gave, "Hey Maya, great to have you here." (ruled 2026-09-23), fading in over a few seconds, with no way to skip it. It SHALL then ask one real question, "What do you want to share with the ones closest to you right now?" (ADR-0005, wording ruled 2026-09-15), and the answer SHALL appear under the person's name on their page and SHALL reach their circle as their first moment (ruled 2026-09-15). After the question, it SHALL offer a photo for the person's avatar, kept in their sealed profile (CDI-1895); the person SHALL be able to skip it and keep their initials, and to add or change the photo later from their own page (ruled 2026-09-15). The person SHALL arrive with a single soft haptic tap and nothing celebratory, and SHALL land on their feed. That feed SHALL show only moments that people in their circle really posted.
 
 #### Scenario: The slow beat
 
 - **WHEN** the person has given their name
-- **THEN** one sentence fades in on a calm screen, and nothing on it lets the person skip ahead
+- **THEN** one sentence greeting them by that name fades in on a calm screen, and nothing on it lets the person skip ahead
 
 #### Scenario: The answer
 

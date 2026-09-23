@@ -133,19 +133,19 @@ components:
     rounded: "{rounded.full}"
     size: "48px"
   chip-default:
-    backgroundColor: "{colors.surface-2}"
-    textColor: "{colors.text-2}"
+    backgroundColor: "{colors.surface-1}"
+    textColor: "{colors.text-1}"
     typography: "{typography.label}"
     rounded: "{rounded.full}"
-    padding: "6px 12px"
-    height: "32px"
+    padding: "8px 14px"
+    height: "36px"
   chip-selected:
     backgroundColor: "{colors.pomegranate-tint}"
     textColor: "{colors.text-1}"
     typography: "{typography.label}"
     rounded: "{rounded.full}"
-    padding: "6px 12px"
-    height: "32px"
+    padding: "8px 14px"
+    height: "36px"
   reaction-button:
     backgroundColor: "{colors.surface-1}"
     textColor: "{colors.text-2}"
@@ -193,15 +193,15 @@ A restrained warm palette. The pomegranate carries the brand; the warm whites ca
 
 - **Pomegranate** (`#EE3423`): the warm point in the room. Used for the radial FAB, primary action buttons and the analog clock's second hand and centre dot. It stays the + colour in dark mode too (2026-09-15): a white glyph on it measures 4.08:1, and it measures about 4.4:1 against the dark ground. Never used for content backgrounds, never as a gradient, never tinted onto more than 10% of any screen.
 - **Pomegranate Hover** (`#D42D1E`): pressed/active state of Pomegranate. Used only as a momentary state, never at rest.
-- **Pomegranate Light** (`#FF6B5B`): the avatar-fallback background, with initials in Text 1, in both modes. Also used very sparingly as a soft background tint on text-moment cards on a person's page, never on the feed (ruled 2026-09-23). Retired as a dark-mode primary (2026-09-15): a white glyph on it measures about 2.8:1, under the 3:1 a glyph needs.
-- **Pomegranate Tint** (`#FFD9D4`): the fill inside the reaction illustrations. Identical in light and dark.
+- **Pomegranate Light** (`#FF6B5B`): the avatar-fallback background, with initials in Text 1, in both modes. Retired as a dark-mode primary (2026-09-15): a white glyph on it measures about 2.8:1, under the 3:1 a glyph needs.
+- **Pomegranate Tint** (`#FFD9D4`): the fill inside the reaction illustrations, and a selected chip's background, with Text 1 on it. Identical in light and dark.
 
 ### Neutral
 
-- **Surface 1** (`#FFFFFF`): card and modal surfaces, the clock face, the reaction button. The room's white walls.
+- **Surface 1** (`#FFFFFF`): sheet and modal surfaces, the clock face, the reaction button, chips at rest. The room's white walls.
 - **Surface 2** (`#FAFAFA`): page background and the feed's ground. Subtle warmth distinguishes from Surface 1.
 - **Surface 3** (`#F5F5F5`): inset surfaces, search input backgrounds, skeleton bases, the voice moment's play disc.
-- **Surface 4** (`#EBEBEB`): dividers, card borders, the feed rail and the header hairline, skeleton shimmer highlight.
+- **Surface 4** (`#EBEBEB`): dividers, chip borders, the feed rail and the header hairline, skeleton shimmer highlight.
 - **Surface 5** (`#E0E0E0`): disabled control backgrounds.
 - **Text 1** (`#1A1A1A`): primary content text. Never pure black.
 - **Text 2** (`#6B6B6B`): timestamps, places, metadata, secondary captions, the waveform.
@@ -249,13 +249,13 @@ In the Paper frames Inter stands in for SF Pro; the app uses the platform sans.
 
 ### Hierarchy
 
-- **Display** (Nunito, 30px, 700, 1.2, letter-spacing -0.01em): onboarding card titles, hero moments. Maximum two uses per screen.
-- **Headline** (Nunito, 24px, 700, 1.2, letter-spacing -0.01em): screen titles, the wordmark in the feed header, profile display names on the profile page only.
+- **Display** (Nunito, 30px, 700, 1.2, letter-spacing -0.01em): onboarding titles, the slow beat. Maximum two uses per screen.
+- **Headline** (Nunito, 24px, 700, 1.2, letter-spacing -0.01em): screen titles, the wordmark in the feed header, a person's name at the top of their page only.
 - **Title** (Nunito, 20px, 600, 1.3): section headers within a screen.
 - **Name** (platform sans, 16px, 600, 22px): a person's name on a moment, a song title. Corrected 2026-09-15: names were recorded as Nunito Title, but Nunito is limited to the wordmark, screen titles and onboarding.
 - **Moment** (platform sans, 17px, 400, 25px): the text of a text moment.
 - **Moment Title** (platform sans, 20px, 600, 26px, Text 1): the optional title of a text moment, on the feed and in focus. *(Ruled 2026-09-23.)* Platform sans rather than Nunito, under the Wordmark-Only Rule.
-- **Body** (platform sans, 16px, 400, 1.5): prose, the short line under a photo or voice moment (16px/22px), card content. Cap line length at 65–75ch where prose is long-form.
+- **Body** (platform sans, 16px, 400, 1.5): prose, the short line under a photo or voice moment (16px/22px). Cap line length at 65–75ch where prose is long-form.
 - **Label** (platform sans, 14px, 500, 1.4, letter-spacing 0.02em): button text, chip text, navigation, a song's artist (14px, Text 2).
 - **Caption** (platform sans, 13px, 500, 1.4, tabular figures): the time in the feed lane, a voice moment's duration, the place under a moment, the names beside reactions on your own moment. The clock's date drops to 12px/500. Changed 2026-09-15 from 12px/400.
 - **Marker** (platform sans, 15px, 400, Text 2): the deleted marker and the end of the feed.
@@ -287,11 +287,11 @@ The feed is two lanes on the Surface 2 ground, with no card boxes. Moments sit d
 
 ## 5. Elevation
 
-Nah is flat by default. Cards rest on the page without shadow at rest. Depth is conveyed through surface tonality (Surface 1 over Surface 2) and 1px borders in `Surface 4`, not through ambient drop shadows. This is the garden's quiet: nothing floats unless it's doing something.
+Nah is flat by default. Nothing rests on the page with a shadow. Depth is conveyed through surface tonality (Surface 1 over Surface 2) and 1px borders in `Surface 4`, not through ambient drop shadows. This is the garden's quiet: nothing floats unless it's doing something.
 
 Shadows appear only as a response to state: an active radial FAB carries a subtle elevation, a bottom sheet casts a soft drop, a toast lifts slightly above the feed. None of these are decorative; each marks a thing that is happening *now*.
 
-In dark mode, shadows are invisible on dark surfaces. Cards switch to 1px borders in `Surface 4` (dark variant) and rely entirely on tonal stepping between surface levels. This is the same architecture inverted, not a separate visual language.
+In dark mode, shadows are invisible on dark surfaces. Sheets and the clock switch to 1px borders in `Surface 4` (dark variant) and rely entirely on tonal stepping between surface levels. This is the same architecture inverted, not a separate visual language.
 
 ### Shadow Vocabulary
 
@@ -302,7 +302,7 @@ In dark mode, shadows are invisible on dark surfaces. Cards switch to 1px border
 
 ### Named Rules (Elevation)
 
-**The Flat-By-Default Rule.** Surfaces are flat at rest. Shadows appear only on active or transient elements (FAB, bottom sheet, toast, modal, the clock while it rides). A card never has a shadow. A button never has a shadow.
+**The Flat-By-Default Rule.** Surfaces are flat at rest. Shadows appear only on active or transient elements (FAB, bottom sheet, toast, modal, the clock while it rides). A moment never has a shadow. A button never has a shadow.
 
 **The Border-Replaces-Shadow Rule.** In dark mode, every place that uses a shadow in light mode uses a 1px border instead. The rule cascades automatically; widgets check the theme brightness and swap.
 
@@ -328,11 +328,11 @@ Warm and considered. Soft corners, generous padding, handmade-adjacent geometry.
 
 ### Moments in the feed
 
-*(Rewritten 2026-09-15. The feed has no card boxes; see Layout for the lane structure every moment sits in. The card shell below this section no longer describes the feed.)*
+*(Rewritten 2026-09-15. The feed has no card boxes; see Layout for the lane structure every moment sits in. A person's page uses the same treatments, ruled 2026-09-23.)*
 
 Every moment is name, body, foot inside the content column. The four types differ only in the body ([ADR-0006](docs/decisions/0006-three-moment-types.md)):
 
-1. **Text:** the text in Moment type (17px/25px), Text 1. Foot: reaction button, place. A text with a title shows it above the text in Moment Title. A text longer than six lines shows its first six and then "Read on" in Label, Text 2, which opens it in focus *(ruled 2026-09-23)*.
+1. **Text:** the text in Moment type (17px/25px), Text 1. Foot: reaction button, place. A text with a title shows it above the text in Moment Title. A text longer than six lines shows its first six, ending in an ellipsis at the line's end rather than a fade, and then "Read on" in Label, Text 2, plain words with no chevron, which opens it in focus *(ruled 2026-09-23)*.
 2. **Photo:** the photo bleeds from the content column's left edge to the right screen edge, 4:3 shown at 206pt tall, with an 8px radius on the left corners only and square corners at the screen edge. A short line in Body (16px/22px) below, then the foot with the place.
 3. **Voice:** a 40pt Surface 3 disc carrying a Text 1 play glyph on the left, a waveform of 2pt bars in Text 2 across the middle, the duration in Caption on the right. A short line in Body and the foot below. Nothing plays on the feed: the disc opens the moment in focus and starts it there (see Focus). *(Designed 2026-09-15; playback moved to focus 2026-09-16.)*
 4. **Music:** 64pt artwork with a 6px radius on the left; song title in Name and artist in 14px Text 2 stacked on the right. Tapping opens the moment in focus, where a sample plays and the one action opens the song in the reader's own service.
@@ -352,25 +352,21 @@ Every moment is name, body, foot inside the content column. The four types diffe
 - **Pomegranate on a waveform only while it plays in focus.** On the feed a waveform is Text 2 and never plays; paused in focus it is Text 3.
 - **Reduce Motion:** focus opens and closes with a 250ms crossfade in place of the growth; a waveform fills once a second instead of sweeping.
 
-### Moment Cards (outside the feed)
+### A person's page
 
-The card shell is kept for a person's page, which still boxes moments. It is not used on the feed, and a moment opened on its own is Focus, not a card.
+*(Rewritten 2026-09-23.)* A person's page reads exactly like the feed: the 64pt time lane, the 1pt rail, and every moment treatment from Moments in the feed, with no card boxes. Nah? has no card shell and no text tint anywhere.
 
-The top of a person's page is their xl avatar, their name in Headline, and, when they chose to show them, their gender and orientation in Caption, Text 2, under the name *(ruled 2026-09-23)*. "Rather not tell" shows nothing.
-
-- **Corner Style:** 8px radius (`md`). Soft, considered, not razor-sharp.
-- **Background:** Surface 1 default. On a person's page, text moments may carry a soft Pomegranate Light tint (≤8% saturation), chosen in the composer. The feed and focus never show it (ruled 2026-09-23).
-- **Shadow Strategy:** none at rest (flat-by-default rule).
-- **Border:** none in light mode. 1px Surface 4 in dark mode.
-- **Internal Padding:** zero for photo moments (edge-to-edge media). 24px for text moments. Custom for voice and music.
-- **Header:** 40px avatar + display name (Name) + timestamp (Caption) in a horizontal row at top of card.
+- **Head:** a 44pt back control, then, aligned to the content column's left edge, the xl avatar, the name in Headline, and, when the person chose to show them, their gender, pronouns and orientation in Caption, Text 2, joined by middle dots in that order. "Rather not tell" drops that part; with all three declined the line is gone.
+- **First moment:** the answer they gave on arriving, quoted under the caption line in Moment type. It also stands in the timeline at its date, like any other moment.
+- **Close:** a 1pt Surface 4 hairline under the head, where the lane begins.
+- **End of a page:** "Show earlier moments" in Label; nothing loads by scrolling alone.
 
 ### Chips
 
-- **Style:** pill shape, 32px height, 12px horizontal padding, Label typography.
-- **Default state:** Surface 2 background, Text 2 text.
+- **Style:** pill shape, 36px height, 14px horizontal padding, Label typography, wrapping with an 8px gap so each chip is a 44pt target. *(Changed 2026-09-23 from 32px.)*
+- **Default state:** Surface 1 background, a 1px Surface 4 border and Text 1 text, because a Surface 2 chip vanishes on the Surface 2 ground. *(Changed 2026-09-23.)*
 - **Selected state:** Pomegranate Tint background, Text 1 text, in both modes. Smooth 200ms transition between states. Corrected 2026-09-23: it was Pomegranate with white text, which breaks the rule that no text is set on Pomegranate.
-- **Where:** the answers to the first run's gender and orientation questions, one chip per answer with "Rather not tell" the same size and weight as the rest, and the composer's place.
+- **Where:** the answers to the first run's gender, pronoun and orientation questions, one chip per answer with "Rather not tell" the same size and weight as the rest, and the composer's place.
 - **Disabled state:** Surface 5 background, Text 3 text.
 
 ### Reaction Button
@@ -401,7 +397,7 @@ There is no tab bar. The feed is the whole screen, and your circle and you open 
 
 ### Avatar
 
-- **Sizes:** xs 24px (the header's circle faces, reactions on your own moment), sm 32px (the header's own avatar), md 40px (card headers, your circle), lg 56px, xl 80px (the top of a person's page, which has no cover photo).
+- **Sizes:** xs 24px (the header's circle faces, reactions on your own moment), sm 32px (the header's own avatar), md 40px (your circle), lg 56px, xl 80px (the top of a person's page, which has no cover photo).
 - **Shape:** circular.
 - **Fallback:** initials in Text 1 on a Pomegranate Light background, in both modes. White measures about 2.8:1 there, under WCAG AA; Text 1 measures about 6.2:1.
 
@@ -413,13 +409,12 @@ There is no tab bar. The feed is the whole screen, and your circle and you open 
 - **Do** keep Pomegranate `#EE3423` as the one red in both modes. Dark mode changes the neutrals, never the red.
 - **Do** use Nunito for the logo, screen titles, and onboarding headings. Use the platform default sans everywhere else, names included.
 - **Do** set feed moments directly on the ground in the two-lane structure: 64pt time lane, 1pt rail, content column padded 16pt. No box around a moment on the feed.
-- **Do** use 8px corner radius on cards and on the left corners of feed photos, 6px on album artwork, 12px on bottom sheets, full-radius pills on buttons and chips. Never sharp 90° corners on touchable surfaces.
+- **Do** use 8px corner radius on the left corners of feed photos, 6px on album artwork, 12px on bottom sheets, full-radius pills on buttons and chips. Never sharp 90° corners on touchable surfaces.
 - **Do** ship spring physics on every entrance, press, and dismiss. 400ms with overshoot for entrances, 250ms ease-out for exits.
 - **Do** use the 48px timeline clock fixed at the middle of the time lane as the signature scroll companion, its hands turning through the time between moments as the feed moves under it. It is the single most recognizable Nah element.
 - **Do** put Pomegranate on a waveform only while it plays in focus. On the feed nothing plays and no waveform is red.
 - **Do** treat the limit of 150 as a designed boundary, never a limitation. If it is ever drawn, draw faces, never something that fills towards a number.
 - **Do** keep the Feed chronological, full stop. The visual hierarchy must never imply algorithmic ranking, suggestions, or "you might like."
-- **Do** use Pomegranate Light as a soft text-moment background tint on a person's page only, sparingly, opt-in. Never on the feed.
 - **Do** show empty states with warm illustrations, never blank screens. "Welcome home" framing on first run, "You're all caught up" framing at end of feed, in Marker type outside the lane.
 
 ### Don't

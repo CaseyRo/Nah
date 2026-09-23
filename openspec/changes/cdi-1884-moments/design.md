@@ -58,7 +58,7 @@ Ruled 2026-09-15. The person who posted a moment can delete it. The server disca
 
 ### One person's page is open to their circle
 
-Ruled 2026-09-15. Tapping a name opens that person's moments, and "you" opens your own. The page is visible to the person and their circle and never outside it (`product-principles`). Its top is an avatar and a name with no cover photo: Path had one, and it would be one more thing to curate. Then comes the person's first moment, their answer on arriving, and then their moments, one page at a time, with older ones loading only when asked. Nothing on it counts.
+Ruled 2026-09-15. Tapping a name opens that person's moments, and "you" opens your own. The page is visible to the person and their circle and never outside it (`product-principles`). Its top is an avatar and a name with no cover photo: Path had one, and it would be one more thing to curate. Under the name come the gender, pronouns and orientation the person chose to show, and their first moment, their answer on arriving, quoted. Then their moments in the same two lanes as the feed, with no cards (ruled 2026-09-23), one page at a time, with older ones loading only when asked; the first moment appears again at its date. Nothing on it counts.
 
 ### What cannot be shown keeps its place
 

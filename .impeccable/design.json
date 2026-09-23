@@ -27,7 +27,7 @@
       },
       "pomegranate-light": {
         "role": "primary",
-        "displayName": "Pomegranate Light (avatar fallback, tint)",
+        "displayName": "Pomegranate Light (avatar fallback)",
         "canonical": "oklch(72% 0.18 30)",
         "tonalRamp": []
       },
@@ -389,7 +389,7 @@
       "refersTo": "chip-selected",
       "description": "Selected-state chip: Pomegranate Tint with Text 1, never text on Pomegranate. Used for the composer's place and the first run's gender and orientation answers.",
       "html": "<button class=\"ds-chip ds-chip--selected\">Kreuzberg</button>",
-      "css": ".ds-chip { background: #FAFAFA; color: #6B6B6B; height: 32px; padding: 0 12px; border-radius: 9999px; border: none; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em; cursor: pointer; transition: background 200ms cubic-bezier(0.16, 1, 0.3, 1), color 200ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-chip--selected { background: #FFD9D4; color: #1A1A1A; } .ds-chip:hover:not(.ds-chip--selected) { background: #F5F5F5; }"
+      "css": ".ds-chip { background: #FFFFFF; color: #1A1A1A; height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #EBEBEB; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em; cursor: pointer; transition: background 200ms cubic-bezier(0.16, 1, 0.3, 1), color 200ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-chip--selected { background: #FFD9D4; color: #1A1A1A; } .ds-chip:hover:not(.ds-chip--selected) { background: #F5F5F5; }"
     },
     {
       "name": "Bottom Sheet (Composer shell)",
@@ -397,7 +397,7 @@
       "refersTo": "bottom-sheet",
       "description": "The composer bottom sheet. Slides up from below with spring entrance, drag-to-dismiss.",
       "html": "<div class=\"ds-sheet\"><div class=\"ds-sheet__handle\"></div><header class=\"ds-sheet__head\"><button class=\"ds-sheet__cancel\">Cancel</button><span class=\"ds-sheet__type\">Text</span></header><div class=\"ds-sheet__body\"><textarea class=\"ds-sheet__input\" placeholder=\"Say something to your circle\"></textarea></div><footer class=\"ds-sheet__tools\"><button class=\"ds-chip\">Place</button></footer></div>",
-      "css": ".ds-sheet { background: #FFFFFF; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 0 0 24px; max-height: 90vh; box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1A1A; } .ds-sheet__handle { width: 36px; height: 4px; background: #EBEBEB; border-radius: 9999px; margin: 12px auto 16px; } .ds-sheet__head { display: flex; align-items: center; justify-content: space-between; padding: 0 16px 16px; border-bottom: 1px solid #EBEBEB; } .ds-sheet__cancel { background: transparent; border: none; color: #6B6B6B; font-size: 0.875rem; font-weight: 500; cursor: pointer; padding: 8px 0; } .ds-sheet__type { font-size: 1rem; font-weight: 600; color: #1A1A1A; } .ds-sheet__body { padding: 16px 16px 24px; } .ds-sheet__input { width: 100%; min-height: 120px; border: none; resize: none; font-family: inherit; font-size: 1.0625rem; line-height: 25px; color: #1A1A1A; background: transparent; outline: none; } .ds-sheet__input::placeholder { color: #9E9E9E; } .ds-sheet__tools { display: flex; gap: 8px; padding: 16px; border-top: 1px solid #EBEBEB; overflow-x: auto; } .ds-chip { background: #FAFAFA; color: #6B6B6B; height: 32px; padding: 0 12px; border-radius: 9999px; border: none; font-family: inherit; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em; cursor: pointer; }"
+      "css": ".ds-sheet { background: #FFFFFF; border-top-left-radius: 12px; border-top-right-radius: 12px; padding: 0 0 24px; max-height: 90vh; box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.08); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #1A1A1A; } .ds-sheet__handle { width: 36px; height: 4px; background: #EBEBEB; border-radius: 9999px; margin: 12px auto 16px; } .ds-sheet__head { display: flex; align-items: center; justify-content: space-between; padding: 0 16px 16px; border-bottom: 1px solid #EBEBEB; } .ds-sheet__cancel { background: transparent; border: none; color: #6B6B6B; font-size: 0.875rem; font-weight: 500; cursor: pointer; padding: 8px 0; } .ds-sheet__type { font-size: 1rem; font-weight: 600; color: #1A1A1A; } .ds-sheet__body { padding: 16px 16px 24px; } .ds-sheet__input { width: 100%; min-height: 120px; border: none; resize: none; font-family: inherit; font-size: 1.0625rem; line-height: 25px; color: #1A1A1A; background: transparent; outline: none; } .ds-sheet__input::placeholder { color: #9E9E9E; } .ds-sheet__tools { display: flex; gap: 8px; padding: 16px; border-top: 1px solid #EBEBEB; overflow-x: auto; } .ds-chip { background: #FFFFFF; color: #1A1A1A; height: 36px; padding: 0 14px; border-radius: 9999px; border: 1px solid #EBEBEB; font-family: inherit; font-size: 0.875rem; font-weight: 500; letter-spacing: 0.02em; cursor: pointer; }"
     }
   ],
   "narrative": {
@@ -437,7 +437,6 @@
       "Do put Pomegranate on a waveform only while it plays in focus. On the feed nothing plays and no waveform is red.",
       "Do treat the limit of 150 as a designed boundary, never a limitation. If it is ever drawn, draw faces, never something that fills towards a number.",
       "Do keep the Feed chronological, full stop. The visual hierarchy must never imply algorithmic ranking, suggestions, or \"you might like.\"",
-      "Do use Pomegranate Light as a soft text-moment background tint, sparingly, opt-in.",
       "Do show empty states with warm illustrations, never blank screens. \"Welcome home\" framing on first run, \"You're all caught up\" framing at end of feed, in Marker type outside the lane."
     ],
     "donts": [

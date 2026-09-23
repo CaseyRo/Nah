@@ -24,7 +24,7 @@ On 2026-09-15 music came back as a fourth type. On 2026-09-16 the feed design mo
   - no drafts and no editing; the person who posted a moment can delete it, and it is replaced by a plain marker
   - a moment composed without signal waits visibly, and is never lost
 - **feed**: each moment on the two-lane ground of `DESIGN.md` with no box around it; photo, voice, music and long text open on their own in focus, where voice and music play (ruled 2026-09-16, CDI-1900); the timeline clock; a sentence in place of any moment the app cannot show; a marker where a moment was deleted; and an end to the page. A song plays a sample in focus and opens in the reader's own service, and nothing is fetched from music services before that tap.
-- **person-page**: a page of one person's moments, which that person and everyone in their circle can open, and nobody else.
+- **person-page**: a page of one person's moments in the feed's two lanes (ruled 2026-09-23), which that person and everyone in their circle can open, and nobody else.
 - **Decisions amended (ruled 2026-09-15)**: ADR-0006, ADR-0008 and ADR-0016 each carry a dated note covering music, the short line, the place, deletion and song links.
 - **Elsewhere**: CDI-1882's + offers four items, and its no-reporting rule names the place lookup and the song-link lookup as exceptions. nah-vision gains the principle that Nah? keeps no record of where anyone is. cap-06 is removed, because music was the part of it worth keeping.
 - **Removed from the January version**: video, location as a moment type, sleep and wake, tagging who you were with, followers-only visibility, and map previews.
