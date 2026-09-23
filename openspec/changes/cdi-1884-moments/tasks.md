@@ -8,7 +8,8 @@ Specification only this round. Nothing below is started unless it is ticked.
 - [ ] 1.2 Photo compose with on-device resize and thumbnail (CDI-1843)
 - [ ] 1.3 Voice compose, up to a minute, Opus on the device (CDI-1845)
 - [ ] 1.4 Music compose: receive a song from any music app's share action or a pasted link, look it up on the phone, seal title, artist, links and artwork
-- [ ] 1.5 The optional short line on photo and voice
+- [ ] 1.5 The optional short line on photo, voice and music
+- [ ] 1.11 A text up to 10,000 characters, with an optional title (CDI-1899)
 - [ ] 1.6 The optional place: the operating system's place lookup, editable, or typed by hand
 - [ ] 1.7 Delete a moment, leaving a marker
 - [ ] 1.8 The offline queue, visible and lossless (CDI-1847)
@@ -17,9 +18,9 @@ Specification only this round. Nothing below is started unless it is ticked.
 
 ## 2. Feed
 
-- [ ] 2.1 The four cards from `DESIGN.md`
+- [ ] 2.1 The four treatments on the two-lane ground from `DESIGN.md`, with the poster's name (CDI-1895)
 - [ ] 2.2 Photo in the feed (CDI-1844), and voice playback with a waveform (CDI-1846)
-- [ ] 2.3 A music moment opens in the music service the reader picks, with nothing fetched before the tap
+- [ ] 2.3 Focus for photo, voice, music and long text; a song's sample in focus and the reader's own service, remembered, with nothing fetched before the tap (CDI-1900)
 - [ ] 2.4 The timeline clock, with its reduced-motion form
 - [ ] 2.5 The fallback sentence, the unreadable moment and the deleted marker
 - [ ] 2.6 The sentence at the end of the page

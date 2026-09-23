@@ -40,18 +40,43 @@
     "apps/server/Dockerfile",
     ".github/workflows/*.yml",
     ".pre-commit-config.yaml",
-    "mise.toml"
+    "mise.toml",
+    "DESIGN.md",
+    "PRODUCT.md"
   ],
   "deep_scan": false,
   "auto_update": "prompt",
   "article_sections": [
-    { "name": "Purpose", "description": "What this part does, who depends on it, and where it sits in Nah?", "required": true },
-    { "name": "Architecture", "description": "Key files, structure and entry points, pointing into the code rather than restating it" },
-    { "name": "Talks To", "description": "What it depends on, what depends on it, and how they communicate" },
-    { "name": "Key Decisions", "description": "Why it is built this way, from the decision records and READMEs, linked rather than retold" },
-    { "name": "Running It", "description": "How to run, test, build and deploy it" },
-    { "name": "Gotchas", "description": "Known issues, edge cases, failure modes and open questions" },
-    { "name": "Sources", "description": "Backlinks to all contributing files", "required": true }
+    {
+      "name": "Purpose",
+      "description": "What this part does, who depends on it, and where it sits in Nah?",
+      "required": true
+    },
+    {
+      "name": "Architecture",
+      "description": "Key files, structure and entry points, pointing into the code rather than restating it"
+    },
+    {
+      "name": "Talks To",
+      "description": "What it depends on, what depends on it, and how they communicate"
+    },
+    {
+      "name": "Key Decisions",
+      "description": "Why it is built this way, from the decision records and READMEs, linked rather than retold"
+    },
+    {
+      "name": "Running It",
+      "description": "How to run, test, build and deploy it"
+    },
+    {
+      "name": "Gotchas",
+      "description": "Known issues, edge cases, failure modes and open questions"
+    },
+    {
+      "name": "Sources",
+      "description": "Backlinks to all contributing files",
+      "required": true
+    }
   ],
   "link_style": "markdown"
 }

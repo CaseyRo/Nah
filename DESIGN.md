@@ -140,8 +140,8 @@ components:
     padding: "6px 12px"
     height: "32px"
   chip-selected:
-    backgroundColor: "{colors.pomegranate}"
-    textColor: "{colors.text-inverse}"
+    backgroundColor: "{colors.pomegranate-tint}"
+    textColor: "{colors.text-1}"
     typography: "{typography.label}"
     rounded: "{rounded.full}"
     padding: "6px 12px"
@@ -193,7 +193,7 @@ A restrained warm palette. The pomegranate carries the brand; the warm whites ca
 
 - **Pomegranate** (`#EE3423`): the warm point in the room. Used for the radial FAB, primary action buttons and the analog clock's second hand and centre dot. It stays the + colour in dark mode too (2026-09-15): a white glyph on it measures 4.08:1, and it measures about 4.4:1 against the dark ground. Never used for content backgrounds, never as a gradient, never tinted onto more than 10% of any screen.
 - **Pomegranate Hover** (`#D42D1E`): pressed/active state of Pomegranate. Used only as a momentary state, never at rest.
-- **Pomegranate Light** (`#FF6B5B`): the avatar-fallback background, with initials in Text 1, in both modes. Also used very sparingly as a soft background tint on text-moment cards. Retired as a dark-mode primary (2026-09-15): a white glyph on it measures about 2.8:1, under the 3:1 a glyph needs.
+- **Pomegranate Light** (`#FF6B5B`): the avatar-fallback background, with initials in Text 1, in both modes. Also used very sparingly as a soft background tint on text-moment cards on a person's page, never on the feed (ruled 2026-09-23). Retired as a dark-mode primary (2026-09-15): a white glyph on it measures about 2.8:1, under the 3:1 a glyph needs.
 - **Pomegranate Tint** (`#FFD9D4`): the fill inside the reaction illustrations. Identical in light and dark.
 
 ### Neutral
@@ -254,6 +254,7 @@ In the Paper frames Inter stands in for SF Pro; the app uses the platform sans.
 - **Title** (Nunito, 20px, 600, 1.3): section headers within a screen.
 - **Name** (platform sans, 16px, 600, 22px): a person's name on a moment, a song title. Corrected 2026-09-15: names were recorded as Nunito Title, but Nunito is limited to the wordmark, screen titles and onboarding.
 - **Moment** (platform sans, 17px, 400, 25px): the text of a text moment.
+- **Moment Title** (platform sans, 20px, 600, 26px, Text 1): the optional title of a text moment, on the feed and in focus. *(Ruled 2026-09-23.)* Platform sans rather than Nunito, under the Wordmark-Only Rule.
 - **Body** (platform sans, 16px, 400, 1.5): prose, the short line under a photo or voice moment (16px/22px), card content. Cap line length at 65–75ch where prose is long-form.
 - **Label** (platform sans, 14px, 500, 1.4, letter-spacing 0.02em): button text, chip text, navigation, a song's artist (14px, Text 2).
 - **Caption** (platform sans, 13px, 500, 1.4, tabular figures): the time in the feed lane, a voice moment's duration, the place under a moment, the names beside reactions on your own moment. The clock's date drops to 12px/500. Changed 2026-09-15 from 12px/400.
@@ -331,7 +332,7 @@ Warm and considered. Soft corners, generous padding, handmade-adjacent geometry.
 
 Every moment is name, body, foot inside the content column. The four types differ only in the body ([ADR-0006](docs/decisions/0006-three-moment-types.md)):
 
-1. **Text:** the text in Moment type (17px/25px), Text 1. Foot: reaction button, place.
+1. **Text:** the text in Moment type (17px/25px), Text 1. Foot: reaction button, place. A text with a title shows it above the text in Moment Title. A text longer than six lines shows its first six and then "Read on" in Label, Text 2, which opens it in focus *(ruled 2026-09-23)*.
 2. **Photo:** the photo bleeds from the content column's left edge to the right screen edge, 4:3 shown at 206pt tall, with an 8px radius on the left corners only and square corners at the screen edge. A short line in Body (16px/22px) below, then the foot with the place.
 3. **Voice:** a 40pt Surface 3 disc carrying a Text 1 play glyph on the left, a waveform of 2pt bars in Text 2 across the middle, the duration in Caption on the right. A short line in Body and the foot below. Nothing plays on the feed: the disc opens the moment in focus and starts it there (see Focus). *(Designed 2026-09-15; playback moved to focus 2026-09-16.)*
 4. **Music:** 64pt artwork with a 6px radius on the left; song title in Name and artist in 14px Text 2 stacked on the right. Tapping opens the moment in focus, where a sample plays and the one action opens the song in the reader's own service.
@@ -342,11 +343,12 @@ Every moment is name, body, foot inside the content column. The four types diffe
 
 ### Focus (a moment on its own)
 
-*(Ruled 2026-09-16.)* Where other feeds lean into the next thing, Nah? spends time on this one. Tapping a photo, a voice moment or a music moment opens it in focus: the bare ground (Surface 2 in light, the dark ground in dark) with no chrome, no handle and no sheet. A photo shows nothing else at all; voice and music show only what listening needs, as below. A text moment does not focus; it is already read in full on the feed.
+*(Ruled 2026-09-16.)* Where other feeds lean into the next thing, Nah? spends time on this one. Tapping a photo, a voice moment or a music moment opens it in focus: the bare ground (Surface 2 in light, the dark ground in dark) with no chrome, no handle and no sheet. A photo shows nothing else at all; voice and music show only what listening needs, as below. A long text opens in focus from "Read on" (2026-09-23); a short text does not focus, because it is already read in full on the feed.
 
 - **Photo:** grows from its row to the full width of the screen in 350ms on the standard push curve while the feed fades behind it, and sits centred on the ground like one work on a gallery wall, with no name, no line and no control. Pinch to look closer. Tap or drag down to leave, 250ms; the feed returns still, where it was, with no clock until the next scroll.
 - **Voice:** the person's face at 80pt, their name in 20px/600, the short line in Moment type, and a waveform of 3pt bars on a 292pt line that fills left to right in Pomegranate as the clip plays, the rest in Text 3; the elapsed time in Caption Text 1 and the length in Text 2; a 56pt Surface 3 pause disc with a Text 1 glyph; the place in Caption. Playback starts on entering and stops on leaving; paused, the waveform returns to Text 3.
 - **Music:** the artwork at 200pt with an 8px radius, the title in 20px/600 and the artist in 15px Text 2, a 30 second sample under the same Pomegranate waveform, fetched from the song's link only after the tap, the same 56pt pause disc, and below it the one action, a primary button reading "Listen in <service>", the reader's own service chosen once and remembered.
+- **Long text:** *(Added 2026-09-23.)* the poster's name in Name, the title in Moment Title, then the whole text in Moment type (17px/25px) held to 65–75 characters a line, on the bare ground and scrolling as one column; the time and place in Caption at the end. Nothing else, no reaction row. Leaving is the same drag down or back as a photo.
 - **Pomegranate on a waveform only while it plays in focus.** On the feed a waveform is Text 2 and never plays; paused in focus it is Text 3.
 - **Reduce Motion:** focus opens and closes with a 250ms crossfade in place of the growth; a waveform fills once a second instead of sweeping.
 
@@ -354,8 +356,10 @@ Every moment is name, body, foot inside the content column. The four types diffe
 
 The card shell is kept for a person's page, which still boxes moments. It is not used on the feed, and a moment opened on its own is Focus, not a card.
 
+The top of a person's page is their xl avatar, their name in Headline, and, when they chose to show them, their gender and orientation in Caption, Text 2, under the name *(ruled 2026-09-23)*. "Rather not tell" shows nothing.
+
 - **Corner Style:** 8px radius (`md`). Soft, considered, not razor-sharp.
-- **Background:** Surface 1 default. Text moments may opt into a soft Pomegranate Light tint (≤8% saturation) as a background-color choice in the composer.
+- **Background:** Surface 1 default. On a person's page, text moments may carry a soft Pomegranate Light tint (≤8% saturation), chosen in the composer. The feed and focus never show it (ruled 2026-09-23).
 - **Shadow Strategy:** none at rest (flat-by-default rule).
 - **Border:** none in light mode. 1px Surface 4 in dark mode.
 - **Internal Padding:** zero for photo moments (edge-to-edge media). 24px for text moments. Custom for voice and music.
@@ -365,7 +369,8 @@ The card shell is kept for a person's page, which still boxes moments. It is not
 
 - **Style:** pill shape, 32px height, 12px horizontal padding, Label typography.
 - **Default state:** Surface 2 background, Text 2 text.
-- **Selected state:** Pomegranate background, white text. Smooth 200ms transition between states.
+- **Selected state:** Pomegranate Tint background, Text 1 text, in both modes. Smooth 200ms transition between states. Corrected 2026-09-23: it was Pomegranate with white text, which breaks the rule that no text is set on Pomegranate.
+- **Where:** the answers to the first run's gender and orientation questions, one chip per answer with "Rather not tell" the same size and weight as the rest, and the composer's place.
 - **Disabled state:** Surface 5 background, Text 3 text.
 
 ### Reaction Button
@@ -414,7 +419,7 @@ There is no tab bar. The feed is the whole screen, and your circle and you open 
 - **Do** put Pomegranate on a waveform only while it plays in focus. On the feed nothing plays and no waveform is red.
 - **Do** treat the limit of 150 as a designed boundary, never a limitation. If it is ever drawn, draw faces, never something that fills towards a number.
 - **Do** keep the Feed chronological, full stop. The visual hierarchy must never imply algorithmic ranking, suggestions, or "you might like."
-- **Do** use Pomegranate Light as a soft text-moment background tint, sparingly, opt-in.
+- **Do** use Pomegranate Light as a soft text-moment background tint on a person's page only, sparingly, opt-in. Never on the feed.
 - **Do** show empty states with warm illustrations, never blank screens. "Welcome home" framing on first run, "You're all caught up" framing at end of feed, in Marker type outside the lane.
 
 ### Don't
@@ -422,7 +427,7 @@ There is no tab bar. The feed is the whole screen, and your circle and you open 
 - **Don't** look like Instagram, TikTok, or X. No Stories rail at the top. No suggested-content interleaving. No infinite-scroll engagement bait. No algorithmic feed under any circumstance.
 - **Don't** look like LinkedIn or Threads. No follower counts. No public profiles. No professional-self-curation chrome. No mutual-connection paths shown publicly.
 - **Don't** display numeric counts of anything, anywhere. No like count, no view count, no follower count, no read count, no reaction count, no comment count. Names and avatars instead. The No-Counts Rule is universal; there is no exception screen.
-- **Don't** look like Discord or Slack. No aggressive unread counts as the primary navigation signal. No multi-server sidebars. No "typing" indicators in v1.
+- **Don't** look like Discord or Slack. No aggressive unread counts as the primary navigation signal. No multi-server sidebars. No "typing" indicators: Nah? has no chat.
 - **Don't** look like a VC-SaaS landing page. No gradient hero text. No three-feature card grids on any product surface. No hero-metric templates. No "X is faster than Y" comparison tables. No glassmorphism dashboards.
 - **Don't** use side-stripe borders (colored `border-left` or `border-right` greater than 1px). Never. On any card, list item, callout, or alert.
 - **Don't** use gradient text (`background-clip: text` with a gradient background). Solid colors only. Emphasis through weight or size.

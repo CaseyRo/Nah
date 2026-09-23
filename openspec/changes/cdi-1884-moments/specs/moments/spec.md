@@ -6,7 +6,7 @@ What a moment is: one of four types, with an optional short line and place, prep
 
 ### Requirement: Four types of moment
 
-A moment SHALL be exactly one of text, voice, photo or music (ADR-0006, amended 2026-09-15). A text moment SHALL be words, limited in length with no visible counter (ADR-0004). A voice moment SHALL be one recording of up to sixty seconds. A photo moment SHALL be one photo. A music moment SHALL be one song. There SHALL be no drafts: a moment is either posted or discarded (ADR-0008).
+A moment SHALL be exactly one of text, voice, photo or music (ADR-0006, amended 2026-09-15). A text moment SHALL be words, from a single line to a full written post of up to 10,000 characters, with no visible counter (ADR-0004, ruled 2026-09-23). A voice moment SHALL be one recording of up to sixty seconds. A photo moment SHALL be one photo. A music moment SHALL be one song. There SHALL be no drafts: a moment is either posted or discarded (ADR-0008).
 
 #### Scenario: Recording a voice moment
 
@@ -22,6 +22,25 @@ A moment SHALL be exactly one of text, voice, photo or music (ADR-0006, amended 
 
 - **WHEN** a person leaves a composer without posting
 - **THEN** nothing they composed is kept for later
+
+### Requirement: A text can be a full post, with an optional title
+
+The text composer SHALL offer an optional title of at most 100 characters, with no counter, above the text (ruled 2026-09-23). The title SHALL travel inside the moment, and an app that does not know it SHALL show the moment's fallback sentence or its text, never an error (ADR-0016).
+
+#### Scenario: Writing a post
+
+- **WHEN** a person gives a text moment a title and several paragraphs, and posts it
+- **THEN** the posted moment carries the title and every paragraph
+
+#### Scenario: A line with no title
+
+- **WHEN** a person writes one line and no title
+- **THEN** it posts as a text moment exactly as before
+
+#### Scenario: An older app
+
+- **WHEN** a long text with a title reaches an app that predates titles
+- **THEN** that app shows the text, or the fallback sentence its author's app wrote, and keeps running
 
 ### Requirement: A song comes from the music apps people already use
 
@@ -49,7 +68,7 @@ A person SHALL be able to start a music moment from any music app's own share ac
 
 ### Requirement: An optional short line on photo, voice and music
 
-The composer for a photo, voice or music moment SHALL offer one optional short line of at most 140 characters, with no counter, which travels inside the moment. A text moment SHALL NOT offer one (ruled 2026-09-15).
+The composer for a photo, voice or music moment SHALL offer one optional short line of at most 140 characters, with no counter, which travels inside the moment. A text moment SHALL NOT offer one; its title is the only thing it carries above its words (ruled 2026-09-15 and 2026-09-23).
 
 #### Scenario: A photo with a line
 
@@ -59,7 +78,7 @@ The composer for a photo, voice or music moment SHALL offer one optional short l
 #### Scenario: A text moment
 
 - **WHEN** a person composes a text moment
-- **THEN** no separate short line is offered
+- **THEN** no separate short line is offered, only the optional title
 
 #### Scenario: A long line
 

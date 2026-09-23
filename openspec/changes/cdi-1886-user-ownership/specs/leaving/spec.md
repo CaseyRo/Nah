@@ -25,7 +25,7 @@ A person SHALL be able to leave Nah? from inside the app, and SHALL find a page 
 
 ### Requirement: Thirty days to come back, then deletion
 
-When a person leaves, the app SHALL tell them the date, 30 days later, on which everything will be deleted, and that returning before then restores it. On that date the server SHALL delete the person's file with their moments, media, reactions, connections and invitations, and remove their entry from the directory. Until that date, their places in other people's circles SHALL stay held, so that returning restores every connection. Backups SHALL be discarded within 30 days of being made, so that nothing of theirs survives more than 30 days past deletion (ruled 2026-09-15; Apple's account deletion rules, Google Play's account deletion policy, GDPR articles 12 and 17).
+When a person leaves, the app SHALL tell them the date, 30 days later, on which everything will be deleted, and that returning before then restores it. On that date the server SHALL delete the person's file with their profile, moments, media, reactions, connections and invitations, and remove their entry from the directory once there is one (M7). Until that date, their places in other people's circles SHALL stay held, so that returning restores every connection. Backups SHALL be discarded within 30 days of being made, so that nothing of theirs survives more than 30 days past deletion (ruled 2026-09-15; Apple's account deletion rules, Google Play's account deletion policy, GDPR articles 12 and 17).
 
 #### Scenario: Told the date
 
@@ -40,7 +40,7 @@ When a person leaves, the app SHALL tell them the date, 30 days later, on which 
 #### Scenario: The date passes
 
 - **WHEN** 30 days pass without Sam returning
-- **THEN** his file, moments, media, reactions, connections, invitations and directory entry are deleted from the server
+- **THEN** Sam's file, profile, moments, media, reactions, connections and invitations are deleted from the server
 
 #### Scenario: A held place
 

@@ -8,7 +8,7 @@ order: 1
 
 **A private home for your closest people.**
 
-> *"Share with your circle, not the world."*
+> *"Viral? Nah. Vital."*
 
 Nah? ("Not Alone Here") is a private social network for the people you are actually close to. Each person has one circle of up to 150 people, connected in person first and only by invitation, with one chronological feed and nobody to perform for. It is inspired by [Path](https://en.wikipedia.org/wiki/Path_(social_network)), open source, and designed never to compromise on intimacy.
 
@@ -19,7 +19,7 @@ How people join, leave, and get back in on a new phone is in the [Rules of engag
 - **Small by design.** Your circle holds up to 150 people, Dunbar's number, said in words and never shown as a count.
 - **By invitation, in person first.** Nobody joins without someone already here, and the ordinary way to connect is to hold two phones together.
 - **Private by default.** Moments are sealed on your phone, and the server keeps what it cannot read. No public profiles, no public moments, no search for people.
-- **Real friends, real moments.** Every connection is mutual. Text, voice, photo and music, with reactions only the poster sees, and no numbers about anyone.
+- **Real friends, real moments.** Every connection is mutual. Text, from one line to a full written post, voice, photo and music, with reactions only the poster sees, and no numbers about anyone.
 - **No algorithmic theater.** One chronological feed that ends, and at most one daily digest unless you ask for more.
 - **Nothing else in the way.** No chat, no AI, no ads, and no data for sale.
 - **Open source.** AGPL, community-funded, and yours to verify.

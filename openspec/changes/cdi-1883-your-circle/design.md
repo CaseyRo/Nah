@@ -2,7 +2,7 @@
 
 ## Context
 
-M1 connects two people through one server route, `POST /v1/people/{person}/connections`, which redeems an invitation. Registering with a person's invitation connects the two in the same step. A touch and a link carry the same two things, who made the invitation and its secret, so the server cannot tell them apart. Today a person's invitation never expires, is not single-use and cannot be revoked; an operator's is single-use. Nothing ends a connection. Nobody's name is stored on the server: names travel inside the ciphertext.
+M1 connects two people through one server route, `POST /v1/people/{person}/connections`, which redeems an invitation. Registering with a person's invitation connects the two in the same step. A touch and a link carry the same two things, who made the invitation and its secret, so the server cannot tell them apart. Today a person's invitation never expires, is not single-use and cannot be revoked; an operator's is single-use. Nothing ends a connection. Nobody's name is stored on the server yet; CDI-1895 adds a sealed profile.
 
 ## Goals / Non-Goals
 
@@ -27,11 +27,11 @@ Ruled 2026-09-15. "Network" reads as rigid and businesslike, and "your people" s
 
 ### Single-use, never expiring, revocable
 
-Ruled 2026-09-15. A person's invitation is now the only way a new person arrives, and it carries a content key, so it must not work twice. An expiry was rejected: the people who most need a link are the slowest to install, and a dead link may be the last thing that happens with them. Revocation covers the link that leaked into a group chat. This supersedes CDI-1839's "short-lived".
+Ruled 2026-09-15. A person's invitation is now the only way a new person arrives, so it must not work twice. It carries a one-time secret and never a content key (CDI-1865). An expiry was rejected: the people who most need a link are the slowest to install, and a dead link may be the last thing that happens with them. Revocation covers the link that leaked into a group chat. This supersedes CDI-1839's "short-lived".
 
 ### A full circle is named
 
-Ruled 2026-09-15. When the other person's circle is full, the refusal says it is theirs. The rejected alternative, one sentence that hides which side is full, was kinder to the person at 150 and baffling to the person refused. The sentence still carries no number (ADR-0004). The person whose circle is full is told too, in words, so they can make room if they want; never how many people they have, because filling the 150 is not a goal (ruled 2026-09-15).
+Ruled 2026-09-15. When the other person's circle is full, the refusal says it is theirs, not the refused person's own. Since 2026-09-23 it names nobody, because the two are not connected yet (CDI-1895). The rejected alternative, one sentence that hides which side is full, was kinder to the person at 150 and baffling to the person refused. The sentence still carries no number (ADR-0004). The person whose circle is full is told too, in words, so they can make room if they want; never how many people they have, because filling the 150 is not a goal (ruled 2026-09-15).
 
 ### The first answer is how a circle meets someone
 
@@ -49,6 +49,14 @@ NFC where both phones allow it, and a code shown on one screen and scanned by th
 
 ADR-0005 allowed seeded moments from the inviter, "real or mocked". Mocked ones are out: `product-principles` says nothing appears in a feed that nobody in it posted. An inviter who has not posted is shown as a quiet feed.
 
+### One server until M7
+
+Ruled 2026-09-23. The server builds a feed from people's files on its own disk, and connecting needs both people there. Until Nah? hosts servers for other people, everyone is on one server whose address is a build setting. The directory (CDI-1838) moves to M7 with hosting.
+
+### A link names nobody
+
+Ruled 2026-09-23. A link carries no content key, so it cannot carry a sealed name, and a name in plain text would travel to everyone the link reaches. The link, the page for a phone without Nah? and the confirmation say that someone invited the person; names appear once the two are connected (CDI-1895).
+
 ### Resuming after install is the hard part
 
 The invitation's secret lives after the `#`, so an install from the store has to carry it through without any server seeing it (CDI-1841). The spec fixes that outcome and leaves the mechanism to M2.
@@ -59,7 +67,7 @@ Ruled 2026-09-15. After the one real question, the first run offers a photo for 
 
 ## Risks / Trade-offs
 
-- **An unused invitation lives until it is revoked.** A link pasted into a group chat and never used can connect whoever finds it, and carries the content key. The mitigation is that a person can always see their unused invitations and withdraw any of them.
+- **An unused invitation lives until it is revoked.** A link pasted into a group chat and never used can connect whoever finds it first, though it unlocks nothing. The mitigation is that a person can always see their unused invitations and withdraw any of them.
 - **Naming whose circle is full tells someone that a person is at 150.** Accepted by the ruling.
 - **An ended connection keeps the content key it was given** until rotation exists (CDI-1865). Until then, the server refusing to serve new moments is the only thing that keeps them out.
 - **Physical first strands distant people if the link is weak** (ADR-0017). Resuming after install is where that is won or lost.

@@ -16,7 +16,7 @@ Each person is one SQLite file on a server (ADR-0011, amended), which makes expo
 
 - The personal archive and resurfacing (`cdi-1857-archive`, CDI-1857).
 - Second devices and recovery (CDI-1865).
-- Moving to another server, which the directory already allows (CDI-1883).
+- Moving to another server, which waits for the directory in M7 (CDI-1838).
 - Building anything. This round is specification only.
 
 ## Decisions

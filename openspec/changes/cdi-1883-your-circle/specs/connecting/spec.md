@@ -1,6 +1,6 @@
 ## Purpose
 
-How two people who are both in Nah? join each other's circles: by touching phones when they are together, by a link when they are not, what an invitation can and cannot do, and how people are found without anyone typing an address.
+How two people who are both in Nah? join each other's circles: by touching phones when they are together, by a link when they are not, what an invitation can and cannot do, and and why nobody types an address.
 
 ## ADDED Requirements
 
@@ -25,12 +25,12 @@ Two people SHALL be able to connect by bringing their phones together, using NFC
 
 ### Requirement: A link for people who are not in the same room
 
-A person SHALL be able to make an invite link and send it through any app. The link SHALL carry the person in its path and a one-time secret after the `#`, and SHALL NOT carry a content key (CDI-1836, CDI-1865, ruled 2026-09-15), and SHALL open Nah? directly on both platforms when the app is installed (CDI-1837). Opening it SHALL show who sent it and ask for one confirmation, after which the two are connected (CDI-1839).
+A person SHALL be able to make an invite link and send it through any app. The link SHALL carry the person in its path and a one-time secret after the `#`, and SHALL NOT carry a content key (CDI-1836, CDI-1865, ruled 2026-09-15), and SHALL open Nah? directly on both platforms when the app is installed (CDI-1837). Opening it SHALL say that someone invited the person, without naming them, and ask for one confirmation, after which the two are connected and each sees the other's name (CDI-1839, CDI-1895, ruled 2026-09-23).
 
 #### Scenario: Opening a link
 
 - **WHEN** someone who has Nah? taps an invite link in a chat app
-- **THEN** Nah? opens, shows who sent the link, and connects the two after one confirmation
+- **THEN** Nah? opens, says someone invited them, and connects the two after one confirmation, after which each sees the other's name
 
 #### Scenario: What a server receives
 
@@ -63,12 +63,12 @@ Every invitation, whether it travels as a link, a touch, a scanned code or an op
 
 ### Requirement: A refused connection says why, in words
 
-When a connection cannot be made, the app SHALL say why in one sentence written for people, and neither person's circle SHALL change. When a circle is full, the sentence SHALL say whose circle it is, and SHALL NOT give a number (ADR-0004, ruled 2026-09-15). When the full circle belongs to the person who made the invitation, that person SHALL be told in words that someone could not connect because their circle is full, again with no number.
+When a connection cannot be made, the app SHALL say why in one sentence written for people, and neither person's circle SHALL change. When a circle is full, the sentence SHALL say whether it is the other person's circle or the person's own, and SHALL NOT give a number (ADR-0004, ruled 2026-09-15). It SHALL name nobody, because the two are not connected yet (CDI-1895, ruled 2026-09-23). The person whose circle is full SHALL be told in words that someone could not connect because their circle is full, again with no number and no name.
 
 #### Scenario: Their circle is full
 
 - **WHEN** Sam opens Maya's invitation and Maya's circle already holds 150 people
-- **THEN** Sam is told that Maya's circle is full, with no number, and neither circle changes
+- **THEN** Sam is told that the circle of the person who invited Sam is full, with no number, and neither circle changes
 
 #### Scenario: Your own circle is full
 
@@ -78,23 +78,13 @@ When a connection cannot be made, the app SHALL say why in one sentence written 
 #### Scenario: The owner of the full circle
 
 - **WHEN** Sam is refused because Maya's circle is full
-- **THEN** Maya is told in words that Sam could not connect because her circle is full, with no number
+- **THEN** Maya is told in words that someone could not connect because her circle is full, with no number and no name
 
-### Requirement: People are found without an address, and without revealing a circle
+### Requirement: One server, and nobody types an address
 
-An app SHALL reach the people in a circle through a directory that maps each person's identifier to the server they are on, so that nobody ever types an address (CDI-1838). The directory SHALL keep no record of which identifiers anyone looked up, and SHALL change a person's entry only on a request signed with that person's key.
+Until Nah? hosts servers for other people (M7), everyone SHALL be on one server, whose address the app carries as a build setting, so that nobody ever types or chooses an address (ruled 2026-09-23). Connecting SHALL need both people on that server. A directory that maps a person to the server they are on, keeps no record of lookups, and lets a person move server without connecting again is M7 work (CDI-1838) and is not specified here.
 
-#### Scenario: Reading the feed
+#### Scenario: Joining
 
-- **WHEN** an app looks up the servers of everyone in its person's circle
-- **THEN** the directory answers, and keeps no record of who asked for whom
-
-#### Scenario: Moving server
-
-- **WHEN** a person moves to another server and updates their entry with their key
-- **THEN** the people in their circle reach them there, without anyone connecting again
-
-#### Scenario: Someone else's entry
-
-- **WHEN** a request to change a person's entry is not signed with that person's key
-- **THEN** the directory refuses it and the entry stays as it was
+- **WHEN** a person joins or connects
+- **THEN** they are never asked for a server, a domain or an address

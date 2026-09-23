@@ -14,7 +14,7 @@ In January this document designed a Mastodon fork, and none of it was built. Sin
 | Your circle | One network of up to 150 per person, called your circle, read as a fan-in feed | ADR-0017 | `docs/wiki/topics/server.md` |
 | Sign-in | An Ed25519 key on the device, and stateless session tokens | ADR-0015 | `docs/wiki/topics/mobile.md` |
 | Moments | Sealed on the device in a versioned envelope; the server stores bytes | ADR-0012, ADR-0016 | `docs/wiki/concepts/opaque-moments.md` |
-| Run centrally | A push relay, the invite-link domain with its directory, and a demo for App Review | ADR-0010 | `docs/wiki/topics/delivery.md` |
+| Run centrally | A push relay, the invite-link domain, and a demo for App Review; the directory from M7 (CDI-1838) | ADR-0010 | `docs/wiki/topics/delivery.md` |
 
 ## What the January design became
 

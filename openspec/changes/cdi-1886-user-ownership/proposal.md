@@ -20,7 +20,7 @@ The January version promised export, deletion "within a reasonable timeframe", n
 - **blocking-and-reporting**:
   - blocking ends a connection and refuses any reconnection until it is lifted
   - a report carries the reporter's own copy of a moment, sent only when they confirm, to a published abuse contact
-  - the operator can cut a person off from the directory and from push
+  - the operator can cut a person off from the server and from push
 - **privacy-statement**: a plain statement of what a server can and cannot see, naming every outside service, and saying so while moments are still unsealed. It also carries the sentence about losing every phone that holds your key.
 - **Elsewhere**:
   - `product-principles` names a report as the one way a moment leaves its circle
@@ -43,7 +43,7 @@ None: `openspec/specs/` holds no specs yet.
 
 ## Impact
 
-- `apps/server`: a leaving state with a scheduled deletion, blocks, receiving reports, the operator's cut-off, and the directory entry's removal.
+- `apps/server`: a leaving state with a scheduled deletion, blocks, receiving reports, and the operator's cut-off; the directory entry's removal waits for M7.
 - `apps/mobile`: export, leaving and returning, blocking, reporting, and the statement.
 - The site: the privacy statement, the abuse contact, and the page for leaving.
 - Linear: CDI-1867 covers reporting and blocking. Export, leaving and the statement have no issue yet. CDI-1867 also asks for a compliance pass before anyone outside Casey's own circle joins.

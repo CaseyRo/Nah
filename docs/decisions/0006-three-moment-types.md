@@ -12,6 +12,8 @@ Accepted (2026-04-26). Acknowledged most-expensive MVP option.
 
 **Amended 2026-09-15.** Music returns as a fourth moment type in the MVP: a song shared from any music app, sent to the circle like any other moment, with its links to other music services found on the phone by a song-link lookup. A photo or voice moment may carry one optional short line of text, and any moment may carry an optional place. The place comes from the phone's own place lookup when the person chooses to add their location, or is typed by hand, which is always possible and is the way in when location access is refused or unavailable. Nah? keeps no location of its own: no coordinates are stored, and the place travels as words sealed inside the moment, for the person who added it. Location as a moment type of its own stays out, and so does a map. The detail is in the `cdi-1884-moments` OpenSpec change.
 
+**Amended 2026-09-23.** A text moment can be a full written post, not only a line: up to 10,000 characters, with an optional title, and no counter on either. People were reflective on Path, and a line is not enough room for that. It stays the text type, so there are still four types and four items in the +. On the feed a long text shows its title and opening lines, and reading on opens it on its own. The detail is in the `cdi-1884-moments` OpenSpec change (CDI-1899).
+
 ## Context
 
 A moment is the fundamental unit of Nah?. What types of moments can a user share? The earlier nah-vision spec listed five (photo/video, text, music, location, sleep/wake). The April session re-cut this down to MVP scale.

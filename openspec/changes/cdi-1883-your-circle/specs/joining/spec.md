@@ -25,12 +25,12 @@ A person SHALL join only with an invitation. An invitation from someone already 
 
 ### Requirement: An invitation survives installing the app
 
-When an invite link is opened on a phone without Nah?, the person SHALL land on a plain page that names who invited them and sends them to their platform's store. After installing, the app SHALL continue joining with that same invitation without the link being opened again. The invitation's secret SHALL NOT reach any server on the way, and the page's host SHALL NOT learn the inviter's name (CDI-1836, CDI-1841).
+When an invite link is opened on a phone without Nah?, the person SHALL land on a plain page that says someone invited them, names nobody, and sends them to their platform's store (ruled 2026-09-23, CDI-1895). After installing, the app SHALL continue joining with that same invitation without the link being opened again. The invitation's secret SHALL NOT reach any server on the way (CDI-1836, CDI-1841).
 
 #### Scenario: No app yet
 
 - **WHEN** someone without Nah? taps an invite link from Maya
-- **THEN** a page names Maya and offers the store for their phone
+- **THEN** a page says someone invited them, without naming Maya, and offers the store for their phone
 
 #### Scenario: After installing
 
@@ -40,15 +40,15 @@ When an invite link is opened on a phone without Nah?, the person SHALL land on 
 #### Scenario: What the host sees
 
 - **WHEN** the page is requested
-- **THEN** the server receives the link's path, and neither the part after the `#` nor the inviter's name
+- **THEN** the server receives the link's path, and not the part after the `#`
 
 ### Requirement: The first run is a ritual
 
-After joining, the app SHALL show a single sentence alone on a calm screen, fading in over a few seconds, with no way to skip it. It SHALL then ask one real question, "What do you want to share with the ones closest to you right now?" (ADR-0005, wording ruled 2026-09-15), and the answer SHALL appear under the person's name on their page and SHALL reach their circle as their first moment (ruled 2026-09-15). After the question, it SHALL offer a photo for the person's avatar, sealed like a moment; the person SHALL be able to skip it and keep their initials, and to add or change the photo later from their own page (ruled 2026-09-15). The person SHALL arrive with a single soft haptic tap and nothing celebratory, and SHALL land on their feed. That feed SHALL show only moments that people in their circle really posted.
+After joining, the app SHALL first ask the person's name, and once profiles are sealed their gender and orientation, as CDI-1895 specifies. It SHALL then show a single sentence alone on a calm screen, fading in over a few seconds, with no way to skip it. It SHALL then ask one real question, "What do you want to share with the ones closest to you right now?" (ADR-0005, wording ruled 2026-09-15), and the answer SHALL appear under the person's name on their page and SHALL reach their circle as their first moment (ruled 2026-09-15). After the question, it SHALL offer a photo for the person's avatar, kept in their sealed profile (CDI-1895); the person SHALL be able to skip it and keep their initials, and to add or change the photo later from their own page (ruled 2026-09-15). The person SHALL arrive with a single soft haptic tap and nothing celebratory, and SHALL land on their feed. That feed SHALL show only moments that people in their circle really posted.
 
 #### Scenario: The slow beat
 
-- **WHEN** joining completes
+- **WHEN** the person has given their name
 - **THEN** one sentence fades in on a calm screen, and nothing on it lets the person skip ahead
 
 #### Scenario: The answer
@@ -74,4 +74,4 @@ After joining, the app SHALL show a single sentence alone on a calm screen, fadi
 #### Scenario: An inviter who has not posted
 
 - **WHEN** nobody in the new person's circle has posted anything
-- **THEN** the feed names the inviter and says it is quiet, and shows no example or placeholder moment
+- **THEN** the feed names the inviter by the name they gave and says it is quiet, and shows no example or placeholder moment

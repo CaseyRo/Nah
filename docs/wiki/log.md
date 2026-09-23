@@ -28,3 +28,10 @@
 **New topics:** none
 **Sources scanned:** 29
 **Sources changed:** 5: ADR-0005, ADR-0012 and ADR-0015 gained dated notes, and ADR-0006 and ADR-0018 now name the renamed OpenSpec changes. One device per person, recovery through two people vouching, an invite secret instead of the content key, and the first-run question.
+
+## 2026-09-23
+
+**Topics updated:** mobile, server, and the quickstart
+**New topics:** none
+**Sources scanned:** 31
+**Sources changed:** 9: README.md, apps/server/README.md, ADR-0003, ADR-0005, ADR-0006, ADR-0010 and ADR-0012, and DESIGN.md and PRODUCT.md, newly added as sources. A person's name comes first and a profile is sealed, a text can be a full post with a title, focus and the two-lane feed are designed, and everyone is on one server until M7.

@@ -128,8 +128,9 @@ rolling deploy, is in everyone's feed within that.
 - **Invite states.** A person's invite does not expire, is not single-use and
   cannot be revoked yet, and an operator's does not expire (CDI-1842). The link format, with the content key after the `#`
   where the server never sees it, is CDI-1836.
-- **Names.** Nobody's display name is on the server. What a person is called
-  travels inside the ciphertext, where it belongs.
+- **Names.** Nobody's name is on the server yet. It arrives as a profile blob
+  the server stores and never reads, like a moment (CDI-1896, spec in
+  `openspec/changes/cdi-1895-your-name-and-how-you-show-yourself`).
 - **A lost phone, or a second one.** M5 (CDI-1865). The key is checked on every
   request so that replacing it takes effect immediately.
 - **Disconnecting.** Nothing removes a connection yet.

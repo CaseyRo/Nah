@@ -10,6 +10,8 @@ date: 2026-09-13
 
 Accepted (2026-09-13). Supersedes [ADR-0002](0002-mastodon-backend.html). Amended by [ADR-0011](0011-plain-go-and-a-database-per-circle.html): the server, the single binary and SQLite all stand, but the spike measured PocketBase at seven times the memory of plain Go and it was dropped.
 
+**Amended 2026-09-23.** Until Nah? hosts servers for other people (M7), everyone is on one server, whose address the app carries as a build setting, so the directory is not needed yet and moves to M7 (CDI-1838). The push relay, the invite-link domain and the App Review demo stand.
+
 ## Context
 
 ADR-0002 forked vanilla Mastodon for two reasons. The practical one was that Mastodon had already solved accounts, timelines, media and OAuth. The deeper one was a commitment to build on great open source software rather than assemble a proprietary stack on rented infrastructure.

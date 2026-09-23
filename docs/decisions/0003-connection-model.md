@@ -10,6 +10,8 @@ date: 2026-04-26
 
 Superseded by [ADR-0009](0009-circles-not-one-circle.html) (2026-09-13), which keeps invitation-is-connection but attaches it to a circle rather than to a single personal network. Accepted 2026-04-26.
 
+**Restored 2026-09-13** by [ADR-0017](0017-one-network-of-a-hundred-and-fifty.html), which superseded ADR-0009 the same day and brought back one network per person with invitation as connection. Read this record through ADR-0017.
+
 ## Context
 
 Nah? is invitation-only, organic-growth-only, one-circle-per-user. The question was how the invitation mechanism, the slot mechanic, and the connection model actually interact.

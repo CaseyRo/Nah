@@ -44,7 +44,7 @@ A person SHALL be able to report a moment posted by someone in their circle. Bec
 
 ### Requirement: A published contact, and cutting someone off
 
-Nah? SHALL publish an abuse contact, in the app and on its site, that anyone can reach without joining. Nah?'s operator SHALL be able to cut a person off from the directory and from push, so that nobody can reach them through Nah?, without the operator reading anything they posted (CDI-1867).
+Nah? SHALL publish an abuse contact, in the app and on its site, that anyone can reach without joining. Nah?'s operator SHALL be able to cut a person off from the server and from push, and from the directory once there is one (M7, CDI-1838), so that nobody can reach them through Nah?, without the operator reading anything they posted (CDI-1867).
 
 #### Scenario: Finding the contact
 
@@ -54,4 +54,4 @@ Nah? SHALL publish an abuse contact, in the app and on its site, that anyone can
 #### Scenario: Cutting someone off
 
 - **WHEN** the operator cuts a person off
-- **THEN** no app finds that person through the directory and no push reaches them, and the operator has read none of their moments
+- **THEN** the server no longer serves them or anything of theirs and no push reaches them, and the operator has read none of their moments

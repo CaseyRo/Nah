@@ -66,9 +66,9 @@ Nah? stands on the shoulders of giants. We're grateful to these open source proj
 | 2026-09-13 | Content encrypted on the device; sign-in is an Ed25519 key, not a password | The server has no use for plaintext, so it should not hold any. See [ADR-0012](docs/decisions/0012-encrypted-on-device.md) and [ADR-0015](docs/decisions/0015-no-passwords-a-key-on-the-device.md). |
 | 2026-09-14 | ~~One SQLite file per circle~~ → one per person, the feed read newest poster first | Circles gave way to one network of 150 per person, which made the feed a fan-in. Measured before it was built. See [ADR-0017](docs/decisions/0017-one-network-of-a-hundred-and-fifty.md), the amended [ADR-0011](docs/decisions/0011-plain-go-and-a-database-per-circle.md) and the [spike results](https://caseyro.github.io/Nah/research/spike-results/). |
 
-The PWA framing is preserved struck-through in the OpenSpec history (`openspec/changes/cap-01-core-identity/specs/pwa-shell/spec.md`) so the evolution is visible, not erased.
+The PWA framing is preserved in git history (the `pwa-shell` spec, deleted at 655cfb7), and [CAP_EVOLUTION.md](openspec/changes/CAP_EVOLUTION.md) records how every capability moved, so the evolution is visible, not erased.
 
-How the code fits together today is in the [codebase wiki](docs/wiki/quickstart.md). The original vision and design are in [OpenSpec](openspec/changes/nah-vision/).
+How the code fits together today is in the [codebase wiki](docs/wiki/quickstart.md). The product principles and every capability are in [OpenSpec](openspec/changes/), starting with [nah-vision](openspec/changes/cdi-1881-nah-vision/).
 
 ---
 
@@ -85,9 +85,9 @@ How the code fits together today is in the [codebase wiki](docs/wiki/quickstart.
   /wiki             # Codebase wiki, not published on the site
 /spike              # Measurements that shaped the server; none of it ships
 /openspec
-  /changes          # Feature specifications
-    /nah-vision     # The original vision
-    /cap-01-*       # Capability changes
+  /changes          # One change per capability, named after its Linear issue
+    /cdi-1881-nah-vision   # The product principles
+    /cdi-*          # Capability changes
 ```
 
 ---
@@ -97,7 +97,7 @@ How the code fits together today is in the [codebase wiki](docs/wiki/quickstart.
 - **[Codebase wiki](docs/wiki/quickstart.md)**: how the code fits together, and how to run it
 - **[Decisions](docs/decisions/)**: architecture decision records
 - **[Research](docs/research/)**: the concept audit, the retention investigation and the spike results
-- **[Vision & Specs](openspec/changes/nah-vision/)**: the original why, what and how
+- **[Vision & Specs](openspec/changes/)**: the product principles and every capability
 - **[Reflections](https://caseyro.github.io/Nah/)**: build-in-public blog
 
 ---

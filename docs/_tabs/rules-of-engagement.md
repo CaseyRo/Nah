@@ -6,7 +6,7 @@ order: 2
 
 How people come into Nah?, what happens when a connection ends, how someone gets back in on a new phone, and how they leave for good.
 
-These rules were settled on 15 September 2026. Most of them are not built yet: today's test app connects two people by pasting an invitation. The detail sits in the [specs](https://github.com/CaseyRo/Nah/tree/main/openspec/changes), and the reasons in the [decisions]({{ '/decisions/' | relative_url }}).
+These rules were settled on 15 September 2026, and updated on 23 September. Most of them are not built yet: today's test app connects two people by pasting an invitation. The detail sits in the [specs](https://github.com/CaseyRo/Nah/tree/main/openspec/changes), and the reasons in the [decisions]({{ '/decisions/' | relative_url }}).
 
 ## Why by invitation, and why in person
 
@@ -35,15 +35,15 @@ An evening is not a room. Nobody joins "the dinner", and there are no groups in 
 ## Inviting someone
 
 - **In person**, hold your phones together. Where a phone cannot do that, one shows a code and the other scans it. Both of you are connected, and neither has anything to accept.
-- **Far away**, send a link through any app you like. It opens Nah?, shows who sent it, and connects you after one confirmation. Someone without the app lands on a plain page that names who invited them and sends them to their store, and after installing, the app carries on with the same invitation.
+- **Far away**, send a link through any app you like. It opens Nah?, says someone invited them, and connects you after one confirmation; only then do you see each other's names. A link names nobody, so it gives nothing away about you wherever it ends up. Someone without the app lands on a plain page that says they were invited and sends them to their store, and after installing, the app carries on with the same invitation.
 - **Every invitation works once.** Opened a second time, it is refused, with a sentence saying so.
 - **No invitation expires.** The people who most need a link are often the slowest to install, and a dead link may be the last thing that ever happens between you.
 - **You can withdraw an invitation.** You can always see the ones you made that nobody has used, and withdraw any of them, such as the link that leaked into a group chat.
 - **A link holds nothing worth stealing.** It carries a one-time secret, and the part that matters never reaches any server. A screenshot of a used link connects nobody and unlocks nothing.
-- **A full circle is said in words.** When the other person's circle is full, you are told it is theirs, never with a number. They are told too, in words, so they can make room if they want to. Filling the 150 is not a goal, and nobody is ever shown how many people they have.
+- **A full circle is said in words.** When the other person's circle is full, you are told it is theirs, never with a number. They are told too, in words, that someone could not connect, so they can make room if they want to. Filling the 150 is not a goal, and nobody is ever shown how many people they have.
 - **Nobody can see who is in your circle**, how many there are, or who you have in common with anyone.
 
-When someone new arrives, Nah? shows one sentence on a calm screen, then asks one question: *What do you want to share with the ones closest to you right now?* The answer sits under their name on their page and reaches their circle as their first moment. They can add a photo or skip it, and they land on a feed that shows only moments people really posted.
+When someone new arrives, Nah? first asks their name: the one the people close to them know them by. It can also ask their gender and their sexual orientation, and "rather not tell" is as good an answer as any; whatever they give is sealed on their phone and shown only to their circle, on their page. Then Nah? shows one sentence on a calm screen, and asks one question: *What do you want to share with the ones closest to you right now?* The answer sits under their name on their page and reaches their circle as their first moment. They can add a photo or skip it, and they land on a feed that shows only moments people really posted.
 
 The first person on a new server is invited by whoever runs that server.
 

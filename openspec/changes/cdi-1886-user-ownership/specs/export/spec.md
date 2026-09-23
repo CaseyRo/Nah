@@ -6,7 +6,7 @@ A person's own moments, taken out of Nah? whenever they like, as plain files the
 
 ### Requirement: Export your own moments
 
-A person SHALL be able to export, at any time and from the app, every moment they posted that still exists: its words, time, short line, place and song, and its media as posted. The export SHALL be one readable data file with the media files beside it. It SHALL contain nothing that anyone else posted, and none of the reactions other people gave (`product-principles`, CDI-1857, ruled 2026-09-15).
+A person SHALL be able to export, at any time and from the app, every moment they posted that still exists: its title and words, time, short line, place and song, and its media as posted, together with their own profile (CDI-1895). The export SHALL be one readable data file with the media files beside it. It SHALL contain nothing that anyone else posted, and none of the reactions other people gave (`product-principles`, CDI-1857, ruled 2026-09-15).
 
 #### Scenario: Exporting
 

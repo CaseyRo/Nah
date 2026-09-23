@@ -2,7 +2,7 @@
 
 ## Purpose [coverage: high -- 6 sources]
 
-Sources span 2026-01-28 to 2026-09-14. Everything below describes the state on 2026-09-14 unless it carries its own date.
+Sources span 2026-01-28 to 2026-09-23. Everything below describes the state on 2026-09-14 unless it carries its own date.
 
 The server is the one part of Nah? that runs somewhere other than a phone: a single static Go binary that keeps one SQLite file per person. It stores the ciphertext of moments, orders it by time and hands back the newest page, and it never reads a moment (see [opaque moments](../concepts/opaque-moments.md)). Every copy of the [app](mobile.md) talks to it, and nothing else does yet.
 
@@ -25,13 +25,16 @@ On disk the data directory holds one `<person id>.db` per person, plus `session.
 
 - **The app**, over versioned routes under `/v1/people`. The app registers a device key with an invitation, signs a challenge with it, and uses the resulting session for invites, connections, the feed and posting.
 - **Two Go modules and the standard library**: the pure-Go SQLite driver and `golang.org/x/time/rate`, inside a budget of five ([ADR-0014](../../decisions/0014-the-go-setup.md)).
-- **Nothing central yet.** [ADR-0010](../../decisions/0010-small-server-not-mastodon.md) names the only central services the project intends to run: a push relay, the invite-link domain with a directory from an identifier to its current address, and an account for App Review. None of them exists.
+- **Nothing central yet.** [ADR-0010](../../decisions/0010-small-server-not-mastodon.md) names the only central services the project intends to run: a push relay, the invite-link domain, and an account for App Review. None of them exists. The directory from an identifier to its server moved to M7 on 2026-09-23: until then everyone is on one server, which is also all the feed can read.
 
 Streaming backups with Litestream are planned. Nothing in `apps/server` runs them yet, and restoring from a backup has not been measured.
 
 ## Key Decisions [coverage: high -- 13 sources]
 
 Newest first. Each decision record is the canonical home for its reasoning.
+
+- **2026-09-23:** everyone is on one server until M7, because the feed reads people's files from this server's own disk and connecting needs both people here; the directory waits for hosting (the note on [ADR-0010](../../decisions/0010-small-server-not-mastodon.md)).
+- **2026-09-23:** each person gets one profile blob, holding their name and, once sealed, their gender and orientation, which the server stores and never reads like a moment. The feed returns the profiles of a page's authors in the same pass as their moments, never one read per connection (the note on [ADR-0012](../../decisions/0012-encrypted-on-device.md)). Not built.
 
 - **2026-09-15:** a person has exactly one device key, replaced only by a recovery that two people from their circle vouch for, and the server will hold content keys sealed to device keys it cannot open (the notes on [ADR-0012](../../decisions/0012-encrypted-on-device.md) and [ADR-0015](../../decisions/0015-no-passwords-a-key-on-the-device.md)). Not built.
 - **2026-09-15:** reactions will be stored sealed, so the server knows who reacted to which moment and when but not how, and returns them only to the poster ([ADR-0018](../../decisions/0018-reactions-the-poster-sees.md)). Not built.
@@ -64,7 +67,7 @@ It serves on `:8080` and keeps its files in `./data`; `NAH_ADDR` and `NAH_DATA_D
 - **Open files stay open for the life of the process.** That is seven to nine descriptors and about a quarter of a megabyte per person with a file open. A host holding thousands of people needs an eviction policy first.
 - **Stop it with a signal, never a kill.** A graceful shutdown closes and checkpoints every file; a killed process leaves up to 4 MB of write-ahead log behind per person.
 - **Migrations are additive only.** During a rolling deploy the old instance still reads files the new one has migrated; the rule is written on the migrations in `store.go`.
-- **A person's invites do not expire, are not single-use and cannot be revoked yet**, and registration shares one server-wide rate limit with sign-in ([server README](../../../apps/server/README.md)).
+- **A person's invites do not expire, are not single-use and cannot be revoked yet**, so one that leaks lets anyone register and connect to that person until their circle is full, and registration shares one server-wide rate limit with sign-in ([server README](../../../apps/server/README.md)).
 - **An operator invite is spent the moment it is redeemed**, even if registering fails afterwards. Make another with `server invite`; a refused registration never leaves a person behind.
 - **ADR-0011's title still says "per circle".** The amendment at its end is the current state.
 

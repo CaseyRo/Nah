@@ -16,6 +16,8 @@ Restated for [ADR-0017](0017-one-network-of-a-hundred-and-fifty.html), which rep
 
 The M1 walking skeleton sends moments unencrypted until each person has a content key (CDI-1863). The first byte of every blob already says how it is sealed, so nothing posted before encryption arrives needs migrating.
 
+**Amended 2026-09-23.** A person's profile is sealed exactly like a moment: their name, avatar, and the gender and sexual orientation they chose to give, as one blob the server stores and cannot read. Orientation is special-category data under GDPR Art. 9, so the app asks for it only once profiles are sealed, and only as an explicit answer beside "rather not tell". Because an invite carries no content key, an invite link names nobody; names appear once the two are connected. The detail is in the `cdi-1895-your-name-and-how-you-show-yourself` OpenSpec change.
+
 ## Context
 
 The September audit noted that Nah? never searches, ranks or counts anything, so its server never needs to read a moment. That made encryption a client change rather than a server rewrite, and parked it as a later possibility.
@@ -58,7 +60,7 @@ Negative / acknowledged cost:
 - **Removing someone is forward-looking only.** They keep what they could already read, which is also true of every conversation anyone has ever had.
 - **We cannot inspect reported content**, so a report has to carry the reporter's own decrypted copy. Apple still requires the reporting mechanism to exist, so this has to be designed rather than waved at.
 - **Export can only be produced by a device holding the key.** The server cannot hand anyone their archive.
-- **A leaked invite link is a leaked key** until that invite is revoked, because the link is what connects people. Making the touch the ordinary way to connect ([ADR-0017](0017-one-network-of-a-hundred-and-fifty.html)) makes the link the exception rather than the rule.
+- **A leaked invite link is a leaked key** until that invite is revoked, because the link is what connects people. *(Since the 2026-09-15 amendment a link carries a one-time secret and no key, so a leaked link can connect one stranger but unlock nothing.)* Making the touch the ordinary way to connect ([ADR-0017](0017-one-network-of-a-hundred-and-fifty.html)) makes the link the exception rather than the rule.
 
 ## What would prove this wrong
 

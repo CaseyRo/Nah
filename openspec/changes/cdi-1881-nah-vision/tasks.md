@@ -31,3 +31,4 @@ Specification only this round. The principles are checked here against what exis
 - [ ] 3.9 `cdi-1888-comments`
 - [ ] 3.10 `cdi-1857-archive`, when M6 comes up
 - [x] 3.11 `cdi-1865-recovery-and-key-rotation`
+- [x] 3.12 `cdi-1895-your-name-and-how-you-show-yourself`

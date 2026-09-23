@@ -21,9 +21,9 @@ The server listens on `:8080`, which is where the app looks by default. Nah? is 
 - `docs`: the published site, the decision records, and this wiki, which the site does not publish.
 - `.github`, `.pre-commit-config.yaml` and `mise.toml`: [delivery](topics/delivery.md).
 
-## Where it stands, 2026-09-14
+## Where it stands, 2026-09-23
 
-M1, the walking skeleton, works on one machine: two people can join by invitation, post and read each other's moments, through the real app and the real server. What remains of M1 is two physical phones on a deployed server, and that deploy does not exist yet.
+M1, the walking skeleton, works on one machine: two people can join by invitation, post and read each other's moments, through the real app and the real server. Nobody has a name yet, so the next step is asking for one (CDI-1896), followed by two physical phones on a deployed server, and that deploy does not exist yet. The design for the feed, focus and the timeline clock is settled in [`DESIGN.md`](../../DESIGN.md) and not built.
 
 ## Reading this wiki
 

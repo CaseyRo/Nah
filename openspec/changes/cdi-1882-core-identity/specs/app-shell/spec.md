@@ -119,7 +119,7 @@ The app SHALL show the system notification permission prompt only after saying, 
 
 ### Requirement: Nothing reports on the person
 
-The app SHALL contain no analytics, crash-reporting, advertising, attribution or AI software, directly or through anything it depends on (CDI-1860). Every request the app makes itself SHALL go to the person's Nah? server or to another address Nah? runs, such as the directory or the push relay. The operating system's own push service is outside this rule, and so are two lookups a person starts themselves: the operating system's place lookup, when they add their location to a moment, and the song-link lookup with its one artwork fetch, when they share a song (CDI-1884).
+The app SHALL contain no analytics, crash-reporting, advertising, attribution or AI software, directly or through anything it depends on (CDI-1860). Every request the app makes itself SHALL go to the person's Nah? server or to another address Nah? runs, such as the push relay. The operating system's own push service is outside this rule, and so are three requests a person starts themselves: the operating system's place lookup, when they add their location to a moment; the song-link lookup with its one artwork fetch, when they share a song; and a song's sample from its music service, when they tap a music moment (CDI-1884).
 
 #### Scenario: Adding a dependency
 
