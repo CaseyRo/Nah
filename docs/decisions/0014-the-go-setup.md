@@ -10,6 +10,8 @@ date: 2026-09-13
 
 Accepted (2026-09-13). Follows [ADR-0011](0011-plain-go-and-a-database-per-circle.html), which chose plain Go and left every library question open.
 
+**Amended 2026-09-25.** The dev server deploys the way the rest of the fleet does: the Komodo webhook builds the image in place from the repository (`apps/server/compose.yaml`), and no registry is involved. The release workflow, version tags and a registry image wait for M7, when other people run the server. The webhook secret rule below stands unchanged. The server runs on nebula-1 at `nah.casey.berlin`, with no backups until Litestream, an accepted risk while only Casey's own circle uses it (CDI-1831).
+
 ## Context
 
 Dropping PocketBase removed a framework and, with it, a set of default answers about routing, storage, migrations, sign-in and configuration. Those answers now have to be chosen deliberately.

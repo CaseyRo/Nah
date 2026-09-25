@@ -1,0 +1,27 @@
+# The Nah? dev server on the fleet (CDI-1831): nebula-1, deployed by Komodo on
+# every push to main, built in place from this directory as the rest of the
+# fleet does (the note on ADR-0014).
+services:
+  nah:
+    build: .
+    container_name: nah
+    restart: unless-stopped
+    # The tunnel has a connector on nebula-1 and one on werkstatt-1, so it
+    # reaches this over Tailscale, never localhost. Nothing listens publicly.
+    ports:
+      - "100.89.96.56:8150:8080"
+    volumes:
+      - nah-data:/data
+    # A stop closes and checkpoints every open person file. Docker's 10 second
+    # default can kill it partway and leave write-ahead logs behind.
+    stop_grace_period: 30s
+    # No healthcheck here: the image has no shell. Gatus checks /healthz from
+    # outside.
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+volumes:
+  nah-data:
