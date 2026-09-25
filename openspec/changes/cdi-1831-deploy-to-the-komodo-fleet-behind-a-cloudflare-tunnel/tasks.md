@@ -17,3 +17,4 @@
 - [x] 3.1 `https://nah.casey.berlin/healthz` answers ok
 - [ ] 3.2 The two-person test passes against it
 - [ ] 3.3 A second deploy keeps a session signed in (ADR-0015)
+- [x] 3.4 A push deploys by itself: `webhook_force_deploy` and `run_build` on, and a redelivered push produced a DeployStack by the webhook

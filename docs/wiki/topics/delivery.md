@@ -49,6 +49,7 @@ The server's checks and container commands are in the [server README](../../../a
 - **A commit can stop on its first attempt.** When the end-of-file or markdown hook rewrites a file, the commit aborts; stage the rewritten files and commit again.
 - **Only server and site changes run anything on push.** App changes are checked locally or not at all.
 - **Every push to `main` redeploys the server**, including pushes that only touch docs. The webhook secret is identical on GitHub and in the Komodo stack; if either is changed alone, every delivery answers 401 and deploys nothing, silently ([ADR-0014](../../decisions/0014-the-go-setup.md)).
+- **A webhook that authenticates can still deploy nothing.** The stack needs `webhook_force_deploy` and `run_build` on: without the first a push only deploys when `compose.yaml` itself changes, and without the second a deploy reuses the image it already built. GitHub shows 200 either way; Komodo's updates for `git-nah-nebula` show whether a DeployStack by the webhook followed.
 - **The tunnel has connectors on nebula-1 and werkstatt-1**, so it reaches the server at nebula-1's Tailscale address. A port bound to localhost would fail about half the time.
 - **Nothing backs up the data yet.** Losing the `nah-data` volume loses the circle, until Litestream.
 - **A green push is not a deploy.** Check the webhook's recent delivery on GitHub and the stack's update in Komodo ([ADR-0014](../../decisions/0014-the-go-setup.md)).
