@@ -94,4 +94,51 @@ void main() {
       expect(open(blob), unreadableMoment, reason: name);
     });
   });
+
+  test('a profile reads back the name it was given', () {
+    expect(openProfile(sealProfile('Maya')), 'Maya');
+    expect(openProfile(sealProfile('Zoë Ó Dubhghaill')), 'Zoë Ó Dubhghaill');
+  });
+
+  test('a profile is read as hostile input, and never throws', () {
+    final blobs = <String, List<int>>{
+      'empty': [],
+      'sealed with a key this app lacks': [1, ...utf8.encode('{}')],
+      'not json': [0, ...utf8.encode('Maya')],
+      'no name': unsealed({'v': 1}),
+      'a blank name': unsealed({'v': 1, 'name': '   '}),
+      'a name that is not text': unsealed({'v': 1, 'name': 42}),
+      'a name past the limit': unsealed({
+        'v': 1,
+        'name': 'x' * (maxNameLength + 1),
+      }),
+      'past the size limit': [0, ...List.filled(maxEnvelopeBytes + 1, 0x20)],
+      'nested deep enough to hurt': [0, ...utf8.encode('[' * 60000)],
+    };
+    blobs.forEach((name, blob) {
+      expect(openProfile(blob), isNull, reason: name);
+    });
+  });
+
+  test('a feed row without a profile has no name, and one with a bad profile '
+      'has none either', () {
+    final row = {
+      'id': 1,
+      'author_id': 'p',
+      'created_at': 0,
+      'blob': base64.encode(seal('hi', DateTime(2026, 9, 23))),
+    };
+    expect(Moment.fromJson(row).authorName, isNull);
+    expect(
+      Moment.fromJson({...row, 'author_profile': 'not base64!'}).authorName,
+      isNull,
+    );
+    expect(
+      Moment.fromJson({
+        ...row,
+        'author_profile': base64.encode(sealProfile('Sam')),
+      }).authorName,
+      'Sam',
+    );
+  });
 }

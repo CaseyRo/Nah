@@ -13,6 +13,9 @@ const maxEnvelopeBytes = 64 * 1024;
 const maxTextLength = 4000;
 const _maxFallbackLength = 500;
 
+/// The name a person gave, as the people close to them know them (CDI-1895).
+const maxNameLength = 50;
+
 const unreadableMoment = 'This moment could not be read.';
 
 /// A moment as the app shows it.
@@ -22,21 +25,17 @@ class Moment {
     required this.id,
     required this.at,
     required this.text,
+    this.authorName,
   });
 
   /// One row of the server's feed.
   factory Moment.fromJson(Map<String, dynamic> json) {
-    List<int> blob;
-    try {
-      blob = base64.decode(json['blob'] as String);
-    } on FormatException {
-      blob = const [];
-    }
     return Moment(
       author: json['author_id'] as String,
       id: json['id'] as int,
       at: DateTime.fromMillisecondsSinceEpoch(json['created_at'] as int),
-      text: open(blob),
+      text: open(_bytes(json['blob'])),
+      authorName: openProfile(_bytes(json['author_profile'])),
     );
   }
 
@@ -52,6 +51,47 @@ class Moment {
   /// The words to show: the moment itself, the fallback its author's app wrote,
   /// or [unreadableMoment].
   final String text;
+
+  /// The name the author gave, or null when they have not given one or it
+  /// could not be read.
+  final String? authorName;
+}
+
+List<int> _bytes(Object? field) {
+  if (field is! String) return const [];
+  try {
+    return base64.decode(field);
+  } on FormatException {
+    return const [];
+  }
+}
+
+/// Writes a person's profile as a version 1 envelope, unsealed like a moment
+/// until CDI-1863. Gender, pronouns and orientation join it then (CDI-1897).
+Uint8List sealProfile(String name) => Uint8List.fromList([
+  _unsealed,
+  ...utf8.encode(jsonEncode({'v': 1, 'name': name})),
+]);
+
+/// Reads a profile as hostile input, like a moment: the name, or null.
+String? openProfile(List<int> blob) {
+  if (blob.isEmpty ||
+      blob.length > maxEnvelopeBytes + 1 ||
+      blob.first != _unsealed) {
+    return null;
+  }
+  try {
+    final envelope = jsonDecode(utf8.decode(blob.sublist(1)));
+    final name = envelope is Map<String, dynamic> ? envelope['name'] : null;
+    if (name is String &&
+        name.trim().isNotEmpty &&
+        name.runes.length <= maxNameLength) {
+      return name;
+    }
+  } on FormatException {
+    // Falls through to null, like any other unreadable profile.
+  }
+  return null;
 }
 
 /// Writes a text moment as a version 1 envelope, unsealed for now.

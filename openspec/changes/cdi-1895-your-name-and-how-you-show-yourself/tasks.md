@@ -4,9 +4,9 @@ Specification only this round. Nothing below is started.
 
 ## 1. The name (CDI-1896, M1)
 
-- [ ] 1.1 Server: one opaque profile blob per person, set by its owner and returned for the authors on a feed page in the same pass as their moments
-- [ ] 1.2 App: the profile envelope behind a seal byte, read as hostile input
-- [ ] 1.3 App: ask the name first after joining; show it on every moment
+- [x] 1.1 Server: one opaque profile blob per person, set by its owner and returned for the authors on a feed page in the same pass as their moments
+- [x] 1.2 App: the profile envelope behind a seal byte, read as hostile input
+- [x] 1.3 App: ask the name first after joining; show it on every moment (the greeting after it is the first-run ritual, CDI-1883 task 1.4)
 - [ ] 1.4 App: change the name from your own page
 
 ## 2. Gender, pronouns and orientation (CDI-1897, after CDI-1863)

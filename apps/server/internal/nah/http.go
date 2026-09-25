@@ -53,6 +53,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /v1/people/{person}/connections", s.handleConnect)
 	mux.HandleFunc("GET /v1/people/{person}/feed", s.handleFeed)
 	mux.HandleFunc("POST /v1/people/{person}/moments", s.handlePost)
+	mux.HandleFunc("PUT /v1/people/{person}/profile", s.handleProfile)
 	return s.logging(mux)
 }
 
@@ -81,6 +82,8 @@ func (s *Server) handleRegister(w http.ResponseWriter, r *http.Request) {
 		fail(w, http.StatusBadRequest, "Nah? is by invitation. Ask someone you know for theirs.")
 	case errors.Is(err, ErrBadInvite):
 		fail(w, http.StatusForbidden, "This invitation is no longer valid.")
+	case errors.Is(err, ErrUsedInvite):
+		fail(w, http.StatusForbidden, "This invitation has already been used.")
 	case errors.Is(err, ErrNetworkFull):
 		fail(w, http.StatusConflict, "There is no room for this connection right now.")
 	default:
@@ -181,6 +184,8 @@ func (s *Server) handleConnect(w http.ResponseWriter, r *http.Request) {
 		fail(w, http.StatusConflict, "There is no room for this connection right now.")
 	case errors.Is(err, ErrBadInvite):
 		fail(w, http.StatusForbidden, "This invitation is no longer valid.")
+	case errors.Is(err, ErrUsedInvite):
+		fail(w, http.StatusForbidden, "This invitation has already been used.")
 	case errors.Is(err, ErrOwnInvite):
 		fail(w, http.StatusBadRequest, "That is your own invitation.")
 	default:
@@ -226,6 +231,30 @@ func (s *Server) handlePost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	write(w, http.StatusCreated, m)
+}
+
+// handleProfile replaces the person's profile: their name and how they show
+// themselves, as ciphertext the server never reads (CDI-1895).
+func (s *Server) handleProfile(w http.ResponseWriter, r *http.Request) {
+	person, ok := s.authorize(w, r)
+	if !ok {
+		return
+	}
+	var in struct {
+		Blob []byte `json:"blob"`
+	}
+	if !decode(w, r, &in) {
+		return
+	}
+	if len(in.Blob) == 0 {
+		fail(w, http.StatusBadRequest, "A profile cannot be empty.")
+		return
+	}
+	if err := s.store.SetProfile(person, in.Blob); err != nil {
+		s.storeErr(w, r, err)
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 }
 
 // --- plumbing ---

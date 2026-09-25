@@ -35,3 +35,10 @@
 **New topics:** none
 **Sources scanned:** 31
 **Sources changed:** 9: README.md, apps/server/README.md, ADR-0003, ADR-0005, ADR-0006, ADR-0010 and ADR-0012, and DESIGN.md and PRODUCT.md, newly added as sources. A person's name comes first and a profile is sealed, a text can be a full post with a title, focus and the two-lane feed are designed, and everyone is on one server until M7.
+
+## 2026-09-23, second compile
+
+**Topics updated:** server, mobile, and the quickstart
+**New topics:** none
+**Sources scanned:** 31
+**Sources changed:** 5: README.md, apps/server/README.md, apps/mobile/README.md, ADR-0005 and ADR-0012. The name is built and shown on every moment, invitations work once, pronouns joined the profile, and the slow beat greets the person by name.

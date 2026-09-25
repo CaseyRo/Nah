@@ -61,6 +61,7 @@ class Server {
 
   static const _seedKey = 'nah.identity.seed';
   static const _personKey = 'nah.identity.person';
+  static const _nameKey = 'nah.identity.name';
 
   final Dio _dio;
   final FlutterSecureStorage _storage;
@@ -70,9 +71,13 @@ class Server {
   late List<int> _publicKey;
   String? _person;
   String? _token;
+  String? _name;
 
   /// This device's person id, once it has joined.
   String get me => _person!;
+
+  /// The name this person gave, or null until they have given one.
+  String? get name => _name;
 
   /// Loads this device's identity, making a key on first run, and signs in.
   /// Throws [NeedsInvitation] when the device has not joined yet.
@@ -88,6 +93,7 @@ class Server {
 
     _person = await _storage.read(key: _personKey);
     if (_person == null) throw const NeedsInvitation();
+    _name = await _storage.read(key: _nameKey);
     try {
       await _signIn();
     } on DioException catch (e) {
@@ -96,7 +102,9 @@ class Server {
       final status = e.response?.statusCode;
       if (status != 403 && status != 404) rethrow;
       await _storage.delete(key: _personKey);
+      await _storage.delete(key: _nameKey);
       _person = null;
+      _name = null;
       throw const NeedsInvitation();
     }
   }
@@ -164,6 +172,20 @@ class Server {
       data: {'blob': base64.encode(seal(text, DateTime.now()))},
     ),
   );
+
+  /// Gives this person their name, the one their circle knows them by
+  /// (CDI-1896). It travels as a profile the server stores and never reads.
+  Future<void> setName(String name) async {
+    await _refusable(
+      () => _authed<Object?>(
+        'PUT',
+        '/v1/people/$_person/profile',
+        data: {'blob': base64.encode(sealProfile(name))},
+      ),
+    );
+    await _storage.write(key: _nameKey, value: name);
+    _name = name;
+  }
 
   /// What someone needs to connect to this person: who, then the secret after a
   /// `#`, the shape CDI-1836 gives the link. The touch and the link themselves

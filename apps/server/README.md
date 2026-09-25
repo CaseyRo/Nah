@@ -49,11 +49,16 @@ path, and the feed is the only one that reads anybody else's file.
 | `POST /v1/people/{person}/connections` | `{person, invite}` → 204, connected both ways |
 | `GET /v1/people/{person}/feed?limit=30` | you and your people, newest first |
 | `POST /v1/people/{person}/moments` | `{blob}` → the stored moment |
+| `PUT /v1/people/{person}/profile` | `{blob}` → 204; the person's name, sealed like a moment |
 
-The last four want `Authorization: Bearer <token>` for the person in the path.
+The last five want `Authorization: Bearer <token>` for the person in the path.
 
 Byte fields (`public_key`, `signature`, `blob`) are base64 in JSON, which is
 what Go's `encoding/json` does with `[]byte` and what Dart's `base64` produces.
+
+Every moment in a feed also carries its author's profile as `author_profile`,
+read in the same pass as the page's moments, never once per connection. It is
+how a feed names who posted (CDI-1896).
 
 `blob` is the ciphertext of a moment envelope ([ADR-0016](../../docs/decisions/0016-the-moment-envelope.md)).
 Nothing on this side knows or may ever learn what is in it — not the type, not
@@ -81,8 +86,10 @@ invite and the other redeems it. `{person}` in the path is whoever redeems, and
 the body names who made it. A touch and a link
 carry the same two things, so there is one route for both and the server cannot
 tell them apart ([CDI-1839](https://linear.app/cdit/issue/CDI-1839), [CDI-1840](https://linear.app/cdit/issue/CDI-1840)).
-Connection is mutual and immediate. The cap of 150 is counted on both sides, and
-a full network is refused in words, never a number ([ADR-0004](../../docs/decisions/0004-no-counts-anywhere.md)).
+Connection is mutual and immediate. Every invitation works once: a second
+redemption is refused as used, a retry of the connection it already made is
+harmless, and a refused connection leaves it unused. The cap of 150 is counted on
+both sides, and a full network is refused in words, never a number ([ADR-0004](../../docs/decisions/0004-no-counts-anywhere.md)).
 
 ### Signing in
 
@@ -125,12 +132,11 @@ rolling deploy, is in everyone's feed within that.
 
 - **Media.** Text moments only; the request body is capped at 1 MiB. Photo and
   voice are M3, and they get an upload path rather than this one.
-- **Invite states.** A person's invite does not expire, is not single-use and
-  cannot be revoked yet, and an operator's does not expire (CDI-1842). The link format, with the content key after the `#`
+- **Invite states.** Nothing expires, by design, but nobody can see or revoke
+  their unused invites yet (CDI-1842). The link format, with the content key after the `#`
   where the server never sees it, is CDI-1836.
-- **Names.** Nobody's name is on the server yet. It arrives as a profile blob
-  the server stores and never reads, like a moment (CDI-1896, spec in
-  `openspec/changes/cdi-1895-your-name-and-how-you-show-yourself`).
+- **Gender, pronouns and orientation.** They join the profile once it is sealed
+  (CDI-1897, after CDI-1863).
 - **A lost phone, or a second one.** M5 (CDI-1865). The key is checked on every
   request so that replacing it takes effect immediately.
 - **Disconnecting.** Nothing removes a connection yet.
@@ -145,5 +151,5 @@ go run golang.org/x/vuln/cmd/govulncheck@latest ./...
 
 `TestTwoPeopleConnected` is CDI-1835 with the phones taken out: one person joins
 through the other's invitation, each posts, and each sees both.
-`TestRegistrationIsByInvitation` holds the rule that nobody arrives uninvited. `TestFeedMatchesReadingEveryFile` holds
+`TestRegistrationIsByInvitation` holds the rule that nobody arrives uninvited, and `TestInviteWorksOnce` that nobody arrives twice on one invitation. `TestFeedMatchesReadingEveryFile` holds
 the feed's shortcut to exactly the page that reading every file would give.

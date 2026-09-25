@@ -29,6 +29,9 @@ emulator needs `http://10.0.2.2:8080`.
   device only, and asks for an invitation, because Nah? is by invitation.
   Joining with it registers the person, connects them to whoever sent it, and
   signs a challenge. A 401 signs in again without anyone noticing.
+- **Your name, asked first** (CDI-1896). Straight after joining, the app asks
+  what the people closest to you call you, and every moment in the feed names
+  who posted it. The name travels as a profile, unsealed like moments for now.
 - **One page of feed, newest first** (CDI-1833). Pull down to reload it; it
   never loads more.
 - **Text moments** (CDI-1834), written as an [ADR-0016](../../docs/decisions/0016-the-moment-envelope.md)

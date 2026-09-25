@@ -5,7 +5,7 @@ Specification only this round. Nothing below is started unless it is ticked.
 ## 1. Joining
 
 - [x] 1.1 An invitation registers a person and connects them in one step; an operator's invitation for the first person (M1)
-- [ ] 1.2 A person's invitation is single-use, as an operator's already is
+- [x] 1.2 A person's invitation is single-use, as an operator's already is (with CDI-1896)
 - [ ] 1.3 The page for a phone without Nah?, and resuming after install without the secret reaching a server (CDI-1841)
 - [ ] 1.4 The first-run ritual (ADR-0005), after the name from CDI-1895
 

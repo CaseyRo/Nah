@@ -20,6 +20,11 @@ class Uninvited extends FeedState {
   const Uninvited();
 }
 
+/// This person has joined but has not said what they are called (CDI-1896).
+class Unnamed extends FeedState {
+  const Unnamed();
+}
+
 class Ready extends FeedState {
   const Ready(this.moments);
   final List<Moment> moments;
@@ -32,13 +37,11 @@ class FeedCubit extends Cubit<FeedState> {
 
   final Server _server;
 
-  String get me => _server.me;
-
   Future<void> start() async {
     emit(const Starting());
     try {
       await _server.start();
-      emit(Ready(await _server.feed()));
+      await refresh();
     } on NeedsInvitation {
       emit(const Uninvited());
     } on Exception {
@@ -46,8 +49,10 @@ class FeedCubit extends Cubit<FeedState> {
     }
   }
 
-  /// Loads the page again. It never loads more (CDI-1833).
+  /// Loads the page again. It never loads more (CDI-1833). A person with no
+  /// name is asked for one first, because their circle has to know who posted.
   Future<void> refresh() async {
+    if (_server.name == null) return emit(const Unnamed());
     try {
       emit(Ready(await _server.feed()));
     } on Exception {
@@ -59,6 +64,10 @@ class FeedCubit extends Cubit<FeedState> {
   /// if it did not go through.
   Future<String?> join(String invitation) =>
       _attempt(() => _server.join(invitation));
+
+  /// Gives this person their name, then shows the feed. Returns a sentence to
+  /// show if it did not go through.
+  Future<String?> name(String name) => _attempt(() => _server.setName(name));
 
   /// Posts, then reloads, so the moment shows where everyone else will see it.
   /// Returns a sentence to show if it did not go through.

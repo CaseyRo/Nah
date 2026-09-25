@@ -34,7 +34,7 @@ Streaming backups with Litestream are planned. Nothing in `apps/server` runs the
 Newest first. Each decision record is the canonical home for its reasoning.
 
 - **2026-09-23:** everyone is on one server until M7, because the feed reads people's files from this server's own disk and connecting needs both people here; the directory waits for hosting (the note on [ADR-0010](../../decisions/0010-small-server-not-mastodon.md)).
-- **2026-09-23:** each person gets one profile blob, holding their name and, once sealed, their gender and orientation, which the server stores and never reads like a moment. The feed returns the profiles of a page's authors in the same pass as their moments, never one read per connection (the note on [ADR-0012](../../decisions/0012-encrypted-on-device.md)). Not built.
+- **2026-09-23:** each person has one profile blob, holding their name and, once sealed, their gender, pronouns and orientation, which the server stores and never reads like a moment. The feed returns the profiles of a page's authors in the same pass as their moments, never one read per connection (the note on [ADR-0012](../../decisions/0012-encrypted-on-device.md)). The name is built; the rest waits for sealing.
 
 - **2026-09-15:** a person has exactly one device key, replaced only by a recovery that two people from their circle vouch for, and the server will hold content keys sealed to device keys it cannot open (the notes on [ADR-0012](../../decisions/0012-encrypted-on-device.md) and [ADR-0015](../../decisions/0015-no-passwords-a-key-on-the-device.md)). Not built.
 - **2026-09-15:** reactions will be stored sealed, so the server knows who reacted to which moment and when but not how, and returns them only to the poster ([ADR-0018](../../decisions/0018-reactions-the-poster-sees.md)). Not built.
@@ -67,7 +67,7 @@ It serves on `:8080` and keeps its files in `./data`; `NAH_ADDR` and `NAH_DATA_D
 - **Open files stay open for the life of the process.** That is seven to nine descriptors and about a quarter of a megabyte per person with a file open. A host holding thousands of people needs an eviction policy first.
 - **Stop it with a signal, never a kill.** A graceful shutdown closes and checkpoints every file; a killed process leaves up to 4 MB of write-ahead log behind per person.
 - **Migrations are additive only.** During a rolling deploy the old instance still reads files the new one has migrated; the rule is written on the migrations in `store.go`.
-- **A person's invites do not expire, are not single-use and cannot be revoked yet**, so one that leaks lets anyone register and connect to that person until their circle is full, and registration shares one server-wide rate limit with sign-in ([server README](../../../apps/server/README.md)).
+- **Every invitation works once, and a refusal leaves it unspent.** Retrying the connection an invitation already made is harmless; anyone else gets "already used". Invitations still never expire and cannot yet be revoked, and registration shares one server-wide rate limit with sign-in ([server README](../../../apps/server/README.md)).
 - **An operator invite is spent the moment it is redeemed**, even if registering fails afterwards. Make another with `server invite`; a refused registration never leaves a person behind.
 - **ADR-0011's title still says "per circle".** The amendment at its end is the current state.
 

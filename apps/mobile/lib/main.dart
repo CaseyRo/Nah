@@ -1,7 +1,8 @@
 // Nah? — a private home for your closest people.
 //
 // M1, the walking skeleton (CDI-1833, CDI-1834): join by invitation, sign in,
-// read the feed, post a text moment, and connect by pasting an invitation. The
+// give your name (CDI-1896), read the feed, post a text moment, and connect by
+// pasting an invitation. The
 // design system, the radial menu, the timeline clock, the spring physics and the
 // onboarding ritual are all decided and none of them are on the path to two
 // phones talking.
@@ -63,12 +64,12 @@ class FeedScreen extends StatelessWidget {
       ),
       body: BlocBuilder<FeedCubit, FeedState>(
         builder: (context, state) => switch (state) {
-          Starting() => const Center(child: Text('Looking for your people…')),
+          Starting() => const Center(child: Text('Looking for your circle…')),
           Unreachable() => Center(
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Text('Cannot reach your people right now.'),
+                const Text('Cannot reach your circle right now.'),
                 const SizedBox(height: 16),
                 TextButton(
                   onPressed: () => context.read<FeedCubit>().start(),
@@ -78,6 +79,7 @@ class FeedScreen extends StatelessWidget {
             ),
           ),
           Uninvited() => const JoinScreen(),
+          Unnamed() => const NameScreen(),
           Ready(:final moments) => Column(
             children: [
               const Composer(),
@@ -167,6 +169,84 @@ class _JoinScreenState extends State<JoinScreen> {
   }
 }
 
+/// The first thing asked after joining: the name the people closest to you
+/// already call you by (CDI-1896). It is required, because a circle has to know
+/// who posted, and it has no counter (ADR-0004).
+class NameScreen extends StatefulWidget {
+  const NameScreen({super.key});
+
+  @override
+  State<NameScreen> createState() => _NameScreenState();
+}
+
+class _NameScreenState extends State<NameScreen> {
+  final _name = TextEditingController();
+  String? _problem;
+  bool _busy = false;
+
+  @override
+  void dispose() {
+    _name.dispose();
+    super.dispose();
+  }
+
+  Future<void> _continue() async {
+    final name = _name.text.trim();
+    if (name.isEmpty) return;
+    final feed = context.read<FeedCubit>();
+    setState(() {
+      _busy = true;
+      _problem = null;
+    });
+    final problem = await feed.name(name);
+    if (!mounted) return;
+    setState(() {
+      _busy = false;
+      _problem = problem;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            'What do the people closest to you call you?',
+            style: Theme.of(context).textTheme.headlineSmall,
+          ),
+          const SizedBox(height: 12),
+          TextField(
+            controller: _name,
+            autofocus: true,
+            textCapitalization: TextCapitalization.words,
+            inputFormatters: [LengthLimitingTextInputFormatter(maxNameLength)],
+            onChanged: (_) => setState(() {}),
+            onSubmitted: (_) => _continue(),
+            decoration: const InputDecoration(
+              hintText: 'Your name',
+              helperText: 'Only your circle sees it. You can change it later.',
+            ),
+          ),
+          const SizedBox(height: 12),
+          FilledButton(
+            onPressed: _busy || _name.text.trim().isEmpty ? null : _continue,
+            child: const Text('Continue'),
+          ),
+          if (_problem != null)
+            Padding(
+              padding: const EdgeInsets.only(top: 12),
+              child: Text(_problem!),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
 class MomentTile extends StatelessWidget {
   const MomentTile(this.moment, {super.key});
 
@@ -179,10 +259,9 @@ class MomentTile extends StatelessWidget {
     final when = DateUtils.isSameDay(at, DateTime.now())
         ? l10n.formatTimeOfDay(TimeOfDay.fromDateTime(at))
         : l10n.formatShortMonthDay(at);
-    final mine = moment.author == context.read<FeedCubit>().me;
     return ListTile(
       title: Text(moment.text),
-      subtitle: Text(mine ? 'You · $when' : when),
+      subtitle: Text('${moment.authorName ?? 'Someone'} · $when'),
     );
   }
 }
@@ -238,7 +317,7 @@ class _ComposerState extends State<Composer> {
                 LengthLimitingTextInputFormatter(maxTextLength),
               ],
               decoration: const InputDecoration(
-                hintText: 'Say something to your people',
+                hintText: 'Say something to your circle',
               ),
             ),
           ),

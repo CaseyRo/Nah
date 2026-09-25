@@ -47,6 +47,7 @@ var (
 	ErrBadPersonID = errors.New("malformed person id")
 	ErrNoInvite    = errors.New("registration needs an invite")
 	ErrBadInvite   = errors.New("invite is not valid")
+	ErrUsedInvite  = errors.New("invite has already been used")
 	ErrOwnInvite   = errors.New("invite belongs to the person redeeming it")
 	ErrNetworkFull = errors.New("network is full")
 )
@@ -83,6 +84,14 @@ CREATE TABLE moments (
 );
 
 CREATE INDEX idx_moments_created ON moments (created_at DESC);
+`, `
+-- A person's profile: their name and, later, how they show themselves
+-- (CDI-1895). Ciphertext like a moment, never read by the server.
+ALTER TABLE person ADD COLUMN profile BLOB;
+
+-- Every invitation works once (CDI-1883): who redeemed it, and when.
+ALTER TABLE invites ADD COLUMN used_at INTEGER;
+ALTER TABLE invites ADD COLUMN used_by TEXT;
 `}
 
 // Store owns the person files under one directory.
@@ -123,12 +132,14 @@ func (s *Store) Close() {
 }
 
 // Moment is one moment in a feed. Blob is ciphertext. ID is unique among its
-// author's moments, not across a feed; (AuthorID, ID) is.
+// author's moments, not across a feed; (AuthorID, ID) is. AuthorProfile is the
+// author's profile ciphertext, so a feed can name who posted (CDI-1895).
 type Moment struct {
-	ID        int64  `json:"id"`
-	AuthorID  string `json:"author_id"`
-	CreatedAt int64  `json:"created_at"`
-	Blob      []byte `json:"blob"`
+	ID            int64  `json:"id"`
+	AuthorID      string `json:"author_id"`
+	CreatedAt     int64  `json:"created_at"`
+	Blob          []byte `json:"blob"`
+	AuthorProfile []byte `json:"author_profile,omitempty"`
 }
 
 // Register makes a new person, and nobody arrives uninvited. The invite comes
@@ -235,6 +246,17 @@ func (s *Store) Owns(personID string, pub ed25519.PublicKey) (bool, error) {
 	return err == nil, err
 }
 
+// SetProfile replaces a person's profile ciphertext. The server stores it and
+// never reads it, exactly as it does a moment.
+func (s *Store) SetProfile(personID string, blob []byte) error {
+	p, err := s.person(personID)
+	if err != nil {
+		return err
+	}
+	_, err = p.write.Exec(`UPDATE person SET profile = ?`, blob)
+	return err
+}
+
 // Invite mints a token that connects whoever redeems it to this person. A touch
 // and a link carry the same token (CDI-1839, CDI-1840); how it travels is the
 // app's business.
@@ -249,11 +271,13 @@ func (s *Store) Invite(personID string) (string, error) {
 }
 
 // Connect redeems inviterID's invite and connects the two people both ways.
-// Invitation is connection (ADR-0017): nobody approves anything afterwards.
+// Invitation is connection (ADR-0017): nobody approves anything afterwards. An
+// invite works once; a refused connection leaves it unused.
 //
 // The two files are written one after the other, because SQLite cannot commit
-// across files in WAL mode. If the second write fails the first is undone, and
-// both are idempotent, so retrying the whole call is always safe.
+// across files in WAL mode. If the second write fails the first is undone,
+// invite included, and both are idempotent, so retrying the whole call is
+// always safe.
 func (s *Store) Connect(personID, inviterID, invite string) error {
 	if personID == inviterID {
 		return ErrOwnInvite
@@ -275,6 +299,9 @@ func (s *Store) Connect(personID, inviterID, invite string) error {
 			if _, undo := them.write.Exec(`DELETE FROM connections WHERE person_id = ?`, personID); undo != nil {
 				return errors.Join(err, undo)
 			}
+			if _, undo := them.write.Exec(`UPDATE invites SET used_at = NULL, used_by = NULL WHERE token = ?`, invite); undo != nil {
+				return errors.Join(err, undo)
+			}
 		}
 		return err
 	}
@@ -282,8 +309,9 @@ func (s *Store) Connect(personID, inviterID, invite string) error {
 }
 
 // connect adds other to p's connections, checking the invite first when there
-// is one. The cap is counted in the same transaction as the insert, on the only
-// connection that writes this file, so two people cannot take the last place.
+// is one and spending it in the same transaction. The cap is counted in that
+// transaction too, on the only connection that writes this file, so two people
+// cannot take the last place and a refusal leaves the invite unused.
 func (s *Store) connect(p *personDB, other, invite string) (added bool, err error) {
 	tx, err := p.write.Begin()
 	if err != nil {
@@ -291,23 +319,34 @@ func (s *Store) connect(p *personDB, other, invite string) (added bool, err erro
 	}
 	defer tx.Rollback()
 
+	// Already connected: connecting twice is a no-op, not an error.
+	var one int
+	connected := true
+	if err := tx.QueryRow(`SELECT 1 FROM connections WHERE person_id = ?`, other).Scan(&one); errors.Is(err, sql.ErrNoRows) {
+		connected = false
+	} else if err != nil {
+		return false, err
+	}
+
 	if invite != "" {
-		var revoked sql.NullInt64
-		err := tx.QueryRow(`SELECT revoked_at FROM invites WHERE token = ?`, invite).Scan(&revoked)
-		if errors.Is(err, sql.ErrNoRows) || (err == nil && revoked.Valid) {
+		var revoked, used sql.NullInt64
+		var usedBy sql.NullString
+		err := tx.QueryRow(`SELECT revoked_at, used_at, used_by FROM invites WHERE token = ?`, invite).
+			Scan(&revoked, &used, &usedBy)
+		switch {
+		case errors.Is(err, sql.ErrNoRows) || (err == nil && revoked.Valid):
 			return false, ErrBadInvite
-		}
-		if err != nil {
+		case err != nil:
 			return false, err
+		case used.Valid && connected && usedBy.String == other:
+			return false, tx.Commit() // a retry of the connection this invite made
+		case used.Valid:
+			return false, ErrUsedInvite
 		}
 	}
 
-	// Already connected: connecting twice is a no-op, not an error.
-	var one int
-	if err := tx.QueryRow(`SELECT 1 FROM connections WHERE person_id = ?`, other).Scan(&one); err == nil {
+	if connected {
 		return false, tx.Commit()
-	} else if !errors.Is(err, sql.ErrNoRows) {
-		return false, err
 	}
 
 	// The cap is counted here and nowhere else. No count ever leaves the server.
@@ -318,9 +357,14 @@ func (s *Store) connect(p *personDB, other, invite string) (added bool, err erro
 	if n >= NetworkCap {
 		return false, ErrNetworkFull
 	}
-	if _, err := tx.Exec(`INSERT INTO connections (person_id, connected_at) VALUES (?, ?)`,
-		other, s.now().UnixMilli()); err != nil {
+	now := s.now().UnixMilli()
+	if _, err := tx.Exec(`INSERT INTO connections (person_id, connected_at) VALUES (?, ?)`, other, now); err != nil {
 		return false, err
+	}
+	if invite != "" {
+		if _, err := tx.Exec(`UPDATE invites SET used_at = ?, used_by = ? WHERE token = ?`, now, other, invite); err != nil {
+			return false, err
+		}
 	}
 	return true, tx.Commit()
 }
@@ -461,7 +505,9 @@ func raise(v *atomic.Int64, n int64) {
 	}
 }
 
-// fillBlobs reads the ciphertext for a page of moments, one query per author.
+// fillBlobs reads the ciphertext for a page of moments and each author's
+// profile, from each author's file: per author on the page, never per
+// connection, which is the cost the feed was measured on (spike/RESULTS.md).
 func (s *Store) fillBlobs(page []Moment) error {
 	byAuthor := map[string][]*Moment{}
 	for i := range page {
@@ -471,6 +517,13 @@ func (s *Store) fillBlobs(page []Moment) error {
 		p, err := s.person(author)
 		if err != nil {
 			return err
+		}
+		var profile []byte
+		if err := p.read.QueryRow(`SELECT profile FROM person`).Scan(&profile); err != nil {
+			return err
+		}
+		for _, m := range moments {
+			m.AuthorProfile = profile
 		}
 		byID := make(map[int64]*Moment, len(moments))
 		args := make([]any, len(moments))

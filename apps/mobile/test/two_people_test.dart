@@ -35,7 +35,9 @@ void main() {
       }
 
       final a = await phone(() async => operatorInvitation!);
+      await a.setName('Maya');
       final b = await phone(a.invitation);
+      await b.setName('Sam');
       expect(a.me, isNot(b.me));
 
       await a.post('from A');
@@ -45,6 +47,7 @@ void main() {
         final feed = await reader.feed();
         expect(feed.map((m) => m.text), ['from B', 'from A']);
         expect(feed.map((m) => m.author), [b.me, a.me]);
+        expect(feed.map((m) => m.authorName), ['Sam', 'Maya']);
       }
     },
     skip: url == null || operatorInvitation == null

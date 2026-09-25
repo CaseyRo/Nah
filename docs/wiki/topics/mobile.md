@@ -6,13 +6,13 @@ Sources span 2026-04-26 to 2026-09-23. The app was scaffolded on 2026-09-13 and 
 
 The app is how a person uses Nah?: a Flutter app for iOS and Android that talks only to the [server](server.md). As of M1 it gives the phone an identity of its own, joins by invitation and signs in, shows one page of the feed from you and the people you are connected to, posts text moments, and connects two people by pasting an invitation.
 
-Much of what has been decided about the app is not built yet: a person's name, ritual onboarding, voice, photo and music moments, the long text, reactions, the two-lane feed with its clock and focus, the daily digest, and connecting by touching phones. Until names exist, the M1 feed marks your own moments "You" and shows only a time on anyone else's. How the app should look and feel is in [`DESIGN.md`](../../../DESIGN.md), and who it is for in [`PRODUCT.md`](../../../PRODUCT.md); the M1 screen uses neither yet.
+Much of what has been decided about the app is not built yet: ritual onboarding, voice, photo and music moments, the long text, reactions, the two-lane feed with its clock and focus, the daily digest, and connecting by touching phones. How the app should look and feel is in [`DESIGN.md`](../../../DESIGN.md), and who it is for in [`PRODUCT.md`](../../../PRODUCT.md); the M1 screen uses neither yet.
 
 ## Architecture [coverage: medium -- 2 sources]
 
 The [app README](../../../apps/mobile/README.md) is the canonical description of what M1 does. The code:
 
-- [`lib/main.dart`](../../../apps/mobile/lib/main.dart): the one screen: joining by invitation, then the composer, the feed and the connect sheet.
+- [`lib/main.dart`](../../../apps/mobile/lib/main.dart): the one screen: joining by invitation, the name, then the composer, the feed and the connect sheet.
 - [`lib/feed_cubit.dart`](../../../apps/mobile/lib/feed_cubit.dart): that screen's states, with every failure turned into a sentence.
 - [`lib/server.dart`](../../../apps/mobile/lib/server.dart): the device identity, sign-in and the calls to the server. It is deliberately thin until a client package the app owns replaces it.
 - [`lib/moment.dart`](../../../apps/mobile/lib/moment.dart): writing a moment's envelope and reading one back.
@@ -30,7 +30,7 @@ The Flutter version is pinned in [`mise.toml`](../../../mise.toml) at the reposi
 
 Newest first. Each decision record is the canonical home for its reasoning.
 
-- **2026-09-23:** a person gives their name as the first step after joining, and, once profiles are sealed, may give their gender, pronouns and sexual orientation or rather not tell; the slow beat greets them by name. All of it travels as one sealed profile shown only to their circle, and an invite link names nobody. The app's sentences use a person's name, never a pronoun. See the notes on [ADR-0005](../../decisions/0005-ritual-onboarding.md) and [ADR-0012](../../decisions/0012-encrypted-on-device.md). Not built (CDI-1896, CDI-1897).
+- **2026-09-23:** a person gives their name as the first step after joining, and, once profiles are sealed, may give their gender, pronouns and sexual orientation or rather not tell; the slow beat greets them by name. All of it travels as one sealed profile shown only to their circle, and an invite link names nobody. The app's sentences use a person's name, never a pronoun. See the notes on [ADR-0005](../../decisions/0005-ritual-onboarding.md) and [ADR-0012](../../decisions/0012-encrypted-on-device.md). The name is built (CDI-1896); the rest waits for sealing (CDI-1897).
 - **2026-09-23:** a text moment can be a full written post of up to 10,000 characters with an optional title, still one type in the + (the note on [ADR-0006](../../decisions/0006-three-moment-types.md)). Not built.
 - **2026-09-16:** photo, voice, music and long text open on their own in focus, and nothing plays on the feed ([`DESIGN.md`](../../../DESIGN.md), Focus). Not built.
 - **2026-09-15:** the feed is two lanes, time on the left and people on the right, with no card boxes and the timeline clock riding the lane ([`DESIGN.md`](../../../DESIGN.md), Layout). Not built.

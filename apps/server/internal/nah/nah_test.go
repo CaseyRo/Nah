@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"crypto/ed25519"
 	"crypto/rand"
+	"database/sql"
 	"encoding/base64"
 	"encoding/binary"
 	"encoding/json"
@@ -490,19 +491,19 @@ func TestPostFromAnotherInstanceArrives(t *testing.T) {
 func TestNetworkCap(t *testing.T) {
 	store := newStore(t)
 	hub := register(t, store)
-	hubInvite := invite(t, store, hub)
 	for i := range NetworkCap {
-		if err := store.Connect(register(t, store), hub, hubInvite); err != nil {
+		if err := store.Connect(register(t, store), hub, invite(t, store, hub)); err != nil {
 			t.Fatalf("connection %d: %v", i+1, err)
 		}
 	}
 	mustPost(t, store, hub, "from the hub")
 
 	// Full as the one who made the invite: nothing is written on either side.
-	late := register(t, store)
+	late, hubInvite := register(t, store), invite(t, store, hub)
 	if err := store.Connect(late, hub, hubInvite); !errors.Is(err, ErrNetworkFull) {
 		t.Fatalf("connection %d: got %v, want ErrNetworkFull", NetworkCap+1, err)
 	}
+	assertUnused(t, store, hub, hubInvite)
 
 	// Joining through a full network's invite is refused, and leaves no person.
 	before := personFiles(t, store)
@@ -516,9 +517,11 @@ func TestNetworkCap(t *testing.T) {
 	// Full as the one redeeming: the inviter's side is written first and has to
 	// be undone, or the inviter would be reading the hub one-way.
 	inviter := register(t, store)
-	if err := store.Connect(hub, inviter, invite(t, store, inviter)); !errors.Is(err, ErrNetworkFull) {
+	fromInviter := invite(t, store, inviter)
+	if err := store.Connect(hub, inviter, fromInviter); !errors.Is(err, ErrNetworkFull) {
 		t.Fatalf("redeeming while full: got %v, want ErrNetworkFull", err)
 	}
+	assertUnused(t, store, inviter, fromInviter)
 
 	for name, p := range map[string]string{"late": late, "inviter": inviter} {
 		feed, err := store.Feed(p, 10)
@@ -528,6 +531,74 @@ func TestNetworkCap(t *testing.T) {
 		if len(feed) != 0 {
 			t.Errorf("%s can read the hub after the connection was refused", name)
 		}
+	}
+}
+
+// assertUnused fails unless a refused connection left the invite unspent.
+func assertUnused(t *testing.T, store *Store, owner, token string) {
+	t.Helper()
+	p, err := store.person(owner)
+	if err != nil {
+		t.Fatal(err)
+	}
+	var used sql.NullInt64
+	if err := p.read.QueryRow(`SELECT used_at FROM invites WHERE token = ?`, token).Scan(&used); err != nil {
+		t.Fatal(err)
+	}
+	if used.Valid {
+		t.Errorf("a refused connection spent the invite")
+	}
+}
+
+// TestInviteWorksOnce holds CDI-1883's rule: every invitation works exactly
+// once, a retry of the connection it made is harmless, and nobody else can use
+// it afterwards, whether to connect or to arrive.
+func TestInviteWorksOnce(t *testing.T) {
+	store := newStore(t)
+	a, b, c := register(t, store), register(t, store), register(t, store)
+	token := invite(t, store, a)
+	if err := store.Connect(b, a, token); err != nil {
+		t.Fatal(err)
+	}
+	if err := store.Connect(b, a, token); err != nil {
+		t.Errorf("retrying the same connection: got %v, want nil", err)
+	}
+	if err := store.Connect(c, a, token); !errors.Is(err, ErrUsedInvite) {
+		t.Errorf("a second person with a used invite: got %v, want ErrUsedInvite", err)
+	}
+	before := personFiles(t, store)
+	if _, err := store.Register(newDevice(t).pub, a, token); !errors.Is(err, ErrUsedInvite) {
+		t.Errorf("arriving with a used invite: got %v, want ErrUsedInvite", err)
+	}
+	if after := personFiles(t, store); after != before {
+		t.Errorf("a refused registration left %d person files behind", after-before)
+	}
+}
+
+// TestFeedNamesAuthors is CDI-1896 on the server: a profile set by its owner
+// comes back, byte for byte and unread, on every moment of theirs in a feed.
+func TestFeedNamesAuthors(t *testing.T) {
+	srv, store := newTestServer(t)
+	a := join(t, srv, store, nil)
+	b := join(t, srv, store, a)
+	if status, body := call(t, srv, "PUT", "/v1/people/"+a.person+"/profile", a.token,
+		map[string]any{"blob": []byte("sealed: Maya")}); status != http.StatusNoContent {
+		t.Fatalf("profile: status %d: %s", status, body)
+	}
+	a.post(t, srv, "from a")
+	b.post(t, srv, "from b")
+	for _, m := range b.feed(t, srv) {
+		want := ""
+		if m.AuthorID == a.person {
+			want = "sealed: Maya"
+		}
+		if string(m.AuthorProfile) != want {
+			t.Errorf("%s's moment carries profile %q, want %q", m.AuthorID, m.AuthorProfile, want)
+		}
+	}
+	if status, _ := call(t, srv, "PUT", "/v1/people/"+a.person+"/profile", b.token,
+		map[string]any{"blob": []byte("not yours")}); status != http.StatusUnauthorized {
+		t.Errorf("setting someone else's profile: status %d, want 401", status)
 	}
 }
 
@@ -628,6 +699,45 @@ func TestMigrationsAreIdempotent(t *testing.T) {
 	}
 	if len(feed) != 1 {
 		t.Fatalf("after reopen: %d moments, want 1", len(feed))
+	}
+}
+
+// TestOldFilesMigrate opens a person file written before the profile and
+// single-use invites existed, as every file on a server from M1 is, and checks
+// the additive migration brings it forward with nothing lost.
+func TestOldFilesMigrate(t *testing.T) {
+	dir := t.TempDir()
+	id := NewID()
+	old, err := openDB(filepath.Join(dir, id+".db"), 1)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := old.Exec(migrations[0] + `PRAGMA user_version = 1;`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := old.Exec(`INSERT INTO person (id, created_at, public_key) VALUES (?, 0, ?)`,
+		id, []byte(newDevice(t).pub)); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := old.Exec(`INSERT INTO moments (created_at, blob) VALUES (1, 'kept')`); err != nil {
+		t.Fatal(err)
+	}
+	old.Close()
+
+	store, err := NewStore(dir)
+	if err != nil {
+		t.Fatal(err)
+	}
+	defer store.Close()
+	if err := store.SetProfile(id, []byte("sealed: Maya")); err != nil {
+		t.Fatalf("setting a profile on a migrated file: %v", err)
+	}
+	feed, err := store.Feed(id, 10)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(feed) != 1 || string(feed[0].Blob) != "kept" || string(feed[0].AuthorProfile) != "sealed: Maya" {
+		t.Fatalf("after migrating: %+v", feed)
 	}
 }
 

@@ -15,6 +15,9 @@ class _FakeServer implements Server {
   bool reachable = true;
   bool joined = true;
   String? refusal;
+
+  @override
+  String? name = 'Maya';
   final posted = <String>[];
   final connected = <String>[];
 
@@ -37,13 +40,25 @@ class _FakeServer implements Server {
   }
 
   @override
+  Future<void> setName(String name) async {
+    if (refusal != null) throw Refused(refusal!);
+    this.name = name;
+  }
+
+  @override
   Future<List<Moment>> feed() async => moments;
 
   @override
   Future<void> post(String text) async {
     posted.add(text);
     moments = [
-      Moment(author: me, id: posted.length, at: DateTime.now(), text: text),
+      Moment(
+        author: me,
+        id: posted.length,
+        at: DateTime.now(),
+        text: text,
+        authorName: name,
+      ),
       ...moments,
     ];
   }
@@ -61,7 +76,7 @@ class _FakeServer implements Server {
 void main() {
   testWidgets('says it is looking while it signs in', (tester) async {
     await tester.pumpWidget(NahApp(server: _FakeServer()..hold = Completer()));
-    expect(find.text('Looking for your people…'), findsOneWidget);
+    expect(find.text('Looking for your circle…'), findsOneWidget);
   });
 
   testWidgets('an unreachable server is said in words, not in a stack trace', (
@@ -69,7 +84,7 @@ void main() {
   ) async {
     await tester.pumpWidget(NahApp(server: _FakeServer()..reachable = false));
     await tester.pumpAndSettle();
-    expect(find.text('Cannot reach your people right now.'), findsOneWidget);
+    expect(find.text('Cannot reach your circle right now.'), findsOneWidget);
     // Nothing technical ever reaches a person's screen.
     expect(find.textContaining('127.0.0.1'), findsNothing);
     expect(find.textContaining('Exception'), findsNothing);
@@ -77,7 +92,9 @@ void main() {
 
   testWidgets('a phone that has not joined asks for an invitation, and joins '
       'with one', (tester) async {
-    final server = _FakeServer()..joined = false;
+    final server = _FakeServer()
+      ..joined = false
+      ..name = null;
     await tester.pumpWidget(NahApp(server: server));
     await tester.pumpAndSettle();
     expect(
@@ -98,20 +115,56 @@ void main() {
     await tester.tap(join);
     await tester.pumpAndSettle();
     expect(server.joined, isTrue);
-    expect(find.text('Say something to your people'), findsOneWidget);
+
+    // Joined, and asked for a name before anything else (CDI-1896).
+    expect(
+      find.text('What do the people closest to you call you?'),
+      findsOneWidget,
+    );
+    final next = find.widgetWithText(FilledButton, 'Continue');
+    expect(tester.widget<FilledButton>(next).onPressed, isNull);
+    await tester.enterText(find.byType(TextField), 'Maya');
+    await tester.pump();
+    await tester.tap(next);
+    await tester.pumpAndSettle();
+    expect(server.name, 'Maya');
+    expect(find.text('Say something to your circle'), findsOneWidget);
     expect(find.byTooltip('Connect'), findsOneWidget);
   });
 
-  testWidgets('the feed is shown in the order the server gives, yours marked', (
+  testWidgets('someone who joined before names existed is asked for theirs', (
     tester,
   ) async {
+    await tester.pumpWidget(NahApp(server: _FakeServer()..name = null));
+    await tester.pumpAndSettle();
+    expect(
+      find.text('What do the people closest to you call you?'),
+      findsOneWidget,
+    );
+  });
+
+  testWidgets('the feed is shown in the order the server gives, each moment '
+      'named', (tester) async {
     final now = DateTime.now();
     await tester.pumpWidget(
       NahApp(
         server: _FakeServer(
           moments: [
-            Moment(author: 'them', id: 1, at: now, text: 'from them'),
-            Moment(author: 'me', id: 1, at: now, text: 'from me'),
+            Moment(
+              author: 'them',
+              id: 1,
+              at: now,
+              text: 'from them',
+              authorName: 'Sam',
+            ),
+            Moment(
+              author: 'me',
+              id: 1,
+              at: now,
+              text: 'from me',
+              authorName: 'Maya',
+            ),
+            Moment(author: 'new', id: 1, at: now, text: 'from someone'),
           ],
         ),
       ),
@@ -121,7 +174,10 @@ void main() {
       tester.getTopLeft(find.text('from them')).dy,
       lessThan(tester.getTopLeft(find.text('from me')).dy),
     );
-    expect(find.textContaining('You ·'), findsOneWidget);
+    expect(find.textContaining('Sam ·'), findsOneWidget);
+    expect(find.textContaining('Maya ·'), findsOneWidget);
+    // Someone whose name cannot be read is still shown, never an error.
+    expect(find.textContaining('Someone ·'), findsOneWidget);
   });
 
   testWidgets('posting puts the moment at the top and empties the field', (
