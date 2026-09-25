@@ -18,7 +18,8 @@ The second line prints a single-use invitation for the first person on the
 server: paste it into the app when it asks. Everyone after that joins with an
 invitation from someone already in.
 
-The server address is a build setting, `--dart-define=NAH_SERVER=...`, and
+The server address is a build setting, `--dart-define=NAH_SERVER=...`. For
+real phones it is `https://nah.casey.berlin`, the dev server on the fleet. It
 defaults to `http://127.0.0.1:8080`, which the iOS simulator reaches. An Android
 emulator needs `http://10.0.2.2:8080`.
 

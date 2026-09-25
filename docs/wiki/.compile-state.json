@@ -1,5 +1,5 @@
 {
-  "last_compiled": "2026-09-23",
+  "last_compiled": "2026-09-25",
   "mode": "codebase",
   "topics": [
     "server",
@@ -14,11 +14,11 @@
   "source_locations": [
     "./"
   ],
-  "total_sources_scanned": 31,
+  "total_sources_scanned": 32,
   "sources": {
     "README.md": "64e7a38b9e7da3f891d3825145e0f503a0e99510",
     "apps/server/README.md": "0af4cfe16c278b1e27a83015ec625749d6be218c",
-    "apps/mobile/README.md": "1b08aecb5c99a2eb21fbd2d517c7cbb38170a693",
+    "apps/mobile/README.md": "13c264b0db5a13cc9c8a09c92477089dcc33dee1",
     "apps/server/Dockerfile": "64979c526de91034bed942107f7b03c3a57df271",
     "spike/README.md": "396f7492b5139c661321db8abb5274b858c5d1cd",
     "spike/THRESHOLDS.md": "27c79133d4e6efcdd34491cd8446ed42a4dfb62a",
@@ -40,12 +40,13 @@
     "docs/decisions/0011-plain-go-and-a-database-per-circle.md": "8418ec0e5808171d758daabcca1de970207040d2",
     "docs/decisions/0012-encrypted-on-device.md": "7019199007f554d649f550f57fe490b75961d4fb",
     "docs/decisions/0013-no-aggregated-feed.md": "f030d58d16477722308cb6ed63598623314da786",
-    "docs/decisions/0014-the-go-setup.md": "dcf9615780332e5e835fa83468cfde8aa78dea04",
+    "docs/decisions/0014-the-go-setup.md": "6a590d2f94256646e1f0f7b2dc664167abaf5573",
     "docs/decisions/0015-no-passwords-a-key-on-the-device.md": "586dc09837e849dbde9c2221cb4e71e221d6ff89",
     "docs/decisions/0016-the-moment-envelope.md": "97bc4788b66586577acdd6d9770c7c2201890cd7",
     "docs/decisions/0017-one-network-of-a-hundred-and-fifty.md": "874b3a3260e2159029adbcc09e86b27771a7dcfe",
     "docs/decisions/0018-reactions-the-poster-sees.md": "2aba0d83c26ebac908bcca958f10037154235dee",
     "DESIGN.md": "99d30a48ac871bff96ba05bfbb409d2fe746eca6",
-    "PRODUCT.md": "d8c9fcd9367a922307e81f94c9c13ac6e5062ca7"
+    "PRODUCT.md": "d8c9fcd9367a922307e81f94c9c13ac6e5062ca7",
+    "apps/server/compose.yaml": "199be894fa584c98e397d4c3d62a1fe50b41466b"
   }
 }

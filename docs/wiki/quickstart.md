@@ -23,7 +23,7 @@ The server listens on `:8080`, which is where the app looks by default. Nah? is 
 
 ## Where it stands, 2026-09-23
 
-M1, the walking skeleton, works on one machine: two people can join by invitation, post and read each other's moments, through the real app and the real server. Since CDI-1896 a person gives their name first and every moment carries it, and every invitation works once. What remains is two physical phones on a deployed server, and that deploy does not exist yet. The design for the feed, focus and the timeline clock is settled in [`DESIGN.md`](../../DESIGN.md) and not built.
+M1, the walking skeleton, works on one machine: two people can join by invitation, post and read each other's moments, through the real app and the real server. Since CDI-1896 a person gives their name first and every moment carries it, and every invitation works once. The server has run at `nah.casey.berlin` since 2026-09-25 and redeploys on every push to `main`. What remains of M1 is two physical phones against it. The design for the feed, focus and the timeline clock is settled in [`DESIGN.md`](../../DESIGN.md) and not built.
 
 ## Reading this wiki
 
@@ -35,7 +35,7 @@ Every section heading carries a coverage tag. `high` means the section can be tr
 - [topics/server.md](topics/server.md): the Go server, person files, sign-in and the feed.
 - [topics/mobile.md](topics/mobile.md): the Flutter app, the device identity, moments and connecting.
 - [topics/spike.md](topics/spike.md): the measurement harness, its thresholds and its results.
-- [topics/delivery.md](topics/delivery.md): hooks, workflows, the container, the toolchain pin and the deploy still to come.
+- [topics/delivery.md](topics/delivery.md): hooks, workflows, the container, the toolchain pin and the deploy.
 - [concepts/invisible-deploys.md](concepts/invisible-deploys.md): why a deploy must never be noticed, and everything that shapes.
 - [concepts/opaque-moments.md](concepts/opaque-moments.md): why the server never reads a moment, and what that costs.
 - [schema.md](schema.md): topics, sections and conventions, for whoever edits or recompiles this wiki.

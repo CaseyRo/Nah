@@ -42,7 +42,8 @@
     ".pre-commit-config.yaml",
     "mise.toml",
     "DESIGN.md",
-    "PRODUCT.md"
+    "PRODUCT.md",
+    "apps/server/compose.yaml"
   ],
   "deep_scan": false,
   "auto_update": "prompt",

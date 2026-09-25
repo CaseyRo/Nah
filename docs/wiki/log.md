@@ -42,3 +42,10 @@
 **New topics:** none
 **Sources scanned:** 31
 **Sources changed:** 5: README.md, apps/server/README.md, apps/mobile/README.md, ADR-0005 and ADR-0012. The name is built and shown on every moment, invitations work once, pronouns joined the profile, and the slow beat greets the person by name.
+
+## 2026-09-25
+
+**Topics updated:** delivery, and the quickstart
+**New topics:** none
+**Sources scanned:** 32
+**Sources changed:** 3: ADR-0014, apps/mobile/README.md and apps/server/compose.yaml. The dev server runs on nebula-1 at nah.casey.berlin and redeploys on every push to main.
