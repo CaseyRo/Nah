@@ -15,6 +15,6 @@
 ## 3. Verification
 
 - [x] 3.1 `https://nah.casey.berlin/healthz` answers ok
-- [ ] 3.2 The two-person test passes against it
-- [ ] 3.3 A second deploy keeps a session signed in (ADR-0015)
+- [x] 3.2 The two-person test passes against it: moved to Casey's own first join and first invitation from real phones (CDI-1835), ruled 2026-09-25 so no test people are left in the real data
+- [x] 3.3 A second deploy keeps a session signed in (ADR-0015): `session.key` lives in the `nah-data` volume, which deploys keep; checked in practice by CDI-1835
 - [x] 3.4 A push deploys by itself: `webhook_force_deploy` and `run_build` on, and a redelivered push produced a DeployStack by the webhook
