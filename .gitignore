@@ -50,3 +50,8 @@ nah-server-*
 
 # Impeccable review captures, regenerated each round
 .impeccable/review/
+
+# Agent skill installs (local tooling, not project source)
+.agents/
+.claude/skills/
+skills-lock.json
