@@ -3,8 +3,6 @@ title: "NativeScript-Vue (or: a good tool for someone else)"
 date: 2026-10-13 12:00:00 +0200
 categories: [Decisions]
 tags: [flutter, nativescript, vue, decision-log]
-draft: true
-published: false
 ---
 
 This morning I came across [a post about NativeScript-Vue](https://www.opensourceprojects.dev/post/nativescript-vue) and my first thought was: could this help Nah? talk to the phone? I asked Claude to look into it with me. The short answer is no, and I want to write down why, because the reasons say more about Nah? than about NativeScript.
